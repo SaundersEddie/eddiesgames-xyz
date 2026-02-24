@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>REDACTED</title>
+  <!-- <link rel="stylesheet" href="game.css" /> -->
+  <link rel="stylesheet" href="game.css?v=999" />
+  <style>
+  .btn { background: #111 !important; color: #fff !important; border: 3px solid #ffb14a !important; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="topbar">
+      <div class="brand">
+        <div class="title">REDACTED</div>
+        <div class="sub">Uncover the hidden word</div>
+      </div>
+
+      <div class="hud">
+        <div class="pill"><span class="muted">Turns</span> <b id="turnsLeft">8</b></div>
+        <button id="newCaseBtn" class="btn ghost" title="New random case (not daily)">New Case</button>
+      </div>
+    </header>
+
+    <main class="panel">
+      <section class="gridPanel">
+        <div class="gridHeader">
+          <div>
+            <div class="label">Current Trace</div>
+            <div id="currentWord" class="currentWord">—</div>
+          </div>
+          <div class="actions">
+            <button id="clearBtn" class="btn ghost">Clear</button>
+            <button id="submitBtn" class="btn">Submit</button>
+          </div>
+        </div>
+
+        <div id="grid" class="grid" aria-label="Letter grid"></div>
+
+        <div class="hintRow">
+          <div class="hint muted">Click adjacent tiles to form a word (no repeats). 3+ letters.</div>
+          <div id="toast" class="toast" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <aside class="intelPanel">
+        <div class="intelHeader">
+          <div class="label">Intel</div>
+          <div class="muted small" id="seedLabel"></div>
+        </div>
+
+        <div class="intelStats">
+          <div class="stat">
+            <div class="statLabel">Heat</div>
+            <div class="statValue" id="lastHeat">—</div>
+          </div>
+          <div class="stat">
+            <div class="statLabel">Order Hit</div>
+            <div class="statValue" id="lastOrder">—</div>
+          </div>
+        </div>
+
+        <div class="historyHeader">
+          <div class="label">Guesses</div>
+          <div class="muted small" id="guessesCount">0</div>
+        </div>
+
+        <div id="history" class="history" aria-label="Guess history"></div>
+      </aside>
+    </main>
+
+    <footer class="footer muted">
+      Prototype build • Noir mode always • Add your real wordlist later
+    </footer>
+  </div>
+
+  <div id="modal" class="modal" hidden>
+    <div class="modalCard">
+      <div id="modalTitle" class="modalTitle">Case Closed</div>
+      <div id="modalBody" class="modalBody muted"></div>
+      <div class="modalActions">
+        <button id="playDailyBtn" class="btn ghost">Play Daily</button>
+        <button id="playNewBtn" class="btn">New Case</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>

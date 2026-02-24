@@ -1,0 +1,26 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import GameCard from "../components/GameCard.astro";
+import AdSlot from "../components/AdSlot.astro";
+import { games } from "../data/games";
+---
+
+<BaseLayout>
+  <h1>Pick Your Game</h1>
+
+  <div class="grid">
+    {games.map(game => (
+      <GameCard game={game} />
+    ))}
+  </div>
+
+  <AdSlot position="bottom" />
+</BaseLayout>
+
+<style>
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+}
+</style>

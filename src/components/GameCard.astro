@@ -1,0 +1,25 @@
+---
+const { game } = Astro.props;
+---
+
+<a href={`/play/${game.slug}`} class="card">
+  <h2>{game.title}</h2>
+  <p>{game.subtitle}</p>
+</a>
+
+<style>
+.card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.card:hover {
+  border-color: var(--ember);
+  box-shadow: 0 0 20px rgba(255,177,74,0.2);
+  transform: translateY(-4px);
+}
+</style>

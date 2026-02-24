@@ -1,0 +1,55 @@
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-left">
+      © {new Date().getFullYear()} Eddie Saunders
+    </div>
+
+ <div class="footer-right">
+      <a href="/">Home</a>
+      <span class="divider">•</span>
+      <a href="/privacy">Privacy</a>
+      <span class="divider">•</span>
+      <a href="/terms">Terms</a>
+      <span class="divider">•</span>
+      <a href="/cookies">Cookies</a>
+      <span class="divider">•</span>
+      <a href="/disclaimer">Disclaimer</a>
+      <span class="divider">•</span>
+      <a href="/contact">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<style>
+.footer {
+  margin-top: 40px;
+  border-top: 1px solid var(--line);
+  background: rgba(8, 11, 15, 0.85);
+  backdrop-filter: blur(6px);
+}
+
+.footer-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 0;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.footer a {
+  color: var(--muted);
+  transition: color 0.2s ease;
+}
+
+.footer a:hover {
+  color: var(--ember);
+}
+
+.divider {
+  margin: 0 8px;
+  opacity: 0.5;
+}
+</style>

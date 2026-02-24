@@ -1,0 +1,19 @@
+---
+import PlayerLayout from "../../layouts/PlayerLayout.astro";
+import { games } from "../../data/games";
+
+export function getStaticPaths() {
+  return games.map((g) => ({
+    params: { slug: g.slug },
+  }));
+}
+
+const { slug } = Astro.params;
+const game = games.find((g) => g.slug === slug);
+
+if (!game) {
+  throw new Error(`Game not found: ${slug}`);
+}
+---
+
+<PlayerLayout gamePath={game.path} />

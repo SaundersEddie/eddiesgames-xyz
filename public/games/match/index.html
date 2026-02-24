@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Object Match</title>
+  <link rel="stylesheet" href="game.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">Object Match</div>
+
+    <nav class="controls">
+      <label class="mode">
+        Mode
+        <select id="modeSelect" aria-label="Mode">
+          <option value="easy">Easy (4×4)</option>
+          <option value="medium">Medium (6×6)</option>
+          <option value="hard">Hard (8×8)</option>
+        </select>
+      </label>
+
+      <button id="restartBtn" class="btn">Restart</button>
+      <button id="bgBtn" class="btn btn-ghost" title="Change background">Background</button>
+    </nav>
+  </header>
+
+  <main class="layout">
+    <section class="hud">
+      <div class="stat">
+        <div class="label">Time</div>
+        <div id="time" class="value mono">00:00.000</div>
+      </div>
+      <div class="stat">
+        <div class="label">Moves</div>
+        <div id="moves" class="value mono">0</div>
+      </div>
+      <div class="stat">
+        <div class="label">Pairs</div>
+        <div id="pairs" class="value mono">0 / 0</div>
+      </div>
+    </section>
+
+    <section class="gameWrap">
+      <div id="board" class="board" aria-label="Game board"></div>
+    </section>
+
+    <aside class="leaderboard">
+      <h2>Daily Top 3</h2>
+      <div class="lb-sub" id="lbDate"></div>
+
+      <div class="lb-mode">
+        <div class="lb-title">Easy</div>
+        <ol id="lbEasy" class="lb-list"></ol>
+      </div>
+
+      <div class="lb-mode">
+        <div class="lb-title">Medium</div>
+        <ol id="lbMedium" class="lb-list"></ol>
+      </div>
+
+      <div class="lb-mode">
+        <div class="lb-title">Hard</div>
+        <ol id="lbHard" class="lb-list"></ol>
+      </div>
+    </aside>
+  </main>
+
+  <!-- Win Modal -->
+  <div id="modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-card">
+      <h3 id="modalTitle">You win</h3>
+      <p class="modal-line">
+        Time: <span id="finalTime" class="mono"></span>
+        &nbsp;•&nbsp;
+        Moves: <span id="finalMoves" class="mono"></span>
+      </p>
+      <div class="modal-actions">
+        <button id="playAgainBtn" class="btn">Play again</button>
+        <button id="closeModalBtn" class="btn btn-ghost">Close</button>
+      </div>
+      <p class="modal-footnote">Daily leaderboard resets at midnight (America/New_York).</p>
+    </div>
+  </div>
+
+  <script type="module" src="game.js"></script>
+</body>
+</html>

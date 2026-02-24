@@ -1,0 +1,30 @@
+---
+const { position } = Astro.props;
+---
+
+<div class={`ad ad-${position}`}>
+  <div class="ad-inner">
+    {position === "top" ? "Top Banner Ad (728x90)" : "Bottom Banner Ad (728x90)"}
+  </div>
+</div>
+
+<style>
+.ad {
+  display: flex;
+  justify-content: center;
+  padding: 12px 0;
+}
+
+.ad-inner {
+  width: 100%;
+  max-width: 728px;
+  height: 90px;
+  background: rgba(255,255,255,0.05);
+  border: 1px dashed var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+</style>
