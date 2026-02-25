@@ -2,28 +2,18 @@ import { getEtDateKey, loadTop3, submitScore, formatTimeMs } from "./leaderboard
 
 const MODES = {
   easy:   { rows: 4, cols: 4, pairs: 8 },
-  medium: { rows: 6, cols: 6, pairs: 18 },
-  hard:   { rows: 8, cols: 8, pairs: 32 },
+  medium: { rows: 4, cols: 6, pairs: 12 },
+  hard:   { rows: 6, cols: 6, pairs: 18 },
 };
-
-const BG_OPTIONS = [
-  "assets/bg/bg1.jpg",
-  "assets/bg/bg2.jpg",
-  "assets/bg/bg3.jpg",
-  "assets/bg/bg4.jpg",
-];
 
 const PACKS = [
   {
     id: "cards",
-    // For v1 we assume 32 images exist for hard.
-    // If you add more later, just extend this list.
-    faces: Array.from({ length: 32 }, (_, i) => `assets/packs/cards/${String(i + 1).padStart(2,"0")}.png`),
-    back: "assets/ui/back.png",
+    faces: Array.from({ length: 30 }, (_, i) => `assets/pack1/${String(i + 1).padStart(2,"0")}.png`),
   }
 ];
 
-const LS_BG = "match:bgIndex";
+// const LS_BG = "match:bgIndex";
 const LS_MODE = "match:mode";
 
 const $ = (sel) => document.querySelector(sel);
@@ -35,7 +25,6 @@ const pairsEl = $("#pairs");
 
 const modeSelect = $("#modeSelect");
 const restartBtn = $("#restartBtn");
-const bgBtn = $("#bgBtn");
 
 const modal = $("#modal");
 const finalTimeEl = $("#finalTime");
@@ -53,11 +42,8 @@ let state = null;
 init();
 
 function init(){
-  // Mode persistence (optional, but nice)
   const savedMode = localStorage.getItem(LS_MODE);
   if (savedMode && MODES[savedMode]) modeSelect.value = savedMode;
-
-  applyBackground(loadBgIndex());
 
   modeSelect.addEventListener("change", () => {
     localStorage.setItem(LS_MODE, modeSelect.value);
@@ -65,12 +51,6 @@ function init(){
   });
 
   restartBtn.addEventListener("click", () => startNewGame());
-
-  bgBtn.addEventListener("click", () => {
-    const next = (loadBgIndex() + 1) % BG_OPTIONS.length;
-    saveBgIndex(next);
-    applyBackground(next);
-  });
 
   playAgainBtn.addEventListener("click", () => {
     hideModal();
@@ -142,10 +122,7 @@ function renderBoard(){
 
     const back = document.createElement("div");
     back.className = "face back";
-    const backImg = document.createElement("img");
-    backImg.alt = "Back";
-    backImg.src = state.pack.back;
-    back.appendChild(backImg);
+    back.setAttribute("aria-hidden", "true");
 
     const front = document.createElement("div");
     front.className = "face front";
@@ -355,20 +332,4 @@ function pickUnique(arr, n){
     [copy[i], copy[j]] = [copy[j], copy[i]];
   }
   return copy.slice(0, n);
-}
-
-function loadBgIndex(){
-  const raw = localStorage.getItem(LS_BG);
-  const n = Number(raw);
-  if (Number.isFinite(n) && n >= 0 && n < BG_OPTIONS.length) return n;
-  return 0;
-}
-
-function saveBgIndex(n){
-  localStorage.setItem(LS_BG, String(n));
-}
-
-function applyBackground(index){
-  const url = BG_OPTIONS[index] || BG_OPTIONS[0];
-  document.body.style.backgroundImage = `url("${url}")`;
 }

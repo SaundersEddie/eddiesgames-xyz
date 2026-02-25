@@ -287,3 +287,22 @@ body {
   .layout{ grid-template-columns: 1fr; }
   .leaderboard{ grid-column: 1 / 2; }
 }
+
+.face.back {
+  display: grid;
+  place-items: center;
+  background: #111;
+  border: 2px solid rgba(255, 177, 74, 0.45);
+  border-radius: 12px;
+}
+
+.face.back::after {
+  content: "• • •";
+  letter-spacing: 6px;
+  opacity: 0.5;
+}
+
+.tile.matched {
+  opacity: 0.75;
+  transform: scale(0.98);
+}
