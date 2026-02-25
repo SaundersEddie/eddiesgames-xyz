@@ -18,9 +18,32 @@ import { games } from "../data/games";
 </BaseLayout>
 
 <style>
+<style>
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 20px;
+  grid-template-columns: 1fr;
 }
+
+/* Tablet */
+@media (min-width: 650px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Desktop */
+@media (min-width: 980px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Ultra-wide */
+@media (min-width: 1500px) {
+  .grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+</style>
 </style>

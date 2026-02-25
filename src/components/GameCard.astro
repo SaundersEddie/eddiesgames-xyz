@@ -5,6 +5,9 @@ const { game } = Astro.props;
 <a href={`/play/${game.slug}`} class="card">
   <h2>{game.title}</h2>
   <p>{game.subtitle}</p>
+  {game.about && (
+    <p class="game-about">{game.about}</p>
+  )}
 </a>
 
 <style>
@@ -21,5 +24,12 @@ const { game } = Astro.props;
   border-color: var(--ember);
   box-shadow: 0 0 20px rgba(255,177,74,0.2);
   transform: translateY(-4px);
+}
+
+.game-about {
+  font-size: 0.9rem;
+  color: var(--muted);
+  margin-top: 8px;
+  line-height: 1.4;
 }
 </style>
