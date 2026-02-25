@@ -1,14 +1,7 @@
-// Leaderboard adapter (v1: localStorage)
-// Swappable later with same interface.
-
 const STORAGE_PREFIX = "match";
 
 function pad2(n){ return String(n).padStart(2, "0"); }
 
-/**
- * Get YYYY-MM-DD for America/New_York, without relying on cron.
- * Uses Intl timeZone formatting.
- */
 export function getEtDateKey(date = new Date()){
   const fmt = new Intl.DateTimeFormat("en-CA", {
     timeZone: "America/New_York",
@@ -16,8 +9,6 @@ export function getEtDateKey(date = new Date()){
     month: "2-digit",
     day: "2-digit",
   });
-  // en-CA yields YYYY-MM-DD in most modern browsers
-  // Example: "2026-02-22"
   return fmt.format(date);
 }
 

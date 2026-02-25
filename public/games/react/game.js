@@ -106,6 +106,8 @@ function attachTimingBarGame(options) {
   const { canvas, scoreEl, comboEl, livesEl, hintEl, restartBtn } = options;
 
   const ctx = canvas.getContext("2d");
+  canvas.tabIndex = 0;
+  canvas.focus();
   if (!ctx) throw new Error("2D canvas not supported");
   const cts = ctx;
 
@@ -156,14 +158,21 @@ function attachTimingBarGame(options) {
 
   canvas.addEventListener("pointerdown", (e) => {
     e.preventDefault();
+    canvas.focus();
     onInput();
   });
 
-  window.addEventListener("keydown", (e) => {
-    if (e.code === "Space" || e.code === "Enter") {
-      e.preventDefault();
-      onInput();
-    }
+  function isActionKey(e) {
+    return e.code === "Space" || e.code === "Enter" || e.key === " ";
+  }
+
+  canvas.addEventListener("keydown", (e) => {
+    if (e.code !== "Space" && e.code !== "Enter") return;
+
+    e.preventDefault();
+    if (e.repeat) return;
+
+    onInput();
   });
 
   if (restartBtn) restartBtn.addEventListener("click", restart);
