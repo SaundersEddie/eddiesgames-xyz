@@ -2,11 +2,18 @@
 const { position } = Astro.props;
 ---
 
-<div class={`ad ad-${position}`}>
+{position !== "top" && (
+  <div class={`ad ad-${position}`}>
+    <div class="ad-inner">
+      {position === "top" ? "Top Banner Ad (728x90)" : "Bottom Banner Ad (728x90)"}
+    </div>
+  </div>
+)}
+<!-- <div class={`ad ad-${position}`}>
   <div class="ad-inner">
     {position === "top" ? "Top Banner Ad (728x90)" : "Bottom Banner Ad (728x90)"}
   </div>
-</div>
+</div> -->
 
 <style>
 .ad {

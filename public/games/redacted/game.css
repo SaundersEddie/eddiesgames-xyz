@@ -22,7 +22,22 @@
 }
 
 *{box-sizing:border-box}
-html,body{height:100%}
+html,body{
+  height:100%
+}
+
+.wrap {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* The main game area should not grow endlessly */
+.panel {
+  flex: 1;
+  min-height: 0; /* critical for flex children to allow internal scrolling */
+}
+
 body{
   margin:0;
   color:var(--text);
@@ -317,4 +332,49 @@ button.btn.ghost, .btn.ghost{
   color: #fff !important;
   background: rgba(255,255,255,.06) !important;
   border: 2px solid rgba(255,255,255,.22) !important;
+}
+
+/* === Viewport-fit patch (keeps bottom ad visible on shorter screens) === */
+
+/* Make the page behave like a fixed-height app */
+html, body { height: 100%; }
+
+/* Let the wrapper stack topbar + panel + footer without growing forever */
+.wrap {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* The main panel should take remaining height, but allow internal scrolling */
+.panel {
+  flex: 1;
+  min-height: 0;
+}
+
+/* Keep the “Intel/Guesses” from forcing the whole page taller */
+.intelPanel {
+  min-height: 0;
+}
+
+/* Make ONLY the guess history scroll when space is tight */
+.history {
+  overflow: auto;
+  min-height: 0;
+}
+
+/* Short-screen rules (MacBook-ish heights) */
+@media (max-height: 820px) {
+  /* Slightly tighten vertical spacing */
+  .topbar { padding: 12px 16px; }
+  .gridHeader { padding: 12px 16px; }
+  .hintRow { margin-top: 10px; }
+
+  /* Cap the guesses list so it scrolls instead of pushing ads off-screen */
+  .history { max-height: 240px; }
+}
+
+/* Very short screens */
+@media (max-height: 720px) {
+  .history { max-height: 180px; }
 }

@@ -21,6 +21,7 @@
   const howToBtn = document.getElementById('howToBtn');
   const howToModal = document.getElementById('howToModal');
   const howToCloseBtn = document.getElementById('howToCloseBtn');
+  const lettersRequiredEl = document.getElementById("lettersRequired");
 
   // ---------- RNG ----------
   function mulberry32(seed) {
@@ -88,7 +89,7 @@
 
     DICT = new Set(list);
     WORDS = Array.from(DICT);
-    SECRET_CANDIDATES = WORDS.filter((w) => w.length >= 6 && w.length <= 8);
+    SECRET_CANDIDATES = WORDS.filter((w) => w.length >= 5 && w.length <= 8);
 
     toast(`Loaded ${WORDS.length.toLocaleString()} words.`);
   }
@@ -126,6 +127,10 @@
   // ---------- Helpers ----------
   const SIZE = 5;
   const MAX_TURNS = 8;
+
+  function setLettersRequired(n) {
+    lettersRequiredEl.textContent = String(n);
+  }
 
   function idxToRC(idx) {
     return [Math.floor(idx / SIZE), idx % SIZE];
@@ -329,11 +334,12 @@
 
     let tries = 0;
     while (tries < 250) {
-      const g = makeGrid(rng);
+      const g = makeGrid(rng)
       const s = pickSecretWord(rng, g);
       if (s) {
         grid = g;
         secret = s;
+        setLettersRequired(secret.length);
         renderGrid();
         return;
       }
@@ -343,6 +349,7 @@
     // fallback if your list is weirdly incompatible
     grid = makeGrid(() => Math.random());
     secret = 'secret';
+    setLettersRequired(secret.length);
     renderGrid();
     toast('Couldn’t find a solvable case. (Word list might be too weird.)');
   }
@@ -478,7 +485,7 @@
         'silent',
       ];
       DICT = new Set(WORDS);
-      SECRET_CANDIDATES = WORDS.filter((w) => w.length >= 6 && w.length <= 8);
+      SECRET_CANDIDATES = WORDS.filter((w) => w.length >= 5 && w.length <= 8);
       startCase({ daily: true });
     }
   })();
