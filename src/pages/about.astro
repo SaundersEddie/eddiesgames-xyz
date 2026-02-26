@@ -1,0 +1,65 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro"; // or your main layout
+---
+
+<BaseLayout>
+  <section class="about">
+    <h1>About Eddies Games</h1>
+
+    <p>
+      Eddies Games is a collection of small, focused browser games built in
+      plain JavaScript and modern web tooling. The goal is simple: build
+      tight, fast games without unnecessary frameworks or bloated engines.
+    </p>
+
+    <p>
+      Each game is developed as part of an ongoing experiment in shipping
+      consistently, improving mechanics, and documenting the process publicly.
+      The emphasis is on clean gameplay, incremental improvement, and keeping
+      things lightweight.
+    </p>
+
+    <h2>Tech Stack</h2>
+    <ul>
+      <li>Astro (site framework)</li>
+      <li>Vanilla JavaScript</li>
+      <li>HTML5 Canvas (where needed)</li>
+      <li>Cloudflare (hosting + DNS)</li>
+    </ul>
+
+    <h2>Assets & Credits</h2>
+    <p>
+      Some sound effects and assets are sourced from
+      <a href="https://kenney.nl" target="_blank" rel="noopener">Kenney.nl</a>.
+    </p>
+
+    <h2>Contact</h2>
+    <p>
+      <a href="mailto:eddie@eddiesgames.xyz">
+        eddie@eddiesgames.xyz
+      </a>
+    </p>
+  </section>
+</BaseLayout>
+
+<style>
+.about {
+  max-width: 800px;
+  margin: 0 auto;
+  display: grid;
+  gap: 20px;
+}
+
+h1 {
+  margin-top: 0;
+}
+
+h2 {
+  margin-top: 24px;
+}
+
+ul {
+  padding-left: 20px;
+  color: var(--muted);
+}
+</style>

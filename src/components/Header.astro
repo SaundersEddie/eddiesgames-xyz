@@ -1,6 +1,11 @@
 <header class="header">
   <div class="container header-inner">
     <a href="/" class="logo">EDDIES GAMES</a>
+
+    <nav class="nav">
+      <a href="/about">About</a>
+      <a href="/updates">Updates</a>
+    </nav>
   </div>
 </header>
 
@@ -14,11 +19,27 @@
 .header-inner {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   height: 60px;
 }
 
 .logo {
   letter-spacing: 0.2em;
   font-weight: bold;
+}
+
+.nav {
+  display: flex;
+  gap: 24px;
+}
+
+.nav a {
+  font-size: 0.9rem;
+  color: var(--muted);
+  transition: color 0.2s ease;
+}
+
+.nav a:hover {
+  color: var(--text);
 }
 </style>

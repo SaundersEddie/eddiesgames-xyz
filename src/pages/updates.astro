@@ -1,0 +1,46 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro"; // or whatever your main layout is
+import { updates } from "../data/updates.js";
+---
+
+<BaseLayout>
+  <h1>Updates</h1>
+  <p class="muted">Click a date to expand details.</p>
+
+  <div class="updates">
+    {updates.map((u) => (
+      <details>
+        <summary>
+          <span class="date">{u.date}</span>
+          <span class="title">{u.title}</span>
+        </summary>
+
+        <ul>
+          {u.body.map((line) => <li>{line}</li>)}
+        </ul>
+      </details>
+    ))}
+  </div>
+</BaseLayout>
+
+<style>
+  .updates { display: grid; gap: 10px; }
+  details {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--panel);
+    padding: 10px 12px;
+  }
+  summary {
+    cursor: pointer;
+    display: flex;
+    gap: 10px;
+    align-items: baseline;
+    list-style: none;
+  }
+  summary::-webkit-details-marker { display: none; }
+  .date { color: var(--muted); font-family: ui-monospace, monospace; }
+  .title { font-weight: 700; }
+  ul { margin: 10px 0 0; padding-left: 18px; color: var(--text); }
+  .muted { color: var(--muted); }
+</style>
