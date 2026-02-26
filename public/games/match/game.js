@@ -1,69 +1,91 @@
-import { getEtDateKey, loadTop3, submitScore, formatTimeMs } from "./leaderboard.js";
+import {
+  getEtDateKey,
+  loadTop3,
+  submitScore,
+  formatTimeMs,
+} from './leaderboard.js';
 
 const MODES = {
-  easy:   { rows: 4, cols: 4, pairs: 8 },
+  easy: { rows: 4, cols: 4, pairs: 8 },
   medium: { rows: 4, cols: 6, pairs: 12 },
-  hard:   { rows: 6, cols: 6, pairs: 18 },
+  hard: { rows: 6, cols: 6, pairs: 18 },
 };
 
 const PACKS = [
   {
-    id: "cards",
-    faces: Array.from({ length: 30 }, (_, i) => `assets/pack1/${String(i + 1).padStart(2,"0")}.png`),
-  }
+    id: 'cards',
+    faces: Array.from(
+      { length: 29 },
+      (_, i) => `assets/pack1/${String(i + 1).padStart(2, '0')}.png`,
+    ),
+  },
 ];
 
-// const LS_BG = "match:bgIndex";
-const LS_MODE = "match:mode";
+const LS_MODE = 'match:mode';
 
 const $ = (sel) => document.querySelector(sel);
 
-const boardEl = $("#board");
-const timeEl = $("#time");
-const movesEl = $("#moves");
-const pairsEl = $("#pairs");
+const boardEl = $('#board');
+const timeEl = $('#time');
+const movesEl = $('#moves');
+const pairsEl = $('#pairs');
 
-const modeSelect = $("#modeSelect");
-const restartBtn = $("#restartBtn");
+const modeSelect = $('#modeSelect');
+const restartBtn = $('#restartBtn');
 
-const modal = $("#modal");
-const finalTimeEl = $("#finalTime");
-const finalMovesEl = $("#finalMoves");
-const playAgainBtn = $("#playAgainBtn");
-const closeModalBtn = $("#closeModalBtn");
+const modal = $('#modal');
+const finalTimeEl = $('#finalTime');
+const finalMovesEl = $('#finalMoves');
+const playAgainBtn = $('#playAgainBtn');
+const closeModalBtn = $('#closeModalBtn');
 
-const lbDateEl = $("#lbDate");
-const lbEasyEl = $("#lbEasy");
-const lbMediumEl = $("#lbMedium");
-const lbHardEl = $("#lbHard");
+const lbDateEl = $('#lbDate');
+const lbEasyEl = $('#lbEasy');
+const lbMediumEl = $('#lbMedium');
+const lbHardEl = $('#lbHard');
 
 let state = null;
 
+const SFX = {
+  click: new Audio('/games/match/sounds/click.mp3'),
+  match: new Audio('/games/match/sounds/match.mp3'),
+  win: new Audio('/games/match/sounds/win.mp3'),
+};
+
+SFX.click.volume = 0.18;
+SFX.match.volume = 0.28;
+SFX.win.volume = 0.35;
+
+function playSfx(aud) {
+  aud.currentTime = 0;
+  aud.play().catch(() => {});
+}
+
 init();
 
-function init(){
+function init() {
   const savedMode = localStorage.getItem(LS_MODE);
   if (savedMode && MODES[savedMode]) modeSelect.value = savedMode;
 
-  modeSelect.addEventListener("change", () => {
+  modeSelect.addEventListener('change', () => {
     localStorage.setItem(LS_MODE, modeSelect.value);
     startNewGame();
   });
 
-  restartBtn.addEventListener("click", () => startNewGame());
+  restartBtn.addEventListener('click', () => startNewGame());
 
-  playAgainBtn.addEventListener("click", () => {
+  playAgainBtn.addEventListener('click', () => {
     hideModal();
     startNewGame();
   });
 
-  closeModalBtn.addEventListener("click", hideModal);
+  closeModalBtn.addEventListener('click', hideModal);
 
   startNewGame();
   renderLeaderboards();
 }
 
-function startNewGame(){
+function startNewGame() {
   hideModal();
 
   const mode = modeSelect.value;
@@ -74,12 +96,14 @@ function startNewGame(){
 
   // Build deck: choose N unique faces, duplicate, shuffle
   const chosenFaces = pickUnique(pack.faces, cfg.pairs);
-  const deck = shuffle([...chosenFaces, ...chosenFaces].map((src, idx) => ({
-    id: `${idx}-${src}`,
-    faceSrc: src,
-    pairKey: src, // pairing by face source is fine
-    matched: false,
-  })));
+  const deck = shuffle(
+    [...chosenFaces, ...chosenFaces].map((src, idx) => ({
+      id: `${idx}-${src}`,
+      faceSrc: src,
+      pairKey: src, // pairing by face source is fine
+      matched: false,
+    })),
+  );
 
   state = {
     mode,
@@ -91,7 +115,7 @@ function startNewGame(){
     timerRaf: null,
     moves: 0,
     matchedPairs: 0,
-    flipped: [],        // indices currently flipped (max 2)
+    flipped: [], // indices currently flipped (max 2)
     lockInput: false,
     attemptsFlipCount: 0, // counts flips toward moves definition
   };
@@ -101,33 +125,33 @@ function startNewGame(){
   updateHud(0);
 }
 
-function setupBoardGrid(rows, cols){
+function setupBoardGrid(rows, cols) {
   boardEl.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
 }
 
-function renderBoard(){
-  boardEl.innerHTML = "";
+function renderBoard() {
+  boardEl.innerHTML = '';
 
   state.deck.forEach((card, idx) => {
-    const tile = document.createElement("div");
-    tile.className = "tile";
+    const tile = document.createElement('div');
+    tile.className = 'tile';
     tile.dataset.index = String(idx);
 
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.setAttribute("aria-label", "Tile");
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.setAttribute('aria-label', 'Tile');
 
-    const cardEl = document.createElement("div");
-    cardEl.className = "card";
+    const cardEl = document.createElement('div');
+    cardEl.className = 'card';
 
-    const back = document.createElement("div");
-    back.className = "face back";
-    back.setAttribute("aria-hidden", "true");
+    const back = document.createElement('div');
+    back.className = 'face back';
+    back.setAttribute('aria-hidden', 'true');
 
-    const front = document.createElement("div");
-    front.className = "face front";
-    const faceImg = document.createElement("img");
-    faceImg.alt = "Face";
+    const front = document.createElement('div');
+    front.className = 'face front';
+    const faceImg = document.createElement('img');
+    faceImg.alt = 'Face';
     faceImg.src = card.faceSrc;
     front.appendChild(faceImg);
 
@@ -136,18 +160,18 @@ function renderBoard(){
     btn.appendChild(cardEl);
     tile.appendChild(btn);
 
-    btn.addEventListener("click", () => onTileClick(idx, tile));
+    btn.addEventListener('click', () => onTileClick(idx, tile));
 
     boardEl.appendChild(tile);
   });
 
   // HUD
   pairsEl.textContent = `0 / ${state.cfg.pairs}`;
-  movesEl.textContent = "0";
-  timeEl.textContent = "00:00.000";
+  movesEl.textContent = '0';
+  timeEl.textContent = '00:00.000';
 }
 
-function onTileClick(idx, tileEl){
+function onTileClick(idx, tileEl) {
   if (!state || state.lockInput) return;
 
   const card = state.deck[idx];
@@ -160,28 +184,29 @@ function onTileClick(idx, tileEl){
   if (state.flipped.length >= 2) return;
 
   // timer starts on first flip
-  if (!state.firstFlipAt){
+  if (!state.firstFlipAt) {
     state.firstFlipAt = performance.now();
     tickTimer();
   }
 
   flipUp(idx, tileEl);
+  playSfx(SFX.click);
 
   // Move counting locked: 1 move = 2 tiles flipped (one attempt)
   state.attemptsFlipCount++;
-  if (state.attemptsFlipCount % 2 === 0){
+  if (state.attemptsFlipCount % 2 === 0) {
     state.moves++;
     movesEl.textContent = String(state.moves);
   }
 
   state.flipped.push(idx);
 
-  if (state.flipped.length === 2){
+  if (state.flipped.length === 2) {
     resolveAttempt();
   }
 }
 
-function resolveAttempt(){
+function resolveAttempt() {
   const [aIdx, bIdx] = state.flipped;
   const a = state.deck[aIdx];
   const b = state.deck[bIdx];
@@ -195,12 +220,13 @@ function resolveAttempt(){
 
   const isMatch = a.pairKey === b.pairKey;
 
-  if (isMatch){
+  if (isMatch) {
     a.matched = true;
     b.matched = true;
+    playSfx(SFX.match);
 
-    aTile.classList.add("matched");
-    bTile.classList.add("matched");
+    aTile.classList.add('matched');
+    bTile.classList.add('matched');
 
     state.matchedPairs++;
     pairsEl.textContent = `${state.matchedPairs} / ${state.cfg.pairs}`;
@@ -208,17 +234,17 @@ function resolveAttempt(){
     state.flipped = [];
     state.lockInput = false;
 
-    if (state.matchedPairs === state.cfg.pairs){
+    if (state.matchedPairs === state.cfg.pairs) {
       finishGame();
     }
   } else {
     // mismatch feedback + flip back after ~750ms
-    aTile.classList.add("shake");
-    bTile.classList.add("shake");
+    aTile.classList.add('shake');
+    bTile.classList.add('shake');
 
     window.setTimeout(() => {
-      aTile.classList.remove("shake");
-      bTile.classList.remove("shake");
+      aTile.classList.remove('shake');
+      bTile.classList.remove('shake');
     }, 280);
 
     window.setTimeout(() => {
@@ -230,15 +256,15 @@ function resolveAttempt(){
   }
 }
 
-function flipUp(idx, tileEl){
-  tileEl.classList.add("flipped");
+function flipUp(idx, tileEl) {
+  tileEl.classList.add('flipped');
 }
 
-function flipDown(idx, tileEl){
-  tileEl.classList.remove("flipped");
+function flipDown(idx, tileEl) {
+  tileEl.classList.remove('flipped');
 }
 
-function tickTimer(){
+function tickTimer() {
   if (!state || !state.firstFlipAt) return;
 
   const now = performance.now();
@@ -249,7 +275,7 @@ function tickTimer(){
   state.timerRaf = requestAnimationFrame(tickTimer);
 }
 
-function finishGame(){
+function finishGame() {
   if (!state) return;
 
   state.endAt = performance.now();
@@ -268,66 +294,68 @@ function finishGame(){
   finalTimeEl.textContent = formatTimeMs(elapsed);
   finalMovesEl.textContent = String(state.moves);
 
+  playSfx(SFX.win);
+
   showModal();
 
   renderLeaderboards(result.etDate);
 }
 
-function renderLeaderboards(etDate = getEtDateKey()){
+function renderLeaderboards(etDate = getEtDateKey()) {
   lbDateEl.textContent = `ET Date: ${etDate}`;
 
-  renderModeList(lbEasyEl, loadTop3("easy", etDate));
-  renderModeList(lbMediumEl, loadTop3("medium", etDate));
-  renderModeList(lbHardEl, loadTop3("hard", etDate));
+  renderModeList(lbEasyEl, loadTop3('easy', etDate));
+  renderModeList(lbMediumEl, loadTop3('medium', etDate));
+  renderModeList(lbHardEl, loadTop3('hard', etDate));
 }
 
-function renderModeList(ol, entries){
-  ol.innerHTML = "";
-  if (!entries.length){
-    const li = document.createElement("li");
+function renderModeList(ol, entries) {
+  ol.innerHTML = '';
+  if (!entries.length) {
+    const li = document.createElement('li');
     li.innerHTML = `<span class="muted">No runs yet</span>`;
     ol.appendChild(li);
     return;
   }
 
   entries.forEach((e) => {
-    const li = document.createElement("li");
+    const li = document.createElement('li');
     li.textContent = `${formatTimeMs(e.timeMs)}  •  ${e.moves} moves`;
     ol.appendChild(li);
   });
 }
 
-function updateHud(elapsedMs){
+function updateHud(elapsedMs) {
   timeEl.textContent = formatTimeMs(elapsedMs);
   movesEl.textContent = String(state.moves);
   pairsEl.textContent = `${state.matchedPairs} / ${state.cfg.pairs}`;
 }
 
-function showModal(){
-  modal.classList.remove("hidden");
+function showModal() {
+  modal.classList.remove('hidden');
 }
 
-function hideModal(){
-  modal.classList.add("hidden");
+function hideModal() {
+  modal.classList.add('hidden');
 }
 
-function shuffle(arr){
+function shuffle(arr) {
   // Fisher–Yates
   const a = arr.slice();
-  for (let i = a.length - 1; i > 0; i--){
+  for (let i = a.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [a[i], a[j]] = [a[j], a[i]];
   }
   return a;
 }
 
-function pickUnique(arr, n){
-  if (n > arr.length){
+function pickUnique(arr, n) {
+  if (n > arr.length) {
     throw new Error(`Not enough faces in pack. Need ${n}, have ${arr.length}.`);
   }
   // partial shuffle selection
   const copy = arr.slice();
-  for (let i = copy.length - 1; i > 0; i--){
+  for (let i = copy.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [copy[i], copy[j]] = [copy[j], copy[i]];
   }

@@ -21,7 +21,27 @@
   const howToBtn = document.getElementById('howToBtn');
   const howToModal = document.getElementById('howToModal');
   const howToCloseBtn = document.getElementById('howToCloseBtn');
-  const lettersRequiredEl = document.getElementById("lettersRequired");
+  const lettersRequiredEl = document.getElementById('lettersRequired');
+
+  // ---------- SFX ----------
+  const SFX = {
+    key: new Audio('/games/redacted/sounds/keypress.mp3'),
+    win: new Audio('/games/redacted/sounds/win.mp3'),
+  };
+
+  // keep these subtle
+  SFX.key.volume = 0.18;
+  SFX.win.volume = 0.35;
+
+  // simple, non-spammy play helper
+  function playSfx(aud) {
+    try {
+      aud.currentTime = 0;
+      aud.play();
+    } catch (_) {
+      // ignore (autoplay restrictions, etc.)
+    }
+  }
 
   // ---------- RNG ----------
   function mulberry32(seed) {
@@ -334,7 +354,7 @@
 
     let tries = 0;
     while (tries < 250) {
-      const g = makeGrid(rng)
+      const g = makeGrid(rng);
       const s = pickSecretWord(rng, g);
       if (s) {
         grid = g;
@@ -364,6 +384,7 @@
 
     if (selected.length === 0) {
       selected.push(idx);
+      playSfx(SFX.key);
       currentWordEl.textContent = currentWord();
       updateTileStates();
       return;
@@ -374,6 +395,7 @@
     if (!isAdjacent(last, idx)) return toast('Must be adjacent.');
 
     selected.push(idx);
+    playSfx(SFX.key);
     currentWordEl.textContent = currentWord();
     updateTileStates();
   }
@@ -394,6 +416,7 @@
 
     if (w === secret) {
       locked = true;
+      playSfx(SFX.win);
       openModal(
         'Case Closed.',
         `You nailed it: ${secret.toUpperCase()} • Win in ${guesses.length}/${MAX_TURNS}.`,

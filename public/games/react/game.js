@@ -1,5 +1,19 @@
 const clamp01 = (x) => Math.max(0, Math.min(1, x));
 
+// ---------- SFX ----------
+const SFX = {
+  click: new Audio('/games/react/sounds/click.mp3'),
+  win: new Audio('/games/react/sounds/win.mp3'),
+};
+
+SFX.click.volume = 0.18;
+SFX.win.volume = 0.35;
+
+function playSfx(aud) {
+  aud.currentTime = 0;
+  aud.play().catch(() => {});
+}
+
 function rand(min, max) {
   return Math.random() * (max - min) + min;
 }
@@ -13,7 +27,7 @@ function makeZone(state) {
 
 function resetGame() {
   const s = {
-    phase: "ready",
+    phase: 'ready',
     marker: 0.5,
     dir: 1,
     speed: 0.9,
@@ -45,18 +59,25 @@ function zoneCenter(state) {
 }
 
 function handleAttempt(state) {
-  if (state.phase === "ready") state.phase = "running";
-  if (state.phase !== "running") return;
+  // First input just starts the round — no scoring.
+  if (state.phase === 'ready') {
+    state.phase = 'running';
+    state.lastOutcome = null;
+    state.outcomeTimer = 0;
+    return;
+  }
+
+  if (state.phase !== 'running') return;
 
   const hit = isInsideZone(state);
   if (!hit) {
     state.lives -= 1;
     state.combo = 0;
-    state.lastOutcome = "miss";
+    state.lastOutcome = 'miss';
     state.outcomeTimer = 0.6;
 
     if (state.lives <= 0) {
-      state.phase = "gameover";
+      state.phase = 'gameover';
       return;
     }
 
@@ -81,7 +102,7 @@ function handleAttempt(state) {
 
   state.score += base + comboBonus + accuracyBonus;
 
-  state.lastOutcome = perfect ? "perfect" : "hit";
+  state.lastOutcome = perfect ? 'perfect' : 'hit';
   state.outcomeTimer = 0.6;
 
   state.round += 1;
@@ -105,10 +126,10 @@ function roundRect(cts, x, y, w, h, r) {
 function attachTimingBarGame(options) {
   const { canvas, scoreEl, comboEl, livesEl, hintEl, restartBtn } = options;
 
-  const ctx = canvas.getContext("2d");
+  const ctx = canvas.getContext('2d');
   canvas.tabIndex = 0;
   canvas.focus();
-  if (!ctx) throw new Error("2D canvas not supported");
+  if (!ctx) throw new Error('2D canvas not supported');
   const cts = ctx;
 
   let state = resetGame();
@@ -130,44 +151,59 @@ function attachTimingBarGame(options) {
 
   function updateHUD() {
     if (scoreEl) scoreEl.textContent = `Score: ${state.score}`;
-    if (comboEl) comboEl.textContent = `Combo: ${state.combo} (Best: ${state.bestCombo})`;
-    if (livesEl) livesEl.textContent = `Lives: ${"♥".repeat(state.lives)}${"·".repeat(Math.max(0, 3 - state.lives))}`;
+    if (comboEl)
+      comboEl.textContent = `Combo: ${state.combo} (Best: ${state.bestCombo})`;
+    if (livesEl)
+      livesEl.textContent = `Lives: ${'♥'.repeat(state.lives)}${'·'.repeat(Math.max(0, 3 - state.lives))}`;
 
     if (hintEl) {
-      if (state.phase === "ready") hintEl.textContent = "Tap / Click / Space to start";
-      else if (state.phase === "running") hintEl.textContent = "Stop in the zone";
-      else if (state.phase === "gameover") hintEl.textContent = "Game over";
+      if (state.phase === 'ready')
+        hintEl.textContent = 'Tap / Click / Space to start';
+      else if (state.phase === 'running')
+        hintEl.textContent = 'Stop in the zone';
+      else if (state.phase === 'gameover') hintEl.textContent = 'Game over';
     }
 
-    if (restartBtn) restartBtn.style.display = state.phase === "gameover" ? "inline-block" : "none";
+    if (restartBtn)
+      restartBtn.style.display =
+        state.phase === 'gameover' ? 'inline-block' : 'none';
   }
 
   function restart() {
     state = resetGame();
     lastT = performance.now();
     updateHUD();
+    canvas.focus();
   }
 
   function onInput() {
-    if (state.phase === "gameover") return;
+    if (state.phase === 'gameover') return;
+
+    const wasRunning = state.phase === 'running';
+    const wasGameOver = state.phase === 'gameover';
+
     handleAttempt(state);
+
+    if (wasRunning) playSfx(SFX.click);
+    if (!wasGameOver && state.phase === 'gameover') playSfx(SFX.win);
+
     updateHUD();
   }
 
-  canvas.style.touchAction = "none";
+  canvas.style.touchAction = 'none';
 
-  canvas.addEventListener("pointerdown", (e) => {
+  canvas.addEventListener('pointerdown', (e) => {
     e.preventDefault();
     canvas.focus();
     onInput();
   });
 
   function isActionKey(e) {
-    return e.code === "Space" || e.code === "Enter" || e.key === " ";
+    return e.code === 'Space' || e.code === 'Enter' || e.key === ' ';
   }
 
-  canvas.addEventListener("keydown", (e) => {
-    if (e.code !== "Space" && e.code !== "Enter") return;
+  canvas.addEventListener('keydown', (e) => {
+    if (e.code !== 'Space' && e.code !== 'Enter') return;
 
     e.preventDefault();
     if (e.repeat) return;
@@ -175,11 +211,11 @@ function attachTimingBarGame(options) {
     onInput();
   });
 
-  if (restartBtn) restartBtn.addEventListener("click", restart);
-  window.addEventListener("resize", resize);
+  if (restartBtn) restartBtn.addEventListener('click', restart);
+  window.addEventListener('resize', resize);
 
   function update(dt) {
-    if (state.phase === "running") {
+    if (state.phase === 'running') {
       state.marker += state.dir * state.speed * dt;
 
       if (state.marker >= 1) {
@@ -213,60 +249,73 @@ function attachTimingBarGame(options) {
 
     cts.clearRect(0, 0, w, h);
 
-    cts.fillStyle = "#0b0d12";
+    cts.fillStyle = '#0b0d12';
     cts.fillRect(0, 0, w, h);
 
-    cts.fillStyle = "#e8eaee";
-    cts.font = "700 28px system-ui, -apple-system, Segoe UI, Roboto, Arial";
-    cts.textAlign = "center";
-    cts.fillText("Timing Bar", w / 2, h * 0.22);
+    cts.fillStyle = '#e8eaee';
+    cts.font = '700 28px system-ui, -apple-system, Segoe UI, Roboto, Arial';
+    cts.textAlign = 'center';
+    cts.fillText('Timing Bar', w / 2, h * 0.22);
 
-    cts.fillStyle = "#b6bcc8";
-    cts.font = "400 16px system-ui, -apple-system, Segoe UI, Roboto, Arial";
-    cts.fillText("Stop the marker inside the zone. Perfect hits score more.", w / 2, h * 0.22 + 28);
+    cts.fillStyle = '#b6bcc8';
+    cts.font = '400 16px system-ui, -apple-system, Segoe UI, Roboto, Arial';
+    cts.fillText(
+      'Stop the marker inside the zone. Perfect hits score more.',
+      w / 2,
+      h * 0.22 + 28,
+    );
 
-    cts.fillStyle = "#1a2130";
+    cts.fillStyle = '#1a2130';
     roundRect(cts, barX, barY, barW, barH, 12);
     cts.fill();
 
-    cts.fillStyle = "#2d8cff";
+    cts.fillStyle = '#2d8cff';
     roundRect(cts, zx, barY, zw, barH, 10);
     cts.fill();
 
     const c = (state.zoneStart + state.zoneEnd) / 2;
     const cx = barX + c * barW;
-    cts.strokeStyle = "rgba(255,255,255,0.15)";
+    cts.strokeStyle = 'rgba(255,255,255,0.15)';
     cts.lineWidth = 2;
     cts.beginPath();
     cts.moveTo(cx, barY - 10);
     cts.lineTo(cx, barY + barH + 10);
     cts.stroke();
 
-    cts.fillStyle = "#ffda6a";
+    cts.fillStyle = '#ffda6a';
     roundRect(cts, markerX - 6, barY - 10, 12, barH + 20, 6);
     cts.fill();
 
     if (state.lastOutcome && state.outcomeTimer > 0) {
       cts.globalAlpha = Math.min(1, state.outcomeTimer / 0.15);
-      cts.font = "800 24px system-ui, -apple-system, Segoe UI, Roboto, Arial";
+      cts.font = '800 24px system-ui, -apple-system, Segoe UI, Roboto, Arial';
       cts.fillStyle =
-        state.lastOutcome === "miss" ? "#ff5a6a" : state.lastOutcome === "perfect" ? "#7dff9a" : "#e8eaee";
-      const msg = state.lastOutcome === "miss" ? "MISS" : state.lastOutcome === "perfect" ? "PERFECT!" : "HIT";
+        state.lastOutcome === 'miss'
+          ? '#ff5a6a'
+          : state.lastOutcome === 'perfect'
+            ? '#7dff9a'
+            : '#e8eaee';
+      const msg =
+        state.lastOutcome === 'miss'
+          ? 'MISS'
+          : state.lastOutcome === 'perfect'
+            ? 'PERFECT!'
+            : 'HIT';
       cts.fillText(msg, w / 2, barY + 80);
       cts.globalAlpha = 1;
     }
 
-    if (state.phase === "gameover") {
-      cts.fillStyle = "rgba(0,0,0,0.55)";
+    if (state.phase === 'gameover') {
+      cts.fillStyle = 'rgba(0,0,0,0.55)';
       cts.fillRect(0, 0, w, h);
 
-      cts.fillStyle = "#e8eaee";
-      cts.font = "900 34px system-ui, -apple-system, Segoe UI, Roboto, Arial";
-      cts.fillText("Game Over", w / 2, h * 0.45);
+      cts.fillStyle = '#e8eaee';
+      cts.font = '900 34px system-ui, -apple-system, Segoe UI, Roboto, Arial';
+      cts.fillText('Game Over', w / 2, h * 0.45);
 
-      cts.font = "600 18px system-ui, -apple-system, Segoe UI, Roboto, Arial";
+      cts.font = '600 18px system-ui, -apple-system, Segoe UI, Roboto, Arial';
       cts.fillText(`Final Score: ${state.score}`, w / 2, h * 0.45 + 34);
-      cts.fillText("Hit Restart to play again", w / 2, h * 0.45 + 62);
+      cts.fillText('Hit Restart to play again', w / 2, h * 0.45 + 62);
     }
   }
 

@@ -2,17 +2,19 @@
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import "../styles/global.css";
+
+const { fullWidth = false } = Astro.props;
 ---
 
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Eddie Saunders</title>
+    <title>Eddies Games</title>
   </head>
   <body>
     <Header />
-    <main class="container">
+    <main class={fullWidth ? "container container--full" : "container"}>
       <slot />
     </main>
     <Footer />

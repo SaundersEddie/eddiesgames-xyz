@@ -1,19 +1,15 @@
 ---
 const { position } = Astro.props;
+
+// Only bottom is supported. Keep placeholders OFF by default.
+const SHOW_AD_PLACEHOLDERS = false;
 ---
 
-{position !== "top" && (
-  <div class={`ad ad-${position}`}>
-    <div class="ad-inner">
-      {position === "top" ? "Top Banner Ad (728x90)" : "Bottom Banner Ad (728x90)"}
-    </div>
+{position === "bottom" && SHOW_AD_PLACEHOLDERS && (
+  <div class="ad ad-bottom">
+    <div class="ad-inner"></div>
   </div>
 )}
-<!-- <div class={`ad ad-${position}`}>
-  <div class="ad-inner">
-    {position === "top" ? "Top Banner Ad (728x90)" : "Bottom Banner Ad (728x90)"}
-  </div>
-</div> -->
 
 <style>
 .ad {
@@ -22,16 +18,13 @@ const { position } = Astro.props;
   padding: 12px 0;
 }
 
+/* Ad container (empty by default) */
 .ad-inner {
   width: 100%;
   max-width: 728px;
   height: 90px;
-  background: rgba(255,255,255,0.05);
+  background: rgba(255, 255, 255, 0.05);
   border: 1px dashed var(--line);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--muted);
-  font-size: 0.9rem;
+  border-radius: 12px;
 }
 </style>

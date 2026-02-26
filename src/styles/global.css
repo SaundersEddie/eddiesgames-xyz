@@ -27,9 +27,16 @@ body {
     sans-serif;
 }
 
+html {
+  background: var(--bg);
+  color: var(--text);
+}
+
 body {
   position: relative;
   overflow-x: hidden;
+  background: transparent;
+  color: inherit;
 }
 
 body::before {
@@ -63,8 +70,25 @@ a {
   padding: 20px;
 }
 
+.container--full {
+  max-width: none;
+  padding: 20px; /* or keep 20px if you want consistent breathing room */
+}
+
 .stage {
   max-width: 1100px;
   margin: 0 auto;
   padding: 20px;
+}
+
+/* Wider stage only for the game player */
+.stage--player {
+  max-width: 1800px; /* 1600–2000, tune it */
+}
+
+/* Ultra-wide monitors */
+@media (min-width: 1800px) {
+  .stage--player {
+    max-width: 2200px;
+  }
 }
