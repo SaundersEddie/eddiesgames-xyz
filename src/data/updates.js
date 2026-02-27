@@ -1,5 +1,13 @@
 export const updates = [
   {
+    date: '2027-02-26',
+    title: 'Front page formatting, and Redcated word list',
+    body: [
+      'Front page CSS has been updated for improved tablet views',
+      'Redacted word list has been cleaned up and excess unrequired words removed',
+    ],
+  },
+  {
     date: '2026-02-26',
     title: 'Sound effects added across games + Timing Bar fixes',
     body: [
