@@ -68,12 +68,95 @@
     toast._t = setTimeout(() => (toastEl.textContent = ''), 1400);
   }
 
+  // ---------- Share / Copy ----------
+  const FRONT_PAGE_URL = 'https://eddiesgames.xyz';
+
+  function buildShareText({ won, guessesUsed, maxTurns }) {
+    const scorePart = won ? `${guessesUsed}/${maxTurns}` : `X/${maxTurns}`;
+    const marker = won ? '🏆' : '💀';
+
+    const header = `${marker} REDACTED • ${scorePart}`;
+
+    const lines = guesses.map(g => {
+      const heat = String(g.heat).padStart(2, ' ');
+      const order = String(g.orderHit).padStart(1, ' ');
+      return `🔥${heat} 🎯${order}`;
+    });
+
+    return `${header}
+
+  ${lines.join('\n')}
+
+  eddiesgames.xyz`;
+  }
+
+  async function copyTextToClipboard(text) {
+    // modern
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text);
+        return true;
+      }
+    } catch (_) {}
+
+    // fallback
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed';
+      ta.style.left = '-9999px';
+      ta.style.top = '-9999px';
+      document.body.appendChild(ta);
+      ta.select();
+      const ok = document.execCommand('copy');
+      document.body.removeChild(ta);
+      return ok;
+    } catch (_) {
+      return false;
+    }
+  }
+
   // ---------- Modal ----------
-  function openModal(title, body) {
+  function openModal(title, body, opts = null) {
     modalTitleEl.textContent = title;
     modalBodyEl.textContent = body;
+
+    // Optional “Copy” button injected at the end of the body
+    if (opts?.shareText) {
+      let wrap = modalBodyEl.querySelector('.shareRow');
+      if (!wrap) {
+        wrap = document.createElement('div');
+        wrap.className = 'shareRow';
+        wrap.innerHTML = `
+          <button type="button" class="btn ghost" id="copyShareBtn">Share Result</button>
+          <span class="shareHint" id="copyShareHint" aria-live="polite"></span>
+        `;
+        modalBodyEl.appendChild(document.createElement('br'));
+        modalBodyEl.appendChild(wrap);
+      }
+
+      const copyBtn = wrap.querySelector('#copyShareBtn');
+      const hintEl = wrap.querySelector('#copyShareHint');
+
+      // Reset hint text each open
+      hintEl.textContent = '';
+
+      copyBtn.onclick = async () => {
+        const ok = await copyTextToClipboard(opts.shareText);
+        if (ok) {
+          hintEl.textContent = 'Copied!';
+          toast('Copied share text.');
+        } else {
+          hintEl.textContent = 'Copy failed';
+          toast('Copy failed. (Browser blocked it.)');
+        }
+      };
+    }
+
     modalEl.hidden = false;
   }
+
   function closeModal() {
     modalEl.hidden = true;
   }
@@ -417,9 +500,18 @@
     if (w === secret) {
       locked = true;
       playSfx(SFX.win);
+
+      const shareText = buildShareText({
+        won: true,
+        guessesUsed: guesses.length,
+        maxTurns: MAX_TURNS,
+        isDaily: seedLabelEl.textContent.includes('(Daily)'),
+      });
+
       openModal(
         'Case Closed.',
         `You nailed it: ${secret.toUpperCase()} • Win in ${guesses.length}/${MAX_TURNS}.`,
+        { shareText }
       );
       return;
     }
@@ -429,9 +521,18 @@
 
     if (turnsLeft <= 0) {
       locked = true;
+
+      const shareText = buildShareText({
+        won: false,
+        guessesUsed: guesses.length,
+        maxTurns: MAX_TURNS,
+        isDaily: seedLabelEl.textContent.includes('(Daily)'),
+      });
+
       openModal(
         'Case Went Cold.',
         `Out of turns. The word was ${secret.toUpperCase()}.`,
+        { shareText }
       );
       return;
     }

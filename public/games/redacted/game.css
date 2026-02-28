@@ -408,6 +408,19 @@ body::before {
   flex-wrap: wrap;
 }
 
+.shareRow {
+  margin-top: 12px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+}
+
+.shareHint {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
 /* -------------------------
    RESPONSIVE BREAKPOINTS
 -------------------------- */

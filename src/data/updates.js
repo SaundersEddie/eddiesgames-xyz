@@ -9,6 +9,7 @@ export const updates = [
       "Bought react game appearance in line with other games",
       "Enlarged play area for react game",
       "Added Top 5 scores on right of game area",
+      "Added in share feature to Redacted, a simple copy paste deal",
     ],
   },
   {
