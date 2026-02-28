@@ -472,3 +472,36 @@ select:focus {
   margin-top: 14px;
   flex-wrap: wrap;
 }
+
+/* ===== HARD OVERRIDE: matched tiles must stay face-up ===== */
+.tile {
+  perspective: 900px;
+  transform-style: preserve-3d;
+}
+
+.tile .card {
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.tile.flipped .card,
+.tile.flipped.matched .card,
+.tile.matched.flipped .card {
+  transform: rotateY(180deg) !important;
+}
+
+/* Make sure faces behave */
+.face {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform-style: preserve-3d;
+}
+
+.face.front {
+  transform: rotateY(180deg);
+}
+
+/* IMPORTANT: don't put a transform on the parent tile (it can flatten 3D in some cases) */
+.tile.matched {
+  transform: none !important;
+}

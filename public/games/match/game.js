@@ -52,29 +52,36 @@ const SFX = {
   win: new Audio('/games/match/sounds/win.mp3'),
 };
 
+SFX.click.volume = 0.18;
+SFX.match.volume = 0.28;
+SFX.win.volume = 0.35;
+
+function playSfx(aud) {
+  aud.currentTime = 0;
+  aud.play().catch(() => {});
+}
+
+/* ===========================
+   HOW TO MODAL (kept)
+=========================== */
 const howToBtn = document.getElementById('howToBtn');
 const howToModal = document.getElementById('howToModal');
 const closeHowToBtn = document.getElementById('closeHowToBtn');
 
 function openHowTo() {
-  if (!howToModal) return;
-  howToModal.classList.remove('hidden');
+  howToModal?.classList.remove('hidden');
 }
-
 function closeHowTo() {
-  if (!howToModal) return;
-  howToModal.classList.add('hidden');
+  howToModal?.classList.add('hidden');
 }
 
 howToBtn?.addEventListener('click', openHowTo);
 closeHowToBtn?.addEventListener('click', closeHowTo);
 
-// Optional: close when clicking outside the card
 howToModal?.addEventListener('click', (e) => {
   if (e.target === howToModal) closeHowTo();
 });
 
-// Optional: close on Escape
 document.addEventListener('keydown', (e) => {
   if (
     e.key === 'Escape' &&
@@ -85,15 +92,34 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-SFX.click.volume = 0.18;
-SFX.match.volume = 0.28;
-SFX.win.volume = 0.35;
-
-function playSfx(aud) {
-  aud.currentTime = 0;
-  aud.play().catch(() => {});
+/* ===========================
+   TIMER SAFETY (the fix)
+=========================== */
+function clearTimers() {
+  if (!state) return;
+  if (!state.timers) state.timers = [];
+  state.timers.forEach((t) => clearTimeout(t));
+  state.timers = [];
 }
 
+function safeSetTimeout(fn, ms) {
+  const id = window.setTimeout(fn, ms);
+  if (state) {
+    if (!state.timers) state.timers = [];
+    state.timers.push(id);
+  }
+  return id;
+}
+
+function cancelRaf() {
+  if (!state) return;
+  if (state.timerRaf) cancelAnimationFrame(state.timerRaf);
+  state.timerRaf = null;
+}
+
+/* ===========================
+   INIT
+=========================== */
 init();
 
 function init() {
@@ -119,21 +145,25 @@ function init() {
 }
 
 function startNewGame() {
+  // hard reset anything async from prior game
+  if (state) {
+    clearTimers();
+    cancelRaf();
+  }
+
   hideModal();
 
   const mode = modeSelect.value;
   const cfg = MODES[mode];
 
-  // Randomly choose a pack each game (even if only one exists)
   const pack = PACKS[Math.floor(Math.random() * PACKS.length)];
 
-  // Build deck: choose N unique faces, duplicate, shuffle
   const chosenFaces = pickUnique(pack.faces, cfg.pairs);
   const deck = shuffle(
     [...chosenFaces, ...chosenFaces].map((src, idx) => ({
       id: `${idx}-${src}`,
       faceSrc: src,
-      pairKey: src, // pairing by face source is fine
+      pairKey: src,
       matched: false,
     })),
   );
@@ -148,9 +178,10 @@ function startNewGame() {
     timerRaf: null,
     moves: 0,
     matchedPairs: 0,
-    flipped: [], // indices currently flipped (max 2)
+    flipped: [],
     lockInput: false,
-    attemptsFlipCount: 0, // counts flips toward moves definition
+    attemptsFlipCount: 0,
+    timers: [], // ✅ store any setTimeout IDs
   };
 
   setupBoardGrid(cfg.rows, cfg.cols);
@@ -159,9 +190,10 @@ function startNewGame() {
 }
 
 function setupBoardGrid(rows, cols) {
-  // IMPORTANT:
-  // Do NOT set gridTemplateColumns to 1fr; that breaks the Redacted-style sizing.
-  // Let CSS control sizing via --cols/--rows + --tile.
+  // keep your existing behavior
+  boardEl.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+
+  // also support CSS custom props if you’re using them
   boardEl.style.setProperty('--rows', String(rows));
   boardEl.style.setProperty('--cols', String(cols));
 }
@@ -199,22 +231,25 @@ function renderBoard() {
     btn.appendChild(cardEl);
     tile.appendChild(btn);
 
-    btn.addEventListener('click', () => onTileClick(idx, tile));
+    btn.addEventListener('click', () => onTileClick(idx));
 
     boardEl.appendChild(tile);
   });
 
-  // HUD reset
   pairsEl.textContent = `0 / ${state.cfg.pairs}`;
   movesEl.textContent = '0';
   timeEl.textContent = '00:00.000';
 }
 
-function onTileClick(idx, tileEl) {
+function getTileEl(idx) {
+  return boardEl.querySelector(`.tile[data-index="${idx}"]`);
+}
+
+function onTileClick(idx) {
   if (!state || state.lockInput) return;
 
   const card = state.deck[idx];
-  if (card.matched) return;
+  if (!card || card.matched) return;
 
   // prevent flipping same tile twice in the same attempt
   if (state.flipped.includes(idx)) return;
@@ -228,10 +263,13 @@ function onTileClick(idx, tileEl) {
     tickTimer();
   }
 
+  const tileEl = getTileEl(idx);
+  if (!tileEl) return;
+
   flipUp(idx, tileEl);
   playSfx(SFX.click);
 
-  // Move counting locked: 1 move = 2 tiles flipped (one attempt)
+  // Move counting: 1 move = 2 flips
   state.attemptsFlipCount++;
   if (state.attemptsFlipCount % 2 === 0) {
     state.moves++;
@@ -246,14 +284,22 @@ function onTileClick(idx, tileEl) {
 }
 
 function resolveAttempt() {
+  if (!state) return;
+
+  // ✅ kill any pending mismatch flips from prior attempt
+  clearTimers();
+
   const [aIdx, bIdx] = state.flipped;
   const a = state.deck[aIdx];
   const b = state.deck[bIdx];
 
-  const aTile = boardEl.querySelector(`.tile[data-index="${aIdx}"]`);
-  const bTile = boardEl.querySelector(`.tile[data-index="${bIdx}"]`);
-
-  if (!aTile || !bTile) return;
+  const aTile = getTileEl(aIdx);
+  const bTile = getTileEl(bIdx);
+  if (!a || !b || !aTile || !bTile) {
+    state.flipped = [];
+    state.lockInput = false;
+    return;
+  }
 
   state.lockInput = true;
 
@@ -262,10 +308,16 @@ function resolveAttempt() {
   if (isMatch) {
     a.matched = true;
     b.matched = true;
+
     playSfx(SFX.match);
 
-    aTile.classList.add('matched');
-    bTile.classList.add('matched');
+    // ✅ force permanent face-up + matched styling
+    aTile.classList.add('flipped', 'matched');
+    bTile.classList.add('flipped', 'matched');
+
+    // optional: prevent interaction
+    aTile.querySelector('button')?.setAttribute('disabled', 'true');
+    bTile.querySelector('button')?.setAttribute('disabled', 'true');
 
     state.matchedPairs++;
     pairsEl.textContent = `${state.matchedPairs} / ${state.cfg.pairs}`;
@@ -276,23 +328,26 @@ function resolveAttempt() {
     if (state.matchedPairs === state.cfg.pairs) {
       finishGame();
     }
-  } else {
-    // mismatch feedback + flip back after ~750ms
-    aTile.classList.add('shake');
-    bTile.classList.add('shake');
-
-    window.setTimeout(() => {
-      aTile.classList.remove('shake');
-      bTile.classList.remove('shake');
-    }, 280);
-
-    window.setTimeout(() => {
-      flipDown(aIdx, aTile);
-      flipDown(bIdx, bTile);
-      state.flipped = [];
-      state.lockInput = false;
-    }, 750);
+    return;
   }
+
+  // mismatch feedback + flip back
+  aTile.classList.add('shake');
+  bTile.classList.add('shake');
+
+  safeSetTimeout(() => {
+    if (!state) return;
+    aTile.classList.remove('shake');
+    bTile.classList.remove('shake');
+  }, 280);
+
+  safeSetTimeout(() => {
+    if (!state) return;
+    flipDown(aIdx, aTile);
+    flipDown(bIdx, bTile);
+    state.flipped = [];
+    state.lockInput = false;
+  }, 750);
 }
 
 function flipUp(idx, tileEl) {
@@ -300,6 +355,12 @@ function flipUp(idx, tileEl) {
 }
 
 function flipDown(idx, tileEl) {
+  if (!state) return;
+
+  // ✅ absolute defense: matched tiles NEVER flip down
+  if (state.deck[idx]?.matched) return;
+  if (tileEl.classList.contains('matched')) return;
+
   tileEl.classList.remove('flipped');
 }
 
@@ -318,11 +379,11 @@ function finishGame() {
   if (!state) return;
 
   state.endAt = performance.now();
-  if (state.timerRaf) cancelAnimationFrame(state.timerRaf);
+  cancelRaf();
+  clearTimers(); // nothing else should fire post-win
 
   const elapsed = state.endAt - state.firstFlipAt;
 
-  // Save score (daily top3 per mode, ET reset by key)
   const result = submitScore({
     mode: state.mode,
     timeMs: Math.floor(elapsed),
@@ -378,8 +439,10 @@ function hideModal() {
   modal.classList.add('hidden');
 }
 
+/* ===========================
+   Utils
+=========================== */
 function shuffle(arr) {
-  // Fisher–Yates
   const a = arr.slice();
   for (let i = a.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -392,7 +455,6 @@ function pickUnique(arr, n) {
   if (n > arr.length) {
     throw new Error(`Not enough faces in pack. Need ${n}, have ${arr.length}.`);
   }
-  // partial shuffle selection
   const copy = arr.slice();
   for (let i = copy.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));

@@ -2,7 +2,10 @@ export const updates = [
   {
     date: '2027-02-28',
     title: 'Match Game Appearance',
-    body: ["Updated Match to bring it's style in line with redacted"],
+    body: [
+      "Updated Match to bring it's style in line with redacted",
+      'Resolved issue with flipping tiles being flipped back over once matched',
+    ],
   },
   {
     date: '2027-02-27',
