@@ -52,6 +52,39 @@ const SFX = {
   win: new Audio('/games/match/sounds/win.mp3'),
 };
 
+const howToBtn = document.getElementById('howToBtn');
+const howToModal = document.getElementById('howToModal');
+const closeHowToBtn = document.getElementById('closeHowToBtn');
+
+function openHowTo() {
+  if (!howToModal) return;
+  howToModal.classList.remove('hidden');
+}
+
+function closeHowTo() {
+  if (!howToModal) return;
+  howToModal.classList.add('hidden');
+}
+
+howToBtn?.addEventListener('click', openHowTo);
+closeHowToBtn?.addEventListener('click', closeHowTo);
+
+// Optional: close when clicking outside the card
+howToModal?.addEventListener('click', (e) => {
+  if (e.target === howToModal) closeHowTo();
+});
+
+// Optional: close on Escape
+document.addEventListener('keydown', (e) => {
+  if (
+    e.key === 'Escape' &&
+    howToModal &&
+    !howToModal.classList.contains('hidden')
+  ) {
+    closeHowTo();
+  }
+});
+
 SFX.click.volume = 0.18;
 SFX.match.volume = 0.28;
 SFX.win.volume = 0.35;
@@ -126,7 +159,11 @@ function startNewGame() {
 }
 
 function setupBoardGrid(rows, cols) {
-  boardEl.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+  // IMPORTANT:
+  // Do NOT set gridTemplateColumns to 1fr; that breaks the Redacted-style sizing.
+  // Let CSS control sizing via --cols/--rows + --tile.
+  boardEl.style.setProperty('--rows', String(rows));
+  boardEl.style.setProperty('--cols', String(cols));
 }
 
 function renderBoard() {
@@ -150,13 +187,15 @@ function renderBoard() {
 
     const front = document.createElement('div');
     front.className = 'face front';
+
     const faceImg = document.createElement('img');
     faceImg.alt = 'Face';
     faceImg.src = card.faceSrc;
-    front.appendChild(faceImg);
 
+    front.appendChild(faceImg);
     cardEl.appendChild(back);
     cardEl.appendChild(front);
+
     btn.appendChild(cardEl);
     tile.appendChild(btn);
 
@@ -165,7 +204,7 @@ function renderBoard() {
     boardEl.appendChild(tile);
   });
 
-  // HUD
+  // HUD reset
   pairsEl.textContent = `0 / ${state.cfg.pairs}`;
   movesEl.textContent = '0';
   timeEl.textContent = '00:00.000';

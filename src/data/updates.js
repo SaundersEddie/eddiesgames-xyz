@@ -1,6 +1,11 @@
 export const updates = [
   {
-    date: '2027-02-26',
+    date: '2027-02-28',
+    title: 'Match Game Appearance',
+    body: ["Updated Match to bring it's style in line with redacted"],
+  },
+  {
+    date: '2027-02-27',
     title: 'Front page formatting, and Redcated word list',
     body: [
       'Front page CSS has been updated for improved tablet views',

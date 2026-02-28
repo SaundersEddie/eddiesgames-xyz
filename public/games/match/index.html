@@ -1,90 +1,144 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Object Match</title>
-  <link rel="stylesheet" href="game.css" />
-</head>
-<body>
-<header class="topbar">
-  <div class="topbar-inner">
-    <div class="brand">Object Match</div>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Object Match</title>
+    <link rel="stylesheet" href="game.css" />
+  </head>
 
-    <nav class="controls">
-      <label class="mode">
-        Mode
-        <select id="modeSelect" aria-label="Mode">
-          <option value="easy">Easy (4×4)</option>
-          <option value="medium">Medium (6x4)</option>
-          <option value="hard">Hard (6×6)</option>
-        </select>
-      </label>
+  <body>
+    <div class="wrap">
+      <header class="topbar">
+        <div class="brand">
+          <div class="title">OBJECT MATCH</div>
+          <div class="sub">Flip tiles • Match pairs • Clear the board</div>
+        </div>
 
-      <button id="restartBtn" class="btn">Restart</button>
-      <button id="bgBtn" class="btn btn-ghost" title="Change background">Background</button>
-    </nav>
+        <div class="hud">
+          <label class="mode">
+            <span class="muted">Mode</span>
+            <select id="modeSelect" aria-label="Mode">
+              <option value="easy">Easy (4×4)</option>
+              <option value="medium">Medium (6×4)</option>
+              <option value="hard">Hard (6×6)</option>
+            </select>
+          </label>
+
+          <button id="howToBtn" class="btn ghost" title="How to play">
+            How to Play
+          </button>
+
+          <button id="restartBtn" class="btn" title="Restart">Restart</button>
+        </div>
+      </header>
+
+      <main class="panel">
+        <!-- LEFT: game -->
+        <section class="gamePanel">
+          <div class="gameHeader">
+            <!-- <div class="label">Stats</div> -->
+            <div class="stats">
+              <div class="pill">
+                <span class="muted">Time</span>
+                <b id="time" class="mono">00:00.000</b>
+              </div>
+              <div class="pill">
+                <span class="muted">Moves</span>
+                <b id="moves" class="mono">0</b>
+              </div>
+              <div class="pill">
+                <span class="muted">Pairs</span>
+                <b id="pairs" class="mono">0 / 0</b>
+              </div>
+            </div>
+          </div>
+
+          <div id="board" class="board" aria-label="Game board"></div>
+        </section>
+
+        <!-- RIGHT: leaderboard -->
+        <aside class="leaderboardPanel">
+          <div class="leaderboardHeader">
+            <div>
+              <div class="label">Daily Top 3</div>
+              <div class="muted small" id="lbDate"></div>
+            </div>
+          </div>
+
+          <div class="lbBlock">
+            <div class="lbTitle">Easy</div>
+            <ol id="lbEasy" class="lbList"></ol>
+          </div>
+
+          <div class="lbBlock">
+            <div class="lbTitle">Medium</div>
+            <ol id="lbMedium" class="lbList"></ol>
+          </div>
+
+          <div class="lbBlock">
+            <div class="lbTitle">Hard</div>
+            <ol id="lbHard" class="lbList"></ol>
+          </div>
+        </aside>
+      </main>
+
+      <footer class="footer muted">Production Build</footer>
     </div>
-  </header>
 
-  <main class="layout">
-    <section class="hud">
-      <div class="stat">
-        <div class="label">Time</div>
-        <div id="time" class="value mono">00:00.000</div>
+    <!-- WIN MODAL -->
+    <div
+      id="modal"
+      class="modal hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modalTitle"
+    >
+      <div class="modalCard">
+        <div id="modalTitle" class="modalTitle">You win</div>
+        <div class="modalBody muted">
+          <p>
+            Time: <span id="finalTime" class="mono"></span> &nbsp;•&nbsp; Moves:
+            <span id="finalMoves" class="mono"></span>
+          </p>
+          <p class="small muted">
+            Daily leaderboard resets at midnight (America/New_York).
+          </p>
+        </div>
+        <div class="modalActions">
+          <button id="playAgainBtn" class="btn ghost">Play again</button>
+          <button id="closeModalBtn" class="btn">Close</button>
+        </div>
       </div>
-      <div class="stat">
-        <div class="label">Moves</div>
-        <div id="moves" class="value mono">0</div>
-      </div>
-      <div class="stat">
-        <div class="label">Pairs</div>
-        <div id="pairs" class="value mono">0 / 0</div>
-      </div>
-    </section>
-
-    <section class="gameWrap">
-      <div id="board" class="board" aria-label="Game board"></div>
-    </section>
-
-    <aside class="leaderboard">
-      <h2>Daily Top 3</h2>
-      <div class="lb-sub" id="lbDate"></div>
-
-      <div class="lb-mode">
-        <div class="lb-title">Easy</div>
-        <ol id="lbEasy" class="lb-list"></ol>
-      </div>
-
-      <div class="lb-mode">
-        <div class="lb-title">Medium</div>
-        <ol id="lbMedium" class="lb-list"></ol>
-      </div>
-
-      <div class="lb-mode">
-        <div class="lb-title">Hard</div>
-        <ol id="lbHard" class="lb-list"></ol>
-      </div>
-    </aside>
-  </main>
-
-  <!-- Win Modal -->
-  <div id="modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-    <div class="modal-card">
-      <h3 id="modalTitle">You win</h3>
-      <p class="modal-line">
-        Time: <span id="finalTime" class="mono"></span>
-        &nbsp;•&nbsp;
-        Moves: <span id="finalMoves" class="mono"></span>
-      </p>
-      <div class="modal-actions">
-        <button id="playAgainBtn" class="btn">Play again</button>
-        <button id="closeModalBtn" class="btn btn-ghost">Close</button>
-      </div>
-      <p class="modal-footnote">Daily leaderboard resets at midnight (America/New_York).</p>
     </div>
-  </div>
 
-  <script type="module" src="game.js"></script>
-</body>
+    <!-- HOW TO MODAL -->
+    <div
+      id="howToModal"
+      class="modal hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="howToTitle"
+    >
+      <div class="modalCard">
+        <div id="howToTitle" class="modalTitle">How to Play</div>
+        <div class="modalBody muted">
+          <p><b>Goal:</b> Match all pairs as fast as possible.</p>
+          <p>
+            Click two tiles to flip them. If they match, they stay revealed.
+          </p>
+          <p>
+            If they don’t match, they flip back. Keep going until all pairs are
+            found.
+          </p>
+          <p class="small muted">Moves count per attempt (two flips).</p>
+        </div>
+        <div class="modalActions">
+          <button id="closeHowToBtn" class="btn">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="game.js"></script>
+  </body>
 </html>
