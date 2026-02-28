@@ -383,3 +383,15 @@ select:focus {
   box-shadow: var(--shadow);
   padding: 16px;
 }
+
+.shareRow {
+  margin-top: 12px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.shareHint {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}

@@ -52,6 +52,50 @@ const SFX = {
   win: new Audio('/games/match/sounds/win.mp3'),
 };
 
+// ---------- Share / Copy ----------
+const FRONT_PAGE_URL = 'https://eddiesgames.xyz';
+
+function formatShareTimeMs(ms) {
+  // you probably get "MM:SS.mmm" from formatTimeMs; we want "MM:SS"
+  const s = formatTimeMs(ms);
+  return s.includes('.') ? s.split('.')[0] : s;
+}
+
+function buildShareText({ rows, cols, timeMs, moves }) {
+  return `🏆 MATCH • ${rows}x${cols}
+⏱ ${formatShareTimeMs(timeMs)}
+🎯 ${moves} moves
+
+${FRONT_PAGE_URL}`;
+}
+
+async function copyTextToClipboard(text) {
+  // modern
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+  } catch (_) {}
+
+  // fallback
+  try {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.position = 'fixed';
+    ta.style.left = '-9999px';
+    ta.style.top = '-9999px';
+    document.body.appendChild(ta);
+    ta.select();
+    const ok = document.execCommand('copy');
+    document.body.removeChild(ta);
+    return ok;
+  } catch (_) {
+    return false;
+  }
+}
+
 SFX.click.volume = 0.18;
 SFX.match.volume = 0.28;
 SFX.win.volume = 0.35;
@@ -396,7 +440,14 @@ function finishGame() {
 
   playSfx(SFX.win);
 
-  showModal();
+   const shareText = buildShareText({
+    rows: state.cfg.rows,
+    cols: state.cfg.cols,
+    timeMs: Math.floor(elapsed),
+    moves: state.moves,
+  });
+
+  showModal(shareText);
 
   renderLeaderboards(result.etDate);
 }
@@ -431,8 +482,39 @@ function updateHud(elapsedMs) {
   pairsEl.textContent = `${state.matchedPairs} / ${state.cfg.pairs}`;
 }
 
-function showModal() {
+function showModal(shareText = '') {
   modal.classList.remove('hidden');
+
+  // Inject Share button once
+  let shareRow = modal.querySelector('.shareRow');
+  if (!shareRow) {
+    // put it under the final stats (inside the modal content)
+    const anchor = finalMovesEl?.parentElement || modal;
+
+    shareRow = document.createElement('div');
+    shareRow.className = 'shareRow';
+    shareRow.innerHTML = `
+      <button type="button" class="btn ghost" id="shareResultBtn">Share Result</button>
+      <span class="shareHint" id="shareHint" aria-live="polite"></span>
+    `;
+
+    anchor.appendChild(shareRow);
+  }
+
+  const btn = shareRow.querySelector('#shareResultBtn');
+  const hint = shareRow.querySelector('#shareHint');
+
+  hint.textContent = '';
+
+  btn.onclick = async () => {
+    if (!shareText) return;
+    const ok = await copyTextToClipboard(shareText);
+    if (ok) {
+      hint.textContent = 'Copied!';
+    } else {
+      hint.textContent = 'Copy failed';
+    }
+  };
 }
 
 function hideModal() {
