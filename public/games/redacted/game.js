@@ -23,27 +23,22 @@
   const howToCloseBtn = document.getElementById('howToCloseBtn');
   const lettersRequiredEl = document.getElementById('lettersRequired');
 
-  // ---------- SFX ----------
   const SFX = {
     key: new Audio('/games/redacted/sounds/keypress.mp3'),
     win: new Audio('/games/redacted/sounds/win.mp3'),
   };
 
-  // keep these subtle
   SFX.key.volume = 0.18;
   SFX.win.volume = 0.35;
 
-  // simple, non-spammy play helper
   function playSfx(aud) {
     try {
       aud.currentTime = 0;
       aud.play();
     } catch (_) {
-      // ignore (autoplay restrictions, etc.)
     }
   }
 
-  // ---------- RNG ----------
   function mulberry32(seed) {
     return function () {
       let t = (seed += 0x6d2b79f5);
@@ -60,7 +55,6 @@
     return parseInt(`${y}${m}${day}`, 10);
   }
 
-  // ---------- Toast ----------
   function toast(msg) {
     toastEl.textContent = msg;
     if (!msg) return;
@@ -68,30 +62,25 @@
     toast._t = setTimeout(() => (toastEl.textContent = ''), 1400);
   }
 
-  // ---------- Share / Copy ----------
   const FRONT_PAGE_URL = 'https://eddiesgames.xyz';
 
-  function buildShareText({ won, guessesUsed, maxTurns }) {
-    const scorePart = won ? `${guessesUsed}/${maxTurns}` : `X/${maxTurns}`;
-    const marker = won ? '🏆' : '💀';
+function buildShareText({ won, guessesUsed, maxTurns }) {
+  const scorePart = won ? `${guessesUsed}/${maxTurns}` : `X/${maxTurns}`;
+  const marker = won ? '🏆' : '💀';
 
-    const header = `${marker} REDACTED • ${scorePart}`;
+  const header = `${marker} REDACTED • ${scorePart}`;
 
-    const lines = guesses.map(g => {
-      const heat = String(g.heat).padStart(2, ' ');
-      const order = String(g.orderHit).padStart(1, ' ');
-      return `🔥${heat} 🎯${order}`;
-    });
+  const lines = guesses.map(g => {
+    const heat = String(g.heat).padStart(2, ' ');
+    const order = String(g.orderHit).padStart(1, ' ');
+    return `🔥${heat} 🎯${order}`;
+  });
 
-    return `${header}
-
-  ${lines.join('\n')}
-
-  eddiesgames.xyz`;
-  }
+  return `${header}
+    ${lines.join('\n')} eddiesgames.xyz`;
+}
 
   async function copyTextToClipboard(text) {
-    // modern
     try {
       if (navigator.clipboard?.writeText) {
         await navigator.clipboard.writeText(text);
@@ -99,7 +88,6 @@
       }
     } catch (_) {}
 
-    // fallback
     try {
       const ta = document.createElement('textarea');
       ta.value = text;
@@ -117,12 +105,10 @@
     }
   }
 
-  // ---------- Modal ----------
   function openModal(title, body, opts = null) {
     modalTitleEl.textContent = title;
     modalBodyEl.textContent = body;
 
-    // Optional “Copy” button injected at the end of the body
     if (opts?.shareText) {
       let wrap = modalBodyEl.querySelector('.shareRow');
       if (!wrap) {
@@ -139,7 +125,6 @@
       const copyBtn = wrap.querySelector('#copyShareBtn');
       const hintEl = wrap.querySelector('#copyShareHint');
 
-      // Reset hint text each open
       hintEl.textContent = '';
 
       copyBtn.onclick = async () => {
@@ -161,7 +146,6 @@
     modalEl.hidden = true;
   }
 
-  // ---------- Word list (loaded) ----------
   let WORDS = [];
   let DICT = new Set();
   let SECRET_CANDIDATES = [];
@@ -227,7 +211,6 @@
     ...'z',
   ];
 
-  // ---------- Helpers ----------
   const SIZE = 5;
   const MAX_TURNS = 8;
 
