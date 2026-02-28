@@ -77,7 +77,10 @@
     });
 
     return `${header}
-      ${lines.join('\n')} eddiesgames.xyz`;
+
+      ${lines.join('\n')} 
+      
+      eddiesgames.xyz`;
   }
 
   async function copyTextToClipboard(text) {
