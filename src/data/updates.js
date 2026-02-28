@@ -5,6 +5,7 @@ export const updates = [
     body: [
       "Updated Match to bring it's style in line with redacted",
       'Resolved issue with flipping tiles being flipped back over once matched',
+      "Formatted 4x4 tiles in Match game",
     ],
   },
   {
