@@ -125,15 +125,23 @@ function roundRect(cts, x, y, w, h, r) {
 
 /**
  * Timing bar game (Reaction)
- * NOTE: We only changed layout sizing to respect container panels,
- * and added UI: How To modal + Top 5 local scores.
  */
 function attachTimingBarGame(options) {
   const { canvas, scoreEl, comboEl, livesEl, hintEl, restartBtn } = options;
   const ctx = canvas.getContext("2d");
+
+  // How-to modal (existing)
   const howtoBtn = document.getElementById("howto");
   const howtoModal = document.getElementById("howtoModal");
   const howtoClose = document.getElementById("howtoClose");
+
+  // Game Over modal (NEW / consistent with other games)
+  const gameOverModal = document.getElementById("gameOverModal");
+  const gameOverScoreText = document.getElementById("gameOverScoreText");
+  const shareResultBtn = document.getElementById("shareResultBtn");
+  const shareHint = document.getElementById("shareHint");
+  const gameOverRestartBtn = document.getElementById("gameOverRestartBtn");
+  const gameOverCloseBtn = document.getElementById("gameOverCloseBtn");
 
   canvas.tabIndex = 0;
   canvas.focus();
@@ -178,7 +186,90 @@ function attachTimingBarGame(options) {
 
   renderScores();
 
-  // ----- How To modal -----
+  // ----- Share (clipboard) -----
+  const FRONT_PAGE_URL = "https://eddiesgames.xyz";
+
+  function buildShareText(finalScore) {
+    return `🏆 REACTION
+⏱ Score: ${finalScore} pts
+
+${FRONT_PAGE_URL}`;
+  }
+
+  async function copyTextToClipboard(text) {
+    // modern
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text);
+        return true;
+      }
+    } catch (_) {}
+
+    // fallback
+    try {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "");
+      ta.style.position = "fixed";
+      ta.style.left = "-9999px";
+      ta.style.top = "-9999px";
+      document.body.appendChild(ta);
+      ta.select();
+      const ok = document.execCommand("copy");
+      document.body.removeChild(ta);
+      return ok;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  // ----- Game Over modal helpers -----
+  function openGameOverModal() {
+    if (!gameOverModal) return;
+    if (gameOverScoreText) gameOverScoreText.textContent = `Final Score: ${state.score} pts`;
+    if (shareHint) shareHint.textContent = "";
+    gameOverModal.classList.remove("hidden");
+  }
+
+  function closeGameOverModal() {
+    if (!gameOverModal) return;
+    gameOverModal.classList.add("hidden");
+    if (shareHint) shareHint.textContent = "";
+  }
+
+  // Wire modal controls once
+  if (shareResultBtn) {
+    shareResultBtn.addEventListener("click", async () => {
+      const ok = await copyTextToClipboard(buildShareText(state.score));
+      if (shareHint) shareHint.textContent = ok ? "Copied!" : "Copy failed";
+      window.setTimeout(() => {
+        if (shareHint) shareHint.textContent = "";
+      }, 1200);
+    });
+  }
+
+  gameOverRestartBtn?.addEventListener("click", () => {
+    closeGameOverModal();
+    restart();
+  });
+
+  gameOverCloseBtn?.addEventListener("click", closeGameOverModal);
+
+  gameOverModal?.addEventListener("click", (e) => {
+    if (e.target === gameOverModal) closeGameOverModal();
+  });
+
+  window.addEventListener("keydown", (e) => {
+    if (
+      e.key === "Escape" &&
+      gameOverModal &&
+      !gameOverModal.classList.contains("hidden")
+    ) {
+      closeGameOverModal();
+    }
+  });
+
+  // ----- How To modal (existing) -----
   function openHowto() {
     howtoModal?.classList.remove("hidden");
   }
@@ -215,10 +306,11 @@ function attachTimingBarGame(options) {
   function updateHUD() {
     if (scoreEl) scoreEl.textContent = `Score ${state.score}`;
     if (comboEl) comboEl.textContent = `Combo ${state.combo} (Best ${state.bestCombo})`;
-    if (livesEl)
+    if (livesEl) {
       livesEl.textContent = `Lives ${"♥".repeat(state.lives)}${"·".repeat(
         Math.max(0, 3 - state.lives)
       )}`;
+    }
 
     if (hintEl) {
       if (state.phase === "ready") hintEl.textContent = "Tap / Click / Space to start";
@@ -226,8 +318,10 @@ function attachTimingBarGame(options) {
       else if (state.phase === "gameover") hintEl.textContent = "Game over";
     }
 
-    if (restartBtn)
+    // Keep existing restart button behavior if it exists in your HUD
+    if (restartBtn) {
       restartBtn.style.display = state.phase === "gameover" ? "inline-block" : "none";
+    }
 
     // Record once on gameover
     if (state.phase === "gameover" && !recorded) {
@@ -240,6 +334,7 @@ function attachTimingBarGame(options) {
     state = resetGame();
     lastT = performance.now();
     recorded = false;
+    closeGameOverModal();
     updateHUD();
     canvas.focus();
   }
@@ -253,7 +348,12 @@ function attachTimingBarGame(options) {
     handleAttempt(state);
 
     if (wasRunning) playSfx(SFX.click);
-    if (!wasGameOver && state.phase === "gameover") playSfx(SFX.win);
+
+    // Transition into gameover => win sfx + open modal
+    if (!wasGameOver && state.phase === "gameover") {
+      playSfx(SFX.win);
+      openGameOverModal();
+    }
 
     updateHUD();
   }
@@ -273,7 +373,9 @@ function attachTimingBarGame(options) {
     onInput();
   });
 
+  // Keep your existing restart button if it exists (optional)
   if (restartBtn) restartBtn.addEventListener("click", restart);
+
   window.addEventListener("resize", resize);
 
   function update(dt) {
@@ -323,7 +425,11 @@ function attachTimingBarGame(options) {
 
     cts.fillStyle = "#b6bcc8";
     cts.font = "400 16px system-ui, -apple-system, Segoe UI, Roboto, Arial";
-    cts.fillText("Stop the marker inside the zone. Perfect hits score more.", w / 2, h * 0.22 + 28);
+    cts.fillText(
+      "Stop the marker inside the zone. Perfect hits score more.",
+      w / 2,
+      h * 0.22 + 28
+    );
 
     cts.fillStyle = "#1a2130";
     roundRect(cts, barX, barY, barW, barH, 12);
@@ -355,11 +461,18 @@ function attachTimingBarGame(options) {
           : state.lastOutcome === "perfect"
           ? "#7dff9a"
           : "#e8eaee";
-      const msg = state.lastOutcome === "miss" ? "MISS" : state.lastOutcome === "perfect" ? "PERFECT!" : "HIT";
+      const msg =
+        state.lastOutcome === "miss"
+          ? "MISS"
+          : state.lastOutcome === "perfect"
+          ? "PERFECT!"
+          : "HIT";
       cts.fillText(msg, w / 2, barY + 80);
       cts.globalAlpha = 1;
     }
 
+    // NOTE: canvas still draws "game over" overlay — not harmful,
+    // but your real modal will be on top. We can remove later if you want.
     if (state.phase === "gameover") {
       cts.fillStyle = "rgba(0,0,0,0.55)";
       cts.fillRect(0, 0, w, h);
@@ -383,7 +496,7 @@ function attachTimingBarGame(options) {
     requestAnimationFrame(loop);
   }
 
-  // First layout pass: after current frame (ensures panels are laid out)
+  // First layout pass
   requestAnimationFrame(() => {
     resize();
     updateHUD();

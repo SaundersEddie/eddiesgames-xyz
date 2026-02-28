@@ -20,24 +20,36 @@
           <span class="pill mono" id="combo">Combo 0 (Best 0)</span>
           <span class="pill mono" id="lives">Lives ♥♥♥</span>
 
-          <button class="btn ghost" id="howto" type="button">How to Play</button>
-          <button class="btn" id="restart" type="button" style="display:none;">
+          <button class="btn ghost" id="howto" type="button">
+            How to Play
+          </button>
+
+          <!-- HUD restart (shown only on gameover by JS) -->
+          <button
+            class="btn"
+            id="restart"
+            type="button"
+            style="display:none;"
+          >
             Restart
           </button>
         </div>
       </div>
 
       <div class="panel">
+        <!-- GAME PANEL -->
         <section class="gamePanel">
           <div class="canvasWrap">
             <canvas id="game" tabindex="0"></canvas>
-            <div class="hint mono" id="hint">Tap / Click / Space to start</div>
+            <div class="hint mono" id="hint">
+              Tap / Click / Space to start
+            </div>
           </div>
         </section>
 
+        <!-- LEADERBOARD -->
         <aside class="leaderboardPanel">
           <div class="lbTitle">Daily Top 5</div>
-          <!-- <div class="lbSub mono">Points only • No names</div> -->
 
           <ol class="scores mono" id="topScores"></ol>
 
@@ -48,12 +60,76 @@
       </div>
     </div>
 
-    <!-- How To modal -->
-    <div class="modal hidden" id="howtoModal" aria-hidden="true">
+    <!-- GAME OVER MODAL -->
+    <div
+      id="gameOverModal"
+      class="modal hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="gameOverTitle"
+    >
+      <div class="modalCard">
+        <div class="modalHeader">
+          <div class="modalTitle" id="gameOverTitle">
+            Game Over
+          </div>
+          <button
+            type="button"
+            class="btn ghost"
+            id="gameOverCloseBtn"
+          >
+            Close
+          </button>
+        </div>
+
+        <div class="modalBody">
+          <p id="gameOverScoreText" class="mono">
+            Final Score: —
+          </p>
+
+          <div class="modalActions">
+            <button
+              type="button"
+              class="btn"
+              id="gameOverRestartBtn"
+            >
+              Restart
+            </button>
+
+            <button
+              type="button"
+              class="btn ghost"
+              id="shareResultBtn"
+            >
+              Share Result
+            </button>
+
+            <span
+              class="shareHint"
+              id="shareHint"
+              aria-live="polite"
+            ></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HOW TO MODAL -->
+    <div
+      class="modal hidden"
+      id="howtoModal"
+      aria-hidden="true"
+    >
       <div class="modalCard">
         <div class="modalHeader">
           <div class="modalTitle">How to Play</div>
-          <button class="btn ghost" id="howtoClose" type="button">Close</button>
+          <button
+            class="btn ghost"
+            id="howtoClose"
+            type="button"
+          >
+            Close
+          </button>
         </div>
 
         <div class="modalBody">

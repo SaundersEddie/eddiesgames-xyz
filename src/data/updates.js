@@ -11,6 +11,7 @@ export const updates = [
       "Added Top 5 scores on right of game area",
       "Added in share feature to Redacted, a simple copy paste deal",
       "Added score share feature to Match",
+      "Added score share feature to React",
     ],
   },
   {

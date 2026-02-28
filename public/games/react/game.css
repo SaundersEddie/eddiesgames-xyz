@@ -217,10 +217,6 @@ body::before {
   text-shadow: 0 10px 18px rgba(0,0,0,0.55);
 }
 
-/* =========================
-   REACTION: LEADERBOARD
-========================= */
-
 .lbTitle {
   font-weight: 900;
   letter-spacing: 0.14em;
@@ -297,3 +293,33 @@ body::before {
 }
 
 .modalBody p { margin: 10px 0; }
+
+#restart + #shareResultBtn {
+  margin-left: 10px; /* nice gap when injected after restart */
+}
+
+#shareResultBtn {
+  white-space: nowrap;
+}
+
+.shareRow {
+  margin-top: 12px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.shareHint { opacity: 0.8; font-size: 0.9rem; }
+
+.modalActions {
+  margin-top: 12px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.shareHint {
+  opacity: 0.8;
+  font-size: 0.9rem;
+}
