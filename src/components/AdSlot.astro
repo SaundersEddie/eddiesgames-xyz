@@ -2,7 +2,7 @@
 const { position } = Astro.props;
 
 // Only bottom is supported. Keep placeholders OFF by default.
-const SHOW_AD_PLACEHOLDERS = false;
+const SHOW_AD_PLACEHOLDERS = true;
 ---
 
 {position === "bottom" && SHOW_AD_PLACEHOLDERS && (

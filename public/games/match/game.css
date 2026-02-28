@@ -185,18 +185,42 @@ select:focus {
   overflow: hidden;
 }
 
-/* Board */
+/* Board (shrink-to-fit: no clipping, no scrolling) */
 .board {
+  /* JS should set these per mode (fallbacks are safe) */
+  --cols: 4;
+  --rows: 4;
+
+  /* tweakable knobs */
+  --gap: 8px;
+  --chrome: 320px; /* topbar + layout padding + hud + breathing room */
+
   width: 100%;
-  max-width: 720px;
-  display: grid;
-  gap: 8px;
+  max-width: 980px;
   margin: 0 auto;
+
+  display: grid;
+  gap: var(--gap);
   user-select: none;
   touch-action: manipulation;
 
-  /* reasonable clamp for non-4K so it doesn't push below the fold */
-  max-height: calc(100vh - 220px);
+  /*
+    Tile size derived from available viewport height.
+    This guarantees the last row is visible.
+  */
+  --availH: calc(100vh - var(--chrome));
+  --tile: calc(
+    (var(--availH) - (var(--gap) * (var(--rows) - 1))) / var(--rows)
+  );
+
+  /* clamp prevents huge tiles on wide screens and tiny tiles on short ones */
+  --tileClamped: clamp(44px, var(--tile), 110px);
+
+  grid-template-columns: repeat(var(--cols), var(--tileClamped));
+  grid-auto-rows: var(--tileClamped);
+
+  justify-content: center;
+  align-content: center;
 }
 
 /* Leaderboard */
@@ -250,7 +274,7 @@ select:focus {
 .tile {
   position: relative;
   width: 100%;
-  aspect-ratio: 1 / 1;
+  height: 100%;        /* IMPORTANT: fill grid cell */
   perspective: 900px;
 }
 
@@ -310,13 +334,17 @@ select:focus {
 /* Front face */
 .face.front {
   transform: rotateY(180deg);
-  background: rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.06);
+  display: grid;
+  place-items: center;
 }
 
 .face.front img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  width: 78%;
+  height: 78%;
+  object-fit: contain;
+  image-rendering: auto;
+  filter: drop-shadow(0 6px 10px rgba(0,0,0,0.35));
 }
 
 .tile.shake .card {
@@ -432,11 +460,34 @@ select:focus {
     align-items: flex-start;
   }
 
-  .board {
-    max-width: 980px; /* try 900–1100 */
-    max-height: none;
-    gap: 10px;
-  }
+.board {
+  --cols: 4;
+  --rows: 4;
+  --gap: 8px;
+
+  /* topbar + padding + hud + spacing; tune if needed */
+  --chrome: 320px;
+
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto;
+
+  display: grid;
+  gap: var(--gap);
+
+  --availH: calc(100vh - var(--chrome));
+  --tile: calc(
+    (var(--availH) - (var(--gap) * (var(--rows) - 1))) / var(--rows)
+  );
+
+  --tileClamped: clamp(44px, var(--tile), 110px);
+
+  grid-template-columns: repeat(var(--cols), var(--tileClamped));
+  grid-template-rows: repeat(var(--rows), var(--tileClamped)); /* IMPORTANT */
+  justify-content: center;
+  align-content: center;
+}
+
 }
 
 @media (min-width: 1800px) {
@@ -446,7 +497,130 @@ select:focus {
   }
 
   .board {
-    max-width: 1100px;
+    max-width: 1200px;
+    --tileClamped: clamp(60px, var(--tile), 160px);
+    --gap: 12px;
+  }
+}
+
+body.ads-on .board {
+  --chrome: 440px;
+}
+
+/* ===== Mobile hardening ===== */
+
+/* iOS / modern browsers: use dynamic viewport height */
+@supports (height: 100dvh) {
+  body {
+    min-height: 100dvh;
+  }
+
+  .board {
+    --availH: calc(100dvh - var(--chrome));
+  }
+}
+
+/* Tablet / small laptops */
+@media (max-width: 980px) {
+  .layout {
+    padding: 12px;
     gap: 12px;
   }
+
+  .hud {
+    padding: 10px;
+  }
+
+  .stat {
+    min-width: 120px;
+  }
+
+  .board {
+    /* stacked layout eats more vertical space */
+    --chrome: 360px;
+  }
+}
+
+/* Phones */
+@media (max-width: 520px) {
+  .topbar {
+    padding: 10px 12px;
+    gap: 10px;
+  }
+
+  .controls {
+    gap: 8px;
+  }
+
+  .btn {
+    padding: 8px 10px;
+    border-radius: 10px;
+  }
+
+  select {
+    padding: 7px 9px;
+  }
+
+  .layout {
+    padding: 10px;
+    gap: 10px;
+  }
+
+  .hud {
+    gap: 8px;
+    padding: 10px;
+  }
+
+  .value {
+    font-size: 18px;
+  }
+
+  .leaderboard {
+    padding: 10px;
+  }
+
+  .leaderboard h2 {
+    font-size: 16px;
+  }
+
+  .lb-sub {
+    font-size: 12px;
+  }
+
+  .lb-list {
+    padding-left: 18px;
+  }
+
+  .board {
+    --gap: 6px;
+    --chrome: 420px; /* phone UI + stacked layout */
+    --tileClamped: clamp(48px, var(--tile), 92px);
+  }
+}
+
+/* Ultra small phones */
+@media (max-width: 360px) {
+  .board {
+    --tileClamped: clamp(44px, var(--tile), 84px);
+  }
+}
+
+.topbar {
+  border-bottom: 1px solid var(--line);
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(6px);
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.topbar-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 14px 16px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
 }
