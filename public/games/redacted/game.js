@@ -64,21 +64,21 @@
 
   const FRONT_PAGE_URL = 'https://eddiesgames.xyz';
 
-function buildShareText({ won, guessesUsed, maxTurns }) {
-  const scorePart = won ? `${guessesUsed}/${maxTurns}` : `X/${maxTurns}`;
-  const marker = won ? '🏆' : '💀';
+  function buildShareText({ won, guessesUsed, maxTurns }) {
+    const scorePart = won ? `${guessesUsed}/${maxTurns}` : `X/${maxTurns}`;
+    const marker = won ? '🏆' : '💀';
 
-  const header = `${marker} REDACTED • ${scorePart}`;
+    const header = `${marker} REDACTED • ${scorePart}`;
 
-  const lines = guesses.map(g => {
-    const heat = String(g.heat).padStart(2, ' ');
-    const order = String(g.orderHit).padStart(1, ' ');
-    return `🔥${heat} 🎯${order}`;
-  });
+    const lines = guesses.map(g => {
+      const heat = String(g.heat).padStart(2, ' ');
+      const order = String(g.orderHit).padStart(1, ' ');
+      return `🔥${heat} 🎯${order}`;
+    });
 
-  return `${header}
-    ${lines.join('\n')} eddiesgames.xyz`;
-}
+    return `${header}
+      ${lines.join('\n')} eddiesgames.xyz`;
+  }
 
   async function copyTextToClipboard(text) {
     try {
