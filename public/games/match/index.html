@@ -8,15 +8,15 @@
   </head>
 
   <body>
-    <div class="wrap">
-      <header class="topbar">
+    <div class="matchWrap">
+      <header class="matchTopbar">
         <div class="brand">
-          <div class="title">OBJECT MATCH</div>
-          <div class="sub">Flip tiles • Match pairs • Clear the board</div>
+          <div class="matchTitle">OBJECT MATCH</div>
+          <div class="matchSub">Flip tiles • Match pairs • Clear the board</div>
         </div>
 
-        <div class="hud">
-          <label class="mode">
+        <div class="matchHud">
+          <label class="matchMode">
             <span class="muted">Mode</span>
             <select id="modeSelect" aria-label="Mode">
               <option value="easy">Easy (4×4)</option>
@@ -33,21 +33,20 @@
         </div>
       </header>
 
-      <main class="panel">
+      <main class="matchPanel">
         <!-- LEFT: game -->
-        <section class="gamePanel">
-          <div class="gameHeader">
-            <!-- <div class="label">Stats</div> -->
-            <div class="stats">
-              <div class="pill">
+        <section class="matchGamePanel">
+          <div class="matchGameHeader">
+            <div class="matchStats">
+              <div class="matchPill">
                 <span class="muted">Time</span>
                 <b id="time" class="mono">00:00.000</b>
               </div>
-              <div class="pill">
+              <div class="matchPill">
                 <span class="muted">Moves</span>
                 <b id="moves" class="mono">0</b>
               </div>
-              <div class="pill">
+              <div class="matchPill">
                 <span class="muted">Pairs</span>
                 <b id="pairs" class="mono">0 / 0</b>
               </div>
@@ -58,7 +57,7 @@
         </section>
 
         <!-- RIGHT: leaderboard -->
-        <aside class="leaderboardPanel">
+        <aside class="matchLeaderboardPanel">
           <div class="leaderboardHeader">
             <div>
               <div class="label">Daily Top 3</div>
