@@ -1,21 +1,26 @@
 export const updates = [
   {
-    date: '2027-02-28',
+    date: '2026-03-01',
+    title: 'Resolved Redacted PAste Score Format',
+    body: ['Redacted score to copy and paster was out of whack, fixed than :D'],
+  },
+  {
+    date: '2026-02-28',
     title: 'Match Game Appearance',
     body: [
       "Updated Match to bring it's style in line with redacted",
       'Resolved issue with flipping tiles being flipped back over once matched',
-      "Formatted 4x4 tiles in Match game",
-      "Bought react game appearance in line with other games",
-      "Enlarged play area for react game",
-      "Added Top 5 scores on right of game area",
-      "Added in share feature to Redacted, a simple copy paste deal",
-      "Added score share feature to Match",
-      "Added score share feature to React",
+      'Formatted 4x4 tiles in Match game',
+      'Bought react game appearance in line with other games',
+      'Enlarged play area for react game',
+      'Added Top 5 scores on right of game area',
+      'Added in share feature to Redacted, a simple copy paste deal',
+      'Added score share feature to Match',
+      'Added score share feature to React',
     ],
   },
   {
-    date: '2027-02-27',
+    date: '2026-02-27',
     title: 'Front page formatting, and Redcated word list',
     body: [
       'Front page CSS has been updated for improved tablet views',

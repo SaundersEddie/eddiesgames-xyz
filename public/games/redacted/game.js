@@ -35,8 +35,7 @@
     try {
       aud.currentTime = 0;
       aud.play();
-    } catch (_) {
-    }
+    } catch (_) {}
   }
 
   function mulberry32(seed) {
@@ -70,17 +69,17 @@
 
     const header = `${marker} REDACTED • ${scorePart}`;
 
-    const lines = guesses.map(g => {
-      const heat = String(g.heat).padStart(2, ' ');
-      const order = String(g.orderHit).padStart(1, ' ');
-      return `🔥${heat} 🎯${order}`;
+    const lines = guesses.map((g) => {
+      const heat = String(g.heat); // no pad
+      const order = String(g.orderHit); // no pad
+      return `🔥 ${heat} 🎯 ${order}`;
     });
 
     return `${header}
 
-      ${lines.join('\n')} 
-      
-      eddiesgames.xyz`;
+${lines.join('\n')}
+
+https://eddiesgames.xyz`;
   }
 
   async function copyTextToClipboard(text) {
@@ -497,7 +496,7 @@
       openModal(
         'Case Closed.',
         `You nailed it: ${secret.toUpperCase()} • Win in ${guesses.length}/${MAX_TURNS}.`,
-        { shareText }
+        { shareText },
       );
       return;
     }
@@ -518,7 +517,7 @@
       openModal(
         'Case Went Cold.',
         `Out of turns. The word was ${secret.toUpperCase()}.`,
-        { shareText }
+        { shareText },
       );
       return;
     }
