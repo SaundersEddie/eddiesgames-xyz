@@ -233,15 +233,27 @@ function startNewGame() {
   updateHud(0);
 }
 
-function setupBoardGrid(rows, cols) {
-  // keep your existing behavior
-  boardEl.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+// function setupBoardGrid(rows, cols) {
+//   // keep your existing behavior
+//   boardEl.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
 
-  // also support CSS custom props if you’re using them
+//   // also support CSS custom props if you’re using them
+//   boardEl.style.setProperty('--rows', String(rows));
+//   boardEl.style.setProperty('--cols', String(cols));
+// }
+
+function setupBoardGrid(rows, cols) {
+  // Let CSS control sizing (tile clamp math).
+  boardEl.style.removeProperty('grid-template-columns');
+
+  // Drive CSS custom props
   boardEl.style.setProperty('--rows', String(rows));
   boardEl.style.setProperty('--cols', String(cols));
-}
 
+  // Also expose attrs so CSS can tune per mode on mobile
+  boardEl.dataset.rows = String(rows);
+  boardEl.dataset.cols = String(cols);
+}
 function renderBoard() {
   boardEl.innerHTML = '';
 

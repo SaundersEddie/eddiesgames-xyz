@@ -70,11 +70,16 @@ body::before {
     monospace;
 }
 
+/* optional helpers used by HTML */
+.muted { color: var(--muted); }
+.small { font-size: 0.92rem; }
+.label { font-weight: 900; letter-spacing: 0.08em; }
+
 /* =========================
-   WRAPPER + TOP BAR
+   MATCH WRAPPER + TOP BAR
 ========================= */
 
-.wrap {
+.matchWrap {
   max-width: 1120px;
   margin: 0 auto;
   padding: 14px 14px 18px;
@@ -84,7 +89,7 @@ body::before {
   gap: 12px;
 }
 
-.topbar {
+.matchTopbar {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -98,19 +103,19 @@ body::before {
   backdrop-filter: blur(10px);
 }
 
-.title {
+.matchTitle {
   font-weight: 900;
   letter-spacing: 0.22em;
   font-size: 1.1rem;
 }
 
-.sub {
+.matchSub {
   color: var(--muted);
   font-size: 0.92rem;
   margin-top: 4px;
 }
 
-.hud {
+.matchHud {
   display: flex;
   gap: 10px;
   align-items: center;
@@ -118,7 +123,7 @@ body::before {
   justify-content: flex-end;
 }
 
-.mode {
+.matchMode {
   display: flex;
   gap: 10px;
   align-items: center;
@@ -163,18 +168,18 @@ select:focus {
 }
 
 /* =========================
-   MAIN PANELS
+   MATCH MAIN PANELS
 ========================= */
 
-.panel {
+.matchPanel {
   flex: 1;
   display: grid;
   grid-template-columns: 1.3fr 0.9fr;
   gap: 12px;
 }
 
-.gamePanel,
-.leaderboardPanel {
+.matchGamePanel,
+.matchLeaderboardPanel {
   border: 1px solid var(--line);
   border-radius: var(--r);
   background: linear-gradient(
@@ -185,33 +190,33 @@ select:focus {
   box-shadow: var(--shadow);
 }
 
-.gamePanel {
+.matchGamePanel {
   padding: 14px;
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-.leaderboardPanel {
+.matchLeaderboardPanel {
   padding: 14px;
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-.gameHeader {
+.matchGameHeader {
   display: flex;
   justify-content: center;
 }
 
-.stats {
+.matchStats {
   display: flex;
   gap: 14px;
   justify-content: center;
   flex-wrap: wrap;
 }
 
-.pill {
+.matchPill {
   padding: 8px 10px;
   border-radius: 999px;
   border: 1px solid var(--line);
@@ -244,7 +249,7 @@ select:focus {
   --tileClamped: clamp(var(--tileMin), var(--tile), var(--tileMax));
 
   grid-template-columns: repeat(var(--cols), var(--tileClamped));
-  grid-auto-rows: var(--tileClamped);
+  grid-auto-rows: var(--tileClamped); /* ✅ squares restored */
 }
 
 /* =========================
@@ -394,4 +399,57 @@ select:focus {
 .shareHint {
   font-size: 0.9rem;
   opacity: 0.8;
+}
+@media (max-width: 600px) {
+
+  /* Per-mode sizing on mobile */
+  .board[data-rows="4"][data-cols="4"] { --tileMin: 56px; --tileMax: 86px; --gap: 7px; }
+  .board[data-rows="4"][data-cols="6"] { --tileMin: 44px; --tileMax: 62px; --gap: 6px; }
+  .board[data-rows="6"][data-cols="6"] { --tileMin: 36px; --tileMax: 52px; --gap: 5px; }
+
+/* MOBILE: force strict vertical flow */
+.matchPanel{
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 16px !important;          /* separation between Gameplay and Leaderboard */
+}
+
+/* Make sure nothing is doing weird positioning */
+.matchGamePanel,
+.matchLeaderboardPanel{
+  position: static !important;
+  transform: none !important;
+}
+
+/* Stop any game visuals from painting outside the gameplay zone */
+.matchGamePanel{
+  overflow: clip;                 /* best */
+  /* overflow: hidden; */         /* fallback if clip unsupported */
+}
+
+/* Leaderboard is a separate section below gameplay */
+.matchLeaderboardPanel{
+  border-top: 1px solid rgba(255,255,255,0.10);
+  padding-top: 14px;
+}
+
+  /* tile sizing overrides by board size */
+  .board[data-rows="4"][data-cols="4"] {
+    --tileMin: 60px;
+    --tileMax: 86px;
+    --gap: 7px;
+  }
+
+  .board[data-rows="4"][data-cols="6"] {
+    --tileMin: 46px;
+    --tileMax: 62px;
+    --gap: 6px;
+  }
+
+  .board[data-rows="6"][data-cols="6"] {
+    --tileMin: 38px;
+    --tileMax: 52px;
+    --gap: 5px;
+  }
+
 }
