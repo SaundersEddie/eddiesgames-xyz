@@ -31,6 +31,7 @@ export const updates = [
       'Front page CSS has been updated for improved tablet views',
       'Redacted word list has been cleaned up and excess unrequired words removed',
       'made some changes to Redacted to make it a little more mobile friendly, but in all fairness mobile is not the best format',
+      "Added in score save to Redacted, added in a restriction of at least 800 pixels for Move",
     ],
   },
   {

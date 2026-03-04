@@ -207,17 +207,19 @@ select:focus {
 .matchGameHeader {
   display: flex;
   justify-content: center;
+  margin-bottom: 8px;
 }
 
 .matchStats {
   display: flex;
-  gap: 14px;
+  gap: 8px;
   justify-content: center;
   flex-wrap: wrap;
 }
 
 .matchPill {
-  padding: 8px 10px;
+  padding: 6px 8px;
+  font-size: 0.85rem;
   border-radius: 999px;
   border: 1px solid var(--line);
   background: rgba(255, 255, 255, 0.04);
@@ -323,7 +325,7 @@ select:focus {
 .face.front {
   transform: rotateY(180deg);
   background: rgba(255, 255, 255, 0.16);
-  border: 1px solid rgba(43, 201, 22, 0.1);
+  border: 1px solid rgba(255,255,255,0.12);
 
   display: flex;
   align-items: center;
@@ -334,19 +336,6 @@ select:focus {
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   overflow: hidden;
-}
-
-.face.front img {
-  width: clamp(46px, 62%, 92%);
-  height: clamp(46px, 62%, 92%);
-  object-fit: contain;
-  image-rendering: auto;
-
-  filter:
-    brightness(1.35)
-    contrast(1.15)
-    saturate(1.1)
-    drop-shadow(0 6px 10px rgba(0, 0, 0, 0.35));
 }
 
 .tile.matched .card {
@@ -408,102 +397,87 @@ select:focus {
   font-size: 0.9rem;
   opacity: 0.8;
 }
-@media (max-width: 600px) {
-
-  /* Per-mode sizing on mobile */
-  .board[data-rows="4"][data-cols="4"] { --tileMin: 56px; --tileMax: 86px; --gap: 7px; }
-  .board[data-rows="4"][data-cols="6"] { --tileMin: 44px; --tileMax: 62px; --gap: 6px; }
-  .board[data-rows="6"][data-cols="6"] { --tileMin: 36px; --tileMax: 52px; --gap: 5px; }
-
-/* MOBILE: force strict vertical flow */
-.matchPanel{
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 16px !important;          /* separation between Gameplay and Leaderboard */
-}
-
-/* Make sure nothing is doing weird positioning */
-.matchGamePanel,
-.matchLeaderboardPanel{
-  position: static !important;
-  transform: none !important;
-}
-
-/* Stop any game visuals from painting outside the gameplay zone */
-.matchGamePanel{
-  overflow: clip;                 /* best */
-}
-
-/* Leaderboard is a separate section below gameplay */
-.matchLeaderboardPanel{
-  border-top: 1px solid rgba(255,255,255,0.10);
-  padding-top: 14px;
-}
-
-  /* tile sizing overrides by board size */
-  .board[data-rows="4"][data-cols="4"] {
-    --tileMin: 60px;
-    --tileMax: 86px;
-    --gap: 7px;
-  }
-
-  .board[data-rows="4"][data-cols="6"] {
-    --tileMin: 46px;
-    --tileMax: 62px;
-    --gap: 6px;
-  }
-
-  .board[data-rows="6"][data-cols="6"] {
-    --tileMin: 38px;
-    --tileMax: 52px;
-    --gap: 5px;
-  }
-}
 
 /* =========================
-   MOBILE FIXES
+   MOBILE
 ========================= */
-@media (max-width: 600px) {
-  .matchWrap{
+@media (max-width: 700px) {
+  .matchWrap {
     padding: 10px 10px 12px;
-    min-height: 100dvh; /* better than 100vh on mobile */
+    min-height: 100dvh;
   }
 
-  .matchTopbar{
+  .board{
+  width: 100%;
+}
+
+
+  .matchGamePanel {
+  overflow: clip;      /* modern browsers */
+  min-height: 0;
+  padding: 12px;
+}
+
+  /* Top bar stacks */
+  .matchTopbar {
     flex-direction: column;
     align-items: stretch;
     gap: 10px;
     padding: 12px;
   }
 
-  .matchHud{
+  /* Controls become a tidy grid */
+  .matchHud {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 8px;
     justify-content: stretch;
   }
 
-  .matchMode{
+  .matchMode {
     grid-column: 1 / -1;
     justify-content: space-between;
   }
 
   #howToBtn,
-  #restartBtn{
+  #restartBtn {
     width: 100%;
     text-align: center;
     padding: 10px 12px;
   }
 
-  /* Your panel stack is correct; keep it */
-  .matchPanel{
+  /* Gameplay then Leaderboard (vertical flow) */
+  .matchPanel {
     display: flex !important;
     flex-direction: column !important;
     gap: 16px !important;
   }
 
-  .matchLeaderboardPanel{
+  /* Give leaderboard separation */
+  .matchLeaderboardPanel {
+    border-top: 1px solid rgba(255, 255, 255, 0.10);
     padding-top: 14px;
+  }
+
+  /* Per-mode board sizing on mobile */
+  .board[data-rows="4"][data-cols="4"] { --tileMin: 48px; --tileMax: 72px; --gap: 6px; }
+  .board[data-rows="4"][data-cols="6"] { --tileMin: 36px; --tileMax: 56px; --gap: 5px; }
+  .board[data-rows="6"][data-cols="6"] { --tileMin: 30px; --tileMax: 44px; --gap: 4px; }
+}
+
+#mobileBlock {
+  display: none;
+  text-align: center;
+  padding: 40px;
+}
+
+@media (max-width: 799px) {
+  #matchApp {
+    display: none;
+  }
+
+  #mobileBlock {
+    display: block;
   }
 }
 
