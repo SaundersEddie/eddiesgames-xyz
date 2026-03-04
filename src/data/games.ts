@@ -12,7 +12,7 @@ export const games = [
     title: 'MATCH',
     subtitle: 'Match the pairs',
     about: 'Pick your level and match the items',
-    path: '/games/match/index.html',
+    path: '/games/match/matchIndex.html',
   },
   {
     slug: 'react',

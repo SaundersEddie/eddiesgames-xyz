@@ -1,7 +1,12 @@
 export const updates = [
   {
+    date: '2026-03-04',
+    title: 'Redacted: Corrected issue with flipped card colour',
+    body: ['Redacted flipped cards were too dark and hard to read, this has been resolved'],
+  },
+  {
     date: '2026-03-01',
-    title: 'Resolved Redacted PAste Score Format',
+    title: 'Resolved Redacted Paste Score Format',
     body: ['Redacted score to copy and paster was out of whack, fixed than :D'],
   },
   {

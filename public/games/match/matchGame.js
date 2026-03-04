@@ -3,7 +3,7 @@ import {
   loadTop3,
   submitScore,
   formatTimeMs,
-} from './leaderboard.js';
+} from './matchLeaderboard.js';
 
 const MODES = {
   easy: { rows: 4, cols: 4, pairs: 8 },
