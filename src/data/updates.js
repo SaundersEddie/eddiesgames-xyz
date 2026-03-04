@@ -1,8 +1,9 @@
 export const updates = [
   {
     date: '2026-03-04',
-    title: 'Redacted: Corrected issue with flipped card colour',
-    body: ['Redacted flipped cards were too dark and hard to read, this has been resolved'],
+    title: 'Match: Corrected issue with flipped card colour',
+    body: ['Match flipped cards were too dark and hard to read, this has been resolved',
+    'Resolved issue with grid not always rendering'],
   },
   {
     date: '2026-03-01',

@@ -4,31 +4,30 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Object Match</title>
-    <!-- <link rel="stylesheet" href="matchGame.css" /> -->
-    <link rel="stylesheet" href="/games/match/matchGame.css?v=999">
+    <link rel="stylesheet" href="matchGame.css" />
   </head>
 
   <body>
     <div id="matchApp">
-    <div class="matchWrap">
-      <header class="matchTopbar">
-        <div class="brand">
-          <div class="matchTitle">OBJECT MATCH</div>
-          <div class="matchSub">Flip tiles • Match pairs • Clear the board</div>
-        </div>
+      <div class="matchWrap">
+        <header class="matchTopbar">
+          <div class="brand">
+            <div class="matchTitle">OBJECT MATCH</div>
+            <div class="matchSub">Flip tiles • Match pairs • Clear the board</div>
+          </div>
 
-        <div class="matchHud">
-          <label class="matchMode">
-            <span class="muted">Mode</span>
-            <select id="modeSelect" aria-label="Mode">
-              <option value="easy">Easy (4×4)</option>
-              <option value="medium">Medium (6×4)</option>
-              <option value="hard">Hard (6×6)</option>
-            </select>
-          </label>
+          <div class="matchHud">
+            <label class="matchMode">
+              <span class="muted">Mode</span>
+              <select id="modeSelect" aria-label="Mode">
+                <option value="easy">Easy (4×4)</option>
+                <option value="medium">Medium (6×4)</option>
+                <option value="hard">Hard (6×6)</option>
+              </select>
+            </label>
 
-          <button id="howToBtn" class="btn ghost" title="How to play">
-            How to Play
+            <button id="howToBtn" class="btn ghost" title="How to play">
+              How to Play
           </button>
 
           <button id="restartBtn" class="btn" title="Restart">Restart</button>
@@ -36,7 +35,6 @@
       </header>
 
       <main class="matchPanel">
-        <!-- LEFT: game -->
         <section class="matchGamePanel">
           <div class="matchGameHeader">
             <div class="matchStats">
@@ -54,11 +52,9 @@
               </div>
             </div>
           </div>
-
           <div id="board" class="board" aria-label="Game board"></div>
         </section>
 
-        <!-- RIGHT: leaderboard -->
         <aside class="matchLeaderboardPanel">
           <div class="leaderboardHeader">
             <div>
@@ -85,66 +81,70 @@
       </main>
 
       <footer class="footer muted">Production Build</footer>
-    </div>
 
-    <!-- WIN MODAL -->
-    <div
-      id="modal"
-      class="modal hidden"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="modalTitle"
-    >
-      <div class="modalCard">
-        <div id="modalTitle" class="modalTitle">You win</div>
-        <div class="modalBody muted">
-          <p>
-            Time: <span id="finalTime" class="mono"></span> &nbsp;•&nbsp; Moves:
-            <span id="finalMoves" class="mono"></span>
-          </p>
-          <p class="small muted">
-            Daily leaderboard resets at midnight (America/New_York).
-          </p>
-        </div>
-        <div class="modalActions">
-          <button id="playAgainBtn" class="btn ghost">Play again</button>
-          <button id="closeModalBtn" class="btn">Close</button>
-        </div>
+    </div> <!-- .matchWrap -->
+  </div> <!-- #matchApp -->
+
+  <!-- WIN MODAL -->
+  <div
+    id="modal"
+    class="modal hidden"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="modalTitle"
+  >
+    <div class="modalCard">
+      <div id="modalTitle" class="modalTitle">You win</div>
+      <div class="modalBody muted">
+        <p>
+          Time: <span id="finalTime" class="mono"></span> &nbsp;•&nbsp; Moves:
+          <span id="finalMoves" class="mono"></span>
+        </p>
+        <p class="small muted">
+          Daily leaderboard resets at midnight (America/New_York).
+        </p>
+      </div>
+      <div class="modalActions">
+        <button id="playAgainBtn" class="btn ghost">Play again</button>
+        <button id="closeModalBtn" class="btn">Close</button>
       </div>
     </div>
+  </div>
 
-    <!-- HOW TO MODAL -->
-    <div
-      id="howToModal"
-      class="modal hidden"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="howToTitle"
-    >
-      <div class="modalCard">
-        <div id="howToTitle" class="modalTitle">How to Play</div>
-        <div class="modalBody muted">
-          <p><b>Goal:</b> Match all pairs as fast as possible.</p>
-          <p>
-            Click two tiles to flip them. If they match, they stay revealed.
-          </p>
-          <p>
-            If they don’t match, they flip back. Keep going until all pairs are
-            found.
-          </p>
-          <p class="small muted">Moves count per attempt (two flips).</p>
-        </div>
-        <div class="modalActions">
-          <button id="closeHowToBtn" class="btn">Close</button>
-        </div>
+  <!-- HOW TO MODAL -->
+  <div
+    id="howToModal"
+    class="modal hidden"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="howToTitle"
+  >
+    <div class="modalCard">
+      <div id="howToTitle" class="modalTitle">How to Play</div>
+      <div class="modalBody muted">
+        <p><b>Goal:</b> Match all pairs as fast as possible.</p>
+        <p>
+          Click two tiles to flip them. If they match, they stay revealed.
+        </p>
+        <p>
+          If they don’t match, they flip back. Keep going until all pairs are
+          found.
+        </p>
+        <p class="small muted">Moves count per attempt (two flips).</p>
+      </div>
+      <div class="modalActions">
+        <button id="closeHowToBtn" class="btn">Close</button>
       </div>
     </div>
-    </div>
- <!-- MOBILE BLOCK MESSAGE -->
+  </div>
+
+  <!-- MOBILE BLOCK MESSAGE -->
   <div id="mobileBlock">
     <h2>Desktop Required</h2>
     <p>This game requires a screen width of at least 801px.</p>
   </div>
+
+  <script type="module" src="matchGame.js"></script>
 
   </body>
 </html>

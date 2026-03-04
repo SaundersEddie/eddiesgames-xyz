@@ -465,20 +465,21 @@ select:focus {
   .board[data-rows="6"][data-cols="6"] { --tileMin: 30px; --tileMax: 44px; --gap: 4px; }
 }
 
-#mobileBlock {
-  display: none;
+/* Fail-safe gate: show message by default */
+#mobileBlock { 
+  display: block;
   text-align: center;
   padding: 40px;
 }
 
-@media (max-width: 799px) {
-  #matchApp {
-    display: none;
-  }
+#matchApp {
+  display: none;
+}
 
-  #mobileBlock {
-    display: block;
-  }
+/* Only show the game at 800px+ */
+@media (min-width: 799px) {
+  #matchApp { display: block; }
+  #mobileBlock { display: none; }
 }
 
 /* Final flipped card look */

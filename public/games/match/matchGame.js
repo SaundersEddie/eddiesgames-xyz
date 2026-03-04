@@ -52,11 +52,9 @@ const SFX = {
   win: new Audio('/games/match/sounds/win.mp3'),
 };
 
-// ---------- Share / Copy ----------
 const FRONT_PAGE_URL = 'https://eddiesgames.xyz';
 
 function formatShareTimeMs(ms) {
-  // you probably get "MM:SS.mmm" from formatTimeMs; we want "MM:SS"
   const s = formatTimeMs(ms);
   return s.includes('.') ? s.split('.')[0] : s;
 }
@@ -105,9 +103,6 @@ function playSfx(aud) {
   aud.play().catch(() => {});
 }
 
-/* ===========================
-   HOW TO MODAL (kept)
-=========================== */
 const howToBtn = document.getElementById('howToBtn');
 const howToModal = document.getElementById('howToModal');
 const closeHowToBtn = document.getElementById('closeHowToBtn');
@@ -136,9 +131,6 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-/* ===========================
-   TIMER SAFETY (the fix)
-=========================== */
 function clearTimers() {
   if (!state) return;
   if (!state.timers) state.timers = [];
@@ -161,9 +153,6 @@ function cancelRaf() {
   state.timerRaf = null;
 }
 
-/* ===========================
-   INIT
-=========================== */
 init();
 
 function init() {
@@ -189,7 +178,6 @@ function init() {
 }
 
 function startNewGame() {
-  // hard reset anything async from prior game
   if (state) {
     clearTimers();
     cancelRaf();
@@ -225,7 +213,7 @@ function startNewGame() {
     flipped: [],
     lockInput: false,
     attemptsFlipCount: 0,
-    timers: [], // ✅ store any setTimeout IDs
+    timers: [], 
   };
 
   setupBoardGrid(cfg.rows, cfg.cols);
@@ -233,24 +221,12 @@ function startNewGame() {
   updateHud(0);
 }
 
-// function setupBoardGrid(rows, cols) {
-//   // keep your existing behavior
-//   boardEl.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
-
-//   // also support CSS custom props if you’re using them
-//   boardEl.style.setProperty('--rows', String(rows));
-//   boardEl.style.setProperty('--cols', String(cols));
-// }
-
 function setupBoardGrid(rows, cols) {
-  // Let CSS control sizing (tile clamp math).
   boardEl.style.removeProperty('grid-template-columns');
 
-  // Drive CSS custom props
   boardEl.style.setProperty('--rows', String(rows));
   boardEl.style.setProperty('--cols', String(cols));
 
-  // Also expose attrs so CSS can tune per mode on mobile
   boardEl.dataset.rows = String(rows);
   boardEl.dataset.cols = String(cols);
 }
@@ -342,7 +318,6 @@ function onTileClick(idx) {
 function resolveAttempt() {
   if (!state) return;
 
-  // ✅ kill any pending mismatch flips from prior attempt
   clearTimers();
 
   const [aIdx, bIdx] = state.flipped;
@@ -367,7 +342,6 @@ function resolveAttempt() {
 
     playSfx(SFX.match);
 
-    // ✅ force permanent face-up + matched styling
     aTile.classList.add('flipped', 'matched');
     bTile.classList.add('flipped', 'matched');
 
@@ -387,7 +361,6 @@ function resolveAttempt() {
     return;
   }
 
-  // mismatch feedback + flip back
   aTile.classList.add('shake');
   bTile.classList.add('shake');
 
@@ -413,7 +386,6 @@ function flipUp(idx, tileEl) {
 function flipDown(idx, tileEl) {
   if (!state) return;
 
-  // ✅ absolute defense: matched tiles NEVER flip down
   if (state.deck[idx]?.matched) return;
   if (tileEl.classList.contains('matched')) return;
 
@@ -533,9 +505,6 @@ function hideModal() {
   modal.classList.add('hidden');
 }
 
-/* ===========================
-   Utils
-=========================== */
 function shuffle(arr) {
   const a = arr.slice();
   for (let i = a.length - 1; i > 0; i--) {
