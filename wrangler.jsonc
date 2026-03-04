@@ -1,17 +1,24 @@
 {
-  "main": "dist/_worker.js/index.js",
-  "name": "eddiesgames-xyz",
-  "compatibility_date": "2025-09-27",
-  "compatibility_flags": [
-    "global_fetch_strictly_public",
-    "nodejs_compat"
-  ],
-  "assets": {
-    "binding": "ASSETS",
-    "directory": "dist"
-  },
-  "observability": {
-    "enabled": true
-  },
-  "$schema": "node_modules/wrangler/config-schema.json"
+	"main": "dist/_worker.js/index.js",
+	"name": "eddiesgames-xyz",
+	"compatibility_date": "2025-09-27",
+	"compatibility_flags": [
+		"global_fetch_strictly_public",
+		"nodejs_compat"
+	],
+	"assets": {
+		"binding": "ASSETS",
+		"directory": "dist"
+	},
+	"observability": {
+		"enabled": true
+	},
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"d1_databases": [
+		{
+			"binding": "eddiesgames_scores",
+			"database_name": "eddiesgames_scores",
+			"database_id": "6649f031-a8ae-4ccf-b156-3969d7d839ff"
+		}
+	]
 }

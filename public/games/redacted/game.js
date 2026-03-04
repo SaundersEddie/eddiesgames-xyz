@@ -468,8 +468,33 @@ https://eddiesgames.xyz`;
     updateTileStates();
   }
 
+  async function loadTop5Redacted() {
+    try {
+      const res = await fetch('/api/leaderboard?game=redacted', {
+        cache: 'no-store',
+      });
+      const scores = await res.json(); // [1,2,3...]
+
+      const list = document.getElementById('top5');
+      if (!list) return;
+
+      const dateEl = document.getElementById('top5Date');
+      if (dateEl) {
+        dateEl.textContent = new Date().toLocaleDateString('en-US', {
+          timeZone: 'America/New_York',
+        });
+      }
+
+      list.innerHTML = scores.length
+        ? scores.map((s) => `<li>${s} guesses</li>`).join('')
+        : `<li class="muted">No scores yet</li>`;
+    } catch (_) {}
+  }
+
   function submitCurrent() {
     if (locked) return;
+
+    const isDaily = seedLabelEl.textContent.includes('(Daily)');
 
     const w = currentWord().toLowerCase();
     if (w.length < 3) return toast('3+ letters.');
@@ -486,11 +511,27 @@ https://eddiesgames.xyz`;
       locked = true;
       playSfx(SFX.win);
 
+      if (isDaily) {
+        fetch('/api/score', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ game: 'redacted', score: guesses.length }),
+        })
+          .then(() => loadTop5Redacted())
+          .catch(() => {});
+      }
+
+      // submitScore({
+      //   game: 'redacted',
+      //   score: guesses.length, // guesses used (lower is better)
+      //   isDaily,
+      // });
+
       const shareText = buildShareText({
         won: true,
         guessesUsed: guesses.length,
         maxTurns: MAX_TURNS,
-        isDaily: seedLabelEl.textContent.includes('(Daily)'),
+        isDaily,
       });
 
       openModal(
@@ -511,7 +552,7 @@ https://eddiesgames.xyz`;
         won: false,
         guessesUsed: guesses.length,
         maxTurns: MAX_TURNS,
-        isDaily: seedLabelEl.textContent.includes('(Daily)'),
+        isDaily,
       });
 
       openModal(
@@ -574,11 +615,51 @@ https://eddiesgames.xyz`;
     }
   });
 
+  // ---------- Leaderboard ----------
+  function nyDayString() {
+    // matches server-side "America/New_York" day bucketing
+    return new Date().toLocaleDateString('en-CA', {
+      timeZone: 'America/New_York',
+    });
+  }
+
+  function submitScore({ game, score, isDaily }) {
+    // Optional: only record daily games so the board isn't polluted by random seeds
+    if (!isDaily) return;
+
+    fetch('/api/score', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ game, score }),
+    }).catch(() => {});
+  }
+
+  async function loadTop5({ game }) {
+    try {
+      const res = await fetch(
+        `/api/leaderboard?game=${encodeURIComponent(game)}`,
+        {
+          cache: 'no-store',
+        },
+      );
+      const scores = await res.json(); // [1,2,3...]
+
+      // Your HTML needs an element with id="top5"
+      const el = document.getElementById('top5');
+      if (!el) return;
+
+      el.innerHTML = scores.length
+        ? scores.map((s) => `<li>${s}</li>`).join('')
+        : `<li>No scores yet</li>`;
+    } catch (_) {}
+  }
+
   // ---------- Boot ----------
   (async () => {
     try {
       await loadWordList();
       startCase({ daily: true });
+      loadTop5Redacted();
     } catch (e) {
       console.error(e);
       toast('Missing words.json — using fallback mini-list.');
@@ -596,6 +677,7 @@ https://eddiesgames.xyz`;
       DICT = new Set(WORDS);
       SECRET_CANDIDATES = WORDS.filter((w) => w.length >= 5 && w.length <= 8);
       startCase({ daily: true });
+      loadTop5Redacted();
     }
   })();
 })();
