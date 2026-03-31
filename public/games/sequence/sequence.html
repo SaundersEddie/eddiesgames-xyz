@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>SEQUENCE</title>
+    <link rel="stylesheet" href="sequence.css?v=3" />
+  </head>
+
+  <body>
+    <div class="wrap">
+      <header class="topbar">
+        <div class="brand">
+          <div class="title">SEQUENCE</div>
+          <div class="sub">Watch the pattern • Repeat the sequence</div>
+        </div>
+
+        <div class="hud">
+          <div class="pill">
+            <span class="muted">Score</span>
+            <b id="score">0</b>
+          </div>
+
+          <div class="pill">
+            <span class="muted">Best</span>
+            <b id="best">0</b>
+          </div>
+
+          <button id="howToBtn" class="btn ghost" type="button">
+            How to Play
+          </button>
+
+          <button id="startBtn" class="btn" type="button">Start</button>
+        </div>
+      </header>
+
+      <main class="panel">
+        <section class="gamePanel">
+          <div class="boardWrap">
+            <div class="padGrid" aria-label="Sequence pad grid">
+              <button class="pad pad-1" data-pad="0" aria-label="Pad 1"></button>
+              <button class="pad pad-2" data-pad="1" aria-label="Pad 2"></button>
+              <button class="pad pad-3" data-pad="2" aria-label="Pad 3"></button>
+              <button class="pad pad-4" data-pad="3" aria-label="Pad 4"></button>
+            </div>
+          </div>
+
+          <div class="status">
+            <span id="statusText">Press Start</span>
+          </div>
+        </section>
+      </main>
+
+      <footer class="footer muted">Production Build</footer>
+    </div>
+
+    <!-- HOW TO MODAL -->
+    <div
+      id="howToModal"
+      class="modal hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="howToTitle"
+    >
+      <div class="modalCard">
+        <div class="modalHeader">
+          <div id="howToTitle" class="modalTitle">HOW TO PLAY</div>
+          <button id="closeHowToBtn" class="btn ghost" type="button">
+            Close
+          </button>
+        </div>
+
+        <div class="modalBody muted">
+          <p>Press <b>Start</b> to begin.</p>
+          <p>Watch the pattern as the pads light up.</p>
+          <p>
+            Repeat the sequence by tapping or clicking the pads in the same
+            order.
+          </p>
+          <p>You get <b>1 point</b> for each fully completed round.</p>
+          <p>One wrong input ends the run.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- GAME OVER MODAL -->
+    <div
+      id="gameOverModal"
+      class="modal hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="gameOverTitle"
+    >
+      <div class="modalCard">
+        <div class="modalHeader">
+          <div id="gameOverTitle" class="modalTitle">GAME OVER</div>
+        </div>
+
+        <div class="modalBody muted">
+          <p>
+            Score: <b id="finalScore">0</b> &nbsp;•&nbsp; Best:
+            <b id="finalBest">0</b>
+          </p>
+        </div>
+
+        <div class="modalActions">
+          <button id="playAgainBtn" class="btn" type="button">Play Again</button>
+          <button id="closeGameOverBtn" class="btn ghost" type="button">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="sequence.js"></script>
+  </body>
+</html>

@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>SUDOKU</title>
+    <link rel="stylesheet" href="game.css?v=1" />
+  </head>
+
+  <body>
+    <div class="wrap">
+      <header class="topbar">
+        <div class="brand">
+          <div class="title">SUDOKU</div>
+          <div class="sub">Daily puzzle • One board for everyone</div>
+        </div>
+
+        <div class="hud">
+          <div class="pill">
+            <span class="muted">Mode</span>
+            <b>Daily</b>
+          </div>
+
+          <div class="pill">
+            <span class="muted">Difficulty</span>
+            <b id="dailyDifficulty">—</b>
+          </div>
+
+          <div class="pill">
+            <span class="muted">Time</span>
+            <b id="time">00:00</b>
+          </div>
+
+          <button class="btn ghost" type="button">How to Play</button>
+          <button class="btn" type="button">New Game</button>
+        </div>
+      </header>
+
+      <main class="panel">
+        <section class="gamePanel">
+         <div class="controlBar">
+            <div class="controlGroup">
+                <span class="label">Play</span>
+                <div class="modeButtons">
+                <button class="btn" type="button">Daily</button>
+                <button class="btn ghost" type="button">Easy</button>
+                <button class="btn ghost" type="button">Medium</button>
+                <button class="btn ghost" type="button">Hard</button>
+                </div>
+            </div>
+
+            <div class="controlGroup">
+                <span class="label">Actions</span>
+                <div class="actions">
+                <button class="btn ghost" type="button">Notes</button>
+                <button class="btn ghost" type="button">Clear Cell</button>
+                <button class="btn" type="button">Check</button>
+                </div>
+            </div>
+            </div>
+              <div class="label">Board</div>
+              <div class="currentState">Daily Challenge</div>
+            </div>
+
+            <div class="actions">
+              <button class="btn ghost" type="button">Notes</button>
+              <button class="btn ghost" type="button">Clear Cell</button>
+              <button class="btn" type="button">Check</button>
+            </div>
+          </div>
+
+          <div class="boardWrap">
+            <div class="board" aria-label="Sudoku board">
+              <!-- Row 1 -->
+              <button class="cell given" type="button">5</button>
+              <button class="cell" type="button"></button>
+              <button class="cell" type="button"></button>
+              <button class="cell" type="button"></button>
+              <button class="cell given" type="button">7</button>
+              <button class="cell" type="button"></button>
+              <button class="cell" type="button"></button>
+              <button class="cell" type="button"></button>
+              <button class="cell" type="button"></button>
+
+              <!-- Row 2 -->
+              <button class="cell given" type="button">6</button>
+              <button class="cell" type="button"></button>
+              <button class="cell" type="button"></button>
+              <button class="cell given" type="button">1</button>
+              <button class="cell given" type="button">9</button>
+              <button class="cell given" type="button">5</button>
+              <button class="cell" type="button"></button>
+              <button class="cell" type="button"></button>
+              <button class="cell" type="button"></button>
+
+              <!-- Row 3 -->
+              <button class="cell" type="button"></button>
+              <button class="cell given" type="button">9</button>
+              <button class="cell given" type="button">8</button>
+              <button class="cell" type="button"></button>
+              <button class="cell" type="button"></button>
+              <button class="cell" type="button"></button>
+              <button class="cell" type="button"></button>
+              <button class="cell given" type="button">6</button>
+              <button class="cell" type="button"></button>
+
+              <!-- Row 4 -->
+              <button class="cell given" type="button">8</button>
+              <button class="cell" type="button"></button>
+              <button class="cell" type="button"></button>
+              <button class="cell" type="button"></button>
+              <button class="cell given" type="button">6</button>
+              <button class="cell" type="button"></button>
+              <button class="cell" type="button"></button>
+              <button class="cell" type="button"></button>
+              <button class="cell given" type="button">3</button>
+
+              <!-- Row 5 -->
+              <button class="cell given" type="button">4</button>
+              <button class="cell" type="button"></button>
+              <button class="cell" type="button"></button>
+              <button class="cell given selected" type="button">8</button>
+              <button class="cell" type="button"></button>
+              <button class="cell given" type="button">3</button>
+              <button class="cell" type="button"></button>
+              <button class="cell" type="button"></button>
+              <button class="cell given" type="button">1</button>
+
+              <!-- Row 6 -->
+              <button class="cell given" type="button">7</button>
+              <button class="cell" type="button"></button>
+              <button class="cell" type="button"></button>
+              <button class="cell" type="button"></button>
+              <button class="cell given" type="button">2</button>
+              <button class="cell" type="button"></button>
+              <button class="cell" type="button"></button>
+              <button class="cell" type="button"></button>
+              <button class="cell given" type="button">6</button>
+
+              <!-- Row 7 -->
+              <button class="cell" type="button"></button>
+              <button class="cell given" type="button">6</button>
+              <button class="cell" type="button"></button>
+              <button class="cell" type="button"></button>
+              <button class="cell" type="button"></button>
+              <button class="cell" type="button"></button>
+              <button class="cell given" type="button">2</button>
+              <button class="cell given" type="button">8</button>
+              <button class="cell" type="button"></button>
+
+              <!-- Row 8 -->
+              <button class="cell" type="button"></button>
+              <button class="cell" type="button"></button>
+              <button class="cell" type="button"></button>
+              <button class="cell given" type="button">4</button>
+              <button class="cell given" type="button">1</button>
+              <button class="cell given" type="button">9</button>
+              <button class="cell" type="button"></button>
+              <button class="cell" type="button"></button>
+              <button class="cell given" type="button">5</button>
+
+              <!-- Row 9 -->
+              <button class="cell" type="button"></button>
+              <button class="cell" type="button"></button>
+              <button class="cell" type="button"></button>
+              <button class="cell" type="button"></button>
+              <button class="cell given" type="button">8</button>
+              <button class="cell" type="button"></button>
+              <button class="cell" type="button"></button>
+              <button class="cell given" type="button">7</button>
+              <button class="cell given" type="button">9</button>
+            </div>
+          </div>
+
+          <div class="keypadWrap">
+            <div class="label">Input</div>
+            <div class="keypad" aria-label="Number pad">
+              <button class="key" type="button">1</button>
+              <button class="key" type="button">2</button>
+              <button class="key" type="button">3</button>
+              <button class="key" type="button">4</button>
+              <button class="key" type="button">5</button>
+              <button class="key" type="button">6</button>
+              <button class="key" type="button">7</button>
+              <button class="key" type="button">8</button>
+              <button class="key" type="button">9</button>
+            </div>
+          </div>
+
+          <!-- <div class="modeWrap">
+            <div class="modeBlock">
+              <div class="label">Daily</div>
+              <div class="modeButtons">
+                <button class="btn" type="button">Play Daily</button>
+              </div>
+            </div>
+
+            <div class="modeBlock">
+              <div class="label">Free Play</div>
+              <div class="modeButtons">
+                <button class="btn ghost" type="button">Easy</button>
+                <button class="btn ghost" type="button">Medium</button>
+                <button class="btn ghost" type="button">Hard</button>
+              </div>
+            </div> -->
+          <!-- </div> -->
+        </section>
+
+        <aside class="sidePanel">
+          <div class="sideHeader">
+            <div>
+              <div class="label">Daily Top 3</div>
+              <div class="muted small">ET date: 2026-03-31</div>
+            </div>
+          </div>
+
+          <div class="leaderboardBlock">
+            <div class="leaderboardTitle">Today’s Board</div>
+            <ol class="leaderboardList">
+              <li><span>01:42</span><span>#1</span></li>
+              <li><span>02:15</span><span>#2</span></li>
+              <li><span>03:04</span><span>#3</span></li>
+            </ol>
+          </div>
+
+          <div class="leaderboardBlock">
+            <div class="leaderboardTitle">Notes</div>
+            <div class="muted small">
+              Daily puzzle will be the same for everyone. Free Play scores are
+              not stored.
+            </div>
+          </div>
+        </aside>
+      </main>
+
+      <footer class="footer muted">Production Build</footer>
+    </div>
+  </body>
+</html>

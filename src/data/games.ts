@@ -16,9 +16,23 @@ export const games = [
   },
   {
     slug: 'react',
-    title: 'React Game',
+    title: 'REACTION',
     subtitle: 'How good are your reactions',
     about: 'Are you as fast as you think?',
     path: '/games/react/index.html',
   },
+  // {
+  //   slug: 'sudoku',
+  //   title: 'Sudoku',
+  //   subtitle: 'Classic Sudoku Game',
+  //   about: 'Fill the grid with numbers 1-9 without repeating in rows, columns, and boxes.',
+  //   path: '/games/sudoku/index.html',
+  // },
+  {
+    slug: 'sequence',
+    title: 'SEQUENCE',
+    subtitle: 'Classic Sequence Game',
+    about: 'Match the played pattern.',
+    path: '/games/sequence/sequence.html',
+  }
 ];
