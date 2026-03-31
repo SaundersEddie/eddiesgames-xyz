@@ -1,4 +1,9 @@
 export const updates = [
+    {
+    date: '2026-03-31',
+    title: 'New Game: Sequence',
+    body: ['A take on the Simon Says game, Sequence is a simple pattern memory game. Watch the pattern, and repeat it back. The pattern gets longer each time, how long can you last?'],
+  },
   {
     date: '2026-03-04',
     title: 'Match: Corrected issue with flipped card colour',

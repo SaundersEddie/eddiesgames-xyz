@@ -1,5 +1,5 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro"; // or your main layout
+import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
 <BaseLayout>
@@ -7,16 +7,15 @@ import BaseLayout from "../layouts/BaseLayout.astro"; // or your main layout
     <h1>About Eddies Games</h1>
 
     <p>
-      Eddies Games is a collection of small, focused browser games built in
-      plain JavaScript and modern web tooling. The goal is simple: build
-      tight, fast games without unnecessary frameworks or bloated engines.
+      eddiesgames.xyz is a collection of lightweight browser games designed to be quick to load, easy to play, and accessible on both desktop and mobile devices.
     </p>
 
     <p>
-      Each game is developed as part of an ongoing experiment in shipping
-      consistently, improving mechanics, and documenting the process publicly.
-      The emphasis is on clean gameplay, incremental improvement, and keeping
-      things lightweight.
+      The goal is simple: create fast, focused games without unnecessary downloads, accounts, or interruptions to gameplay. Each game is built to be picked up quickly and played in short sessions.
+    </p>
+
+    <p>
+      New games are added regularly as part of an ongoing effort to improve mechanics, refine design, and keep the experience clean and responsive.
     </p>
 
     <h2>Tech Stack</h2>
@@ -35,9 +34,15 @@ import BaseLayout from "../layouts/BaseLayout.astro"; // or your main layout
 
     <h2>Contact</h2>
     <p>
+      For questions or feedback:
+      <br />
       <a href="mailto:eddie@eddiesgames.xyz">
         eddie@eddiesgames.xyz
       </a>
+    </p>
+
+    <p class="note">
+      This site may include advertising to help support hosting and ongoing development.
     </p>
   </section>
 </BaseLayout>
@@ -61,5 +66,11 @@ h2 {
 ul {
   padding-left: 20px;
   color: var(--muted);
+}
+
+.note {
+  font-size: 0.85rem;
+  color: var(--muted);
+  opacity: 0.8;
 }
 </style>

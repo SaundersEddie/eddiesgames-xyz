@@ -8,6 +8,10 @@ import { games } from "../data/games";
 <BaseLayout>
   <h1>Pick Your Game</h1>
 
+  <p class="intro">
+    eddiesgames.xyz is a collection of lightweight browser games you can play instantly - no downloads, no accounts, just quick and fun gameplay.
+  </p>
+
   <div class="grid">
     {games.map(game => (
       <GameCard game={game} />
@@ -18,6 +22,13 @@ import { games } from "../data/games";
 </BaseLayout>
 
 <style>
+.intro {
+  margin: 0 0 16px 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
 .grid {
   display: grid;
   gap: 20px;

@@ -13,10 +13,10 @@ const { fullWidth = false } = Astro.props;
     <title>Eddies Games</title>
   </head>
   <body>
-    <Header />
-    <main class={fullWidth ? "container container--full" : "container"}>
-      <slot />
-    </main>
-    <Footer />
+  <Header />
+  <main class={fullWidth ? "container container--full" : "container"}>
+    <slot />
+  </main>
+  <Footer />
   </body>
 </html>
