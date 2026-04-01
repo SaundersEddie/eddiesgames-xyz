@@ -27,8 +27,18 @@ const SFX = {
 
 const FRONT_PAGE_URL = 'https://eddiesgames.xyz';
 
+const SWIPE_THRESHOLD = 24;
+
 let rng = Math.random;
 let state = null;
+
+const swipeState = {
+  active: false,
+  pointerId: null,
+  startX: 0,
+  startY: 0,
+  handled: false,
+};
 
 SFX.move.volume = 0.15;
 SFX.merge.volume = 0.25;
@@ -42,10 +52,17 @@ function init() {
 
   window.addEventListener('keydown', handleKey);
 
+  bindBoardTouchControls();
+
   restartBtn?.addEventListener('click', startNewGame);
+
+  modeSelect?.addEventListener('change', () => {
+    startNewGame();
+  });
 
   howToBtn?.addEventListener('click', openHowTo);
   closeHowToBtn?.addEventListener('click', closeHowTo);
+
   howToModal?.addEventListener('click', (e) => {
     if (e.target === howToModal) closeHowTo();
   });
@@ -56,19 +73,157 @@ function init() {
   });
 
   closeModalBtn?.addEventListener('click', closeGameOver);
+
   modal?.addEventListener('click', (e) => {
     if (e.target === modal) closeGameOver();
-
-    copyBtn?.addEventListener('click', async () => {
-      const text = buildShareText();
-      const ok = await copyTextToClipboard(text);
-
-      copyBtn.textContent = ok ? 'Copied!' : 'Failed';
-      setTimeout(() => {
-        copyBtn.textContent = 'Copy Score';
-      }, 1500);
-    });
   });
+
+  copyBtn?.addEventListener('click', async () => {
+    const text = buildShareText();
+    const ok = await copyTextToClipboard(text);
+
+    copyBtn.textContent = ok ? 'Copied!' : 'Failed';
+    setTimeout(() => {
+      copyBtn.textContent = 'Copy Score';
+    }, 1500);
+  });
+}
+
+function bindBoardTouchControls() {
+  if (!boardEl) return;
+
+  if ('PointerEvent' in window) {
+    boardEl.addEventListener('pointerdown', onBoardPointerDown);
+    boardEl.addEventListener('pointermove', onBoardPointerMove);
+    boardEl.addEventListener('pointerup', onBoardPointerEnd);
+    boardEl.addEventListener('pointercancel', onBoardPointerEnd);
+    boardEl.addEventListener('pointerleave', onBoardPointerEnd);
+    return;
+  }
+
+  // Fallback for older browsers
+  boardEl.addEventListener('touchstart', onBoardTouchStart, { passive: true });
+  boardEl.addEventListener('touchmove', onBoardTouchMove, { passive: false });
+  boardEl.addEventListener('touchend', onBoardTouchEnd, { passive: true });
+  boardEl.addEventListener('touchcancel', onBoardTouchEnd, { passive: true });
+}
+
+function onBoardPointerDown(e) {
+  if (!isTouchLikePointer(e)) return;
+  if (!canAcceptSwipeInput()) return;
+
+  swipeState.active = true;
+  swipeState.pointerId = e.pointerId;
+  swipeState.startX = e.clientX;
+  swipeState.startY = e.clientY;
+  swipeState.handled = false;
+
+  if (typeof boardEl.setPointerCapture === 'function') {
+    try {
+      boardEl.setPointerCapture(e.pointerId);
+    } catch (_) {}
+  }
+}
+
+function onBoardPointerMove(e) {
+  if (!swipeState.active) return;
+  if (swipeState.pointerId !== e.pointerId) return;
+  if (swipeState.handled) return;
+  if (!canAcceptSwipeInput()) return;
+
+  const direction = getSwipeDirection(
+    e.clientX - swipeState.startX,
+    e.clientY - swipeState.startY,
+  );
+
+  if (!direction) return;
+
+  e.preventDefault();
+  swipeState.handled = true;
+  attemptMove(direction);
+}
+
+function onBoardPointerEnd(e) {
+  if (swipeState.pointerId !== e.pointerId) return;
+  resetSwipeState();
+}
+
+function onBoardTouchStart(e) {
+  if (!canAcceptSwipeInput()) return;
+  if (!e.touches.length) return;
+
+  const touch = e.touches[0];
+
+  swipeState.active = true;
+  swipeState.pointerId = 'touch';
+  swipeState.startX = touch.clientX;
+  swipeState.startY = touch.clientY;
+  swipeState.handled = false;
+}
+
+function onBoardTouchMove(e) {
+  if (!swipeState.active) return;
+  if (swipeState.handled) return;
+  if (!canAcceptSwipeInput()) return;
+  if (!e.touches.length) return;
+
+  const touch = e.touches[0];
+  const direction = getSwipeDirection(
+    touch.clientX - swipeState.startX,
+    touch.clientY - swipeState.startY,
+  );
+
+  if (!direction) return;
+
+  e.preventDefault();
+  swipeState.handled = true;
+  attemptMove(direction);
+}
+
+function onBoardTouchEnd() {
+  resetSwipeState();
+}
+
+function resetSwipeState() {
+  swipeState.active = false;
+  swipeState.pointerId = null;
+  swipeState.startX = 0;
+  swipeState.startY = 0;
+  swipeState.handled = false;
+}
+
+function isTouchLikePointer(e) {
+  return e.pointerType === 'touch' || e.pointerType === 'pen';
+}
+
+function canAcceptSwipeInput() {
+  if (!state || state.gameOver) return false;
+  if (isHowToOpen()) return false;
+  if (isGameOverOpen()) return false;
+  return true;
+}
+
+function isHowToOpen() {
+  return howToModal && !howToModal.classList.contains('hidden');
+}
+
+function isGameOverOpen() {
+  return modal && !modal.classList.contains('hidden');
+}
+
+function getSwipeDirection(dx, dy) {
+  const absX = Math.abs(dx);
+  const absY = Math.abs(dy);
+
+  if (absX < SWIPE_THRESHOLD && absY < SWIPE_THRESHOLD) {
+    return null;
+  }
+
+  if (absX > absY) {
+    return dx > 0 ? 'right' : 'left';
+  }
+
+  return dy > 0 ? 'down' : 'up';
 }
 
 function createSeededRng(seed) {
@@ -94,6 +249,7 @@ function getEtDateKey() {
 function startNewGame() {
   closeGameOver();
   closeHowTo();
+  resetSwipeState();
 
   const mode = modeSelect?.value || 'random';
 
@@ -101,7 +257,7 @@ function startNewGame() {
     const key = getEtDateKey().replaceAll('-', '');
     rng = createSeededRng(Number(key));
   } else {
-    rng();
+    rng = Math.random;
   }
 
   state = {
@@ -164,6 +320,8 @@ function handleKey(e) {
 }
 
 function attemptMove(direction) {
+  if (!state || state.gameOver) return;
+
   const before = cloneGrid(state.grid);
   let anyMerged = false;
 
