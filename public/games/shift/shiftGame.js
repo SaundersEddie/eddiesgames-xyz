@@ -93,16 +93,23 @@ function bindBoardTouchControls() {
   if (!boardEl) return;
 
   if ('PointerEvent' in window) {
-    boardEl.addEventListener('pointerdown', onBoardPointerDown);
-    boardEl.addEventListener('pointermove', onBoardPointerMove);
-    boardEl.addEventListener('pointerup', onBoardPointerEnd);
-    boardEl.addEventListener('pointercancel', onBoardPointerEnd);
-    boardEl.addEventListener('pointerleave', onBoardPointerEnd);
+    boardEl.addEventListener('pointerdown', onBoardPointerDown, {
+      passive: false,
+    });
+    boardEl.addEventListener('pointermove', onBoardPointerMove, {
+      passive: false,
+    });
+    boardEl.addEventListener('pointerup', onBoardPointerEnd, {
+      passive: true,
+    });
+    boardEl.addEventListener('pointercancel', onBoardPointerEnd, {
+      passive: true,
+    });
     return;
   }
 
-  // Fallback for older browsers
-  boardEl.addEventListener('touchstart', onBoardTouchStart, { passive: true });
+  // fallback
+  boardEl.addEventListener('touchstart', onBoardTouchStart, { passive: false });
   boardEl.addEventListener('touchmove', onBoardTouchMove, { passive: false });
   boardEl.addEventListener('touchend', onBoardTouchEnd, { passive: true });
   boardEl.addEventListener('touchcancel', onBoardTouchEnd, { passive: true });
@@ -111,6 +118,8 @@ function bindBoardTouchControls() {
 function onBoardPointerDown(e) {
   if (!isTouchLikePointer(e)) return;
   if (!canAcceptSwipeInput()) return;
+
+  e.preventDefault();
 
   swipeState.active = true;
   swipeState.pointerId = e.pointerId;
@@ -151,6 +160,8 @@ function onBoardPointerEnd(e) {
 function onBoardTouchStart(e) {
   if (!canAcceptSwipeInput()) return;
   if (!e.touches.length) return;
+
+  e.preventDefault();
 
   const touch = e.touches[0];
 

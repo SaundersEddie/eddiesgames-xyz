@@ -20,6 +20,7 @@
 html,
 body {
   height: 100%;
+  overscroll-behavior-y: none;
 }
 
 body {
@@ -269,6 +270,11 @@ select:focus {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: var(--gap);
+
+  touch-action: none;
+  overscroll-behavior: contain;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .tile {
@@ -385,6 +391,14 @@ select:focus {
   .shiftGamePanel,
   .shiftLeaderboardPanel {
     padding: 12px;
+  }
+
+  .shiftGamePanel {
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    overscroll-behavior: contain;
   }
 
   .shiftStats {
