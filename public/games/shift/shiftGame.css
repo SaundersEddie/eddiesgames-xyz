@@ -24,6 +24,7 @@ body {
 }
 
 body {
+  overflow-x: hidden;
   margin: 0;
   color: var(--text);
   font-family:
@@ -213,6 +214,7 @@ select:focus {
   flex-direction: column;
   gap: 12px;
   overscroll-behavior: contain;
+  overflow: hidden;
 }
 
 .shiftLeaderboardPanel {
@@ -411,10 +413,10 @@ select:focus {
     justify-content: space-between;
   }
 
-  .board {
-    width: min(94vw, 360px);
-    gap: 8px;
-  }
+.board {
+  width: min(100%, 332px);
+  gap: 8px;
+}
 }
 
 .shiftHint {
