@@ -21,7 +21,7 @@ export const games = [
     subtitle: 'Test your reflexes',
     about:
       'Stop the moving marker inside the target zone. Speed increases and the margin for error shrinks—how long can you survive?',
-    path: '/games/react/index.html',
+    path: '/games/react/reactIndex.html',
   },
   {
     slug: 'sequence',
@@ -29,7 +29,7 @@ export const games = [
     subtitle: 'Repeat the pattern',
     about:
       'Watch the pattern, then repeat it perfectly. Each round gets longer—one mistake and the run is over.',
-    path: '/games/sequence/sequence.html',
+    path: '/games/sequence/sequenceIndex.html',
   },
   {
     slug: 'shift',

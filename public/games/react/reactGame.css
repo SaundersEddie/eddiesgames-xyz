@@ -10,9 +10,14 @@
   --r: 18px;
 }
 
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
-html, body { height: 100%; }
+html,
+body {
+  height: 100%;
+}
 
 body {
   margin: 0;
@@ -61,7 +66,7 @@ body::before {
 .mono {
   font-variant-numeric: tabular-nums;
   font-family:
-    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
     monospace;
 }
 
@@ -131,7 +136,9 @@ body::before {
   box-shadow: 0 0 16px rgba(255, 177, 74, 0.25);
 }
 
-.btn:active { transform: translateY(1px); }
+.btn:active {
+  transform: translateY(1px);
+}
 
 .btn.ghost {
   background: rgba(255, 255, 255, 0.06);
@@ -205,18 +212,6 @@ body::before {
   outline: none;
 }
 
-.hint {
-  position: absolute;
-  left: 16px;
-  bottom: 14px;
-  color: rgba(255,255,255,0.72);
-  font-size: 14px;
-  line-height: 1.2;
-  user-select: none;
-  pointer-events: none;
-  text-shadow: 0 10px 18px rgba(0,0,0,0.55);
-}
-
 .lbTitle {
   font-weight: 900;
   letter-spacing: 0.14em;
@@ -248,7 +243,9 @@ body::before {
    MODAL (MATCH STYLE)
 ========================= */
 
-.modal.hidden { display: none !important; }
+.modal.hidden {
+  display: none !important;
+}
 
 .modal {
   position: fixed;
@@ -292,7 +289,9 @@ body::before {
   line-height: 1.5;
 }
 
-.modalBody p { margin: 10px 0; }
+.modalBody p {
+  margin: 10px 0;
+}
 
 #restart + #shareResultBtn {
   margin-left: 10px; /* nice gap when injected after restart */
@@ -309,7 +308,10 @@ body::before {
   align-items: center;
   flex-wrap: wrap;
 }
-.shareHint { opacity: 0.8; font-size: 0.9rem; }
+.shareHint {
+  opacity: 0.8;
+  font-size: 0.9rem;
+}
 
 .modalActions {
   margin-top: 12px;
@@ -322,4 +324,129 @@ body::before {
 .shareHint {
   opacity: 0.8;
   font-size: 0.9rem;
+}
+
+.footer {
+  text-align: center;
+  font-size: 0.86rem;
+  padding: 6px 0 2px;
+}
+
+.footer a {
+  color: inherit;
+  text-decoration: underline;
+  opacity: 0.9;
+}
+
+.footer a:hover {
+  opacity: 1;
+}
+
+/* =========================
+   MOBILE: STACK LAYOUT + SOFTER BACKGROUND
+========================= */
+@media (max-width: 520px) {
+  body {
+    background:
+      radial-gradient(
+        700px 260px at 50% -12%,
+        rgba(255, 177, 74, 0.06),
+        transparent 58%
+      ),
+      radial-gradient(
+        520px 220px at 80% 10%,
+        rgba(255, 255, 255, 0.03),
+        transparent 60%
+      ),
+      linear-gradient(180deg, #06070a, var(--bg));
+  }
+
+  body::before {
+    opacity: 0.28;
+  }
+
+  .wrap {
+    padding: 10px 10px 12px;
+    gap: 10px;
+  }
+
+  .topbar {
+    padding: 10px 12px;
+    gap: 10px;
+  }
+
+  .title {
+    font-size: 1rem;
+    letter-spacing: 0.18em;
+  }
+
+  .sub {
+    font-size: 0.84rem;
+    margin-top: 2px;
+  }
+
+  .hud {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .hud .pill {
+    grid-column: 1 / -1;
+    width: 100%;
+    justify-content: space-between;
+    padding: 7px 10px;
+  }
+
+  .panel {
+    grid-template-columns: 1fr;
+  }
+
+  .gamePanel,
+  .leaderboardPanel {
+    padding: 12px;
+  }
+
+  .leaderboardPanel {
+    width: 100%;
+    max-width: none;
+  }
+
+  .scores {
+    margin: 8px 0 0;
+    padding-left: 0;
+    list-style: none;
+    line-height: 1.6;
+  }
+
+  .canvasWrap {
+    min-height: 420px;
+  }
+
+  /* .hint {
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    bottom: 14px;
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 14px;
+    line-height: 1.2;
+    user-select: none;
+    pointer-events: none;
+    text-shadow: 0 10px 18px rgba(0, 0, 0, 0.55);
+    white-space: normal; just to be explicit
+  } */
+
+  .hint {
+    position: absolute;
+    left: 16px;
+    bottom: 14px;
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 14px;
+    line-height: 1.2;
+    user-select: none;
+    pointer-events: none;
+    text-shadow: 0 10px 18px rgba(0, 0, 0, 0.55);
+  }
 }
