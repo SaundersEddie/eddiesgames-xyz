@@ -11,13 +11,16 @@
 
   --gap: 10px;
   --boardMax: 560px;
-  --tileMax: 96px;
-  --tileMin: 64px;
 }
 
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
-html, body { height: 100%; }
+html,
+body {
+  height: 100%;
+}
 
 body {
   margin: 0;
@@ -66,14 +69,22 @@ body::before {
 .mono {
   font-variant-numeric: tabular-nums;
   font-family:
-    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
     monospace;
 }
 
-/* optional helpers used by HTML */
-.muted { color: var(--muted); }
-.small { font-size: 0.92rem; }
-.label { font-weight: 900; letter-spacing: 0.08em; }
+.muted {
+  color: var(--muted);
+}
+
+.small {
+  font-size: 0.92rem;
+}
+
+.label {
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
 
 /* =========================
    MATCH WRAPPER + TOP BAR
@@ -94,7 +105,6 @@ body::before {
   justify-content: space-between;
   align-items: flex-start;
   gap: 12px;
-
   padding: 14px 16px;
   background: rgba(10, 12, 15, 0.72);
   border: 1px solid var(--line);
@@ -160,7 +170,9 @@ select:focus {
   box-shadow: 0 0 16px rgba(255, 177, 74, 0.25);
 }
 
-.btn:active { transform: translateY(1px); }
+.btn:active {
+  transform: translateY(1px);
+}
 
 .btn.ghost {
   background: rgba(255, 255, 255, 0.06);
@@ -188,6 +200,7 @@ select:focus {
     rgba(255, 255, 255, 0.03)
   );
   box-shadow: var(--shadow);
+  min-width: 0;
 }
 
 .matchGamePanel {
@@ -195,6 +208,8 @@ select:focus {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .matchLeaderboardPanel {
@@ -202,6 +217,7 @@ select:focus {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  min-width: 0;
 }
 
 .matchGameHeader {
@@ -236,33 +252,23 @@ select:focus {
   --rows: 4;
   --cols: 4;
 
-  width: min(100%, var(--boardMax));
+  width: 100%;
+  max-width: var(--boardMax);
   margin: 0 auto;
 
   display: grid;
+  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
   gap: var(--gap);
-  justify-content: center;
+  justify-content: stretch;
   align-content: start;
-
-  --tile: calc(
-    (min(100%, var(--boardMax)) - (var(--gap) * (var(--cols) - 1)))
-      / var(--cols)
-  );
-  --tileClamped: clamp(var(--tileMin), var(--tile), var(--tileMax));
-
-  grid-template-columns: repeat(var(--cols), var(--tileClamped));
-  grid-auto-rows: var(--tileClamped); /* ✅ squares restored */
 }
-
-/* =========================
-   FLIP SYSTEM (STABLE)
-========================= */
 
 .tile {
   position: relative;
   width: 100%;
-  height: 100%;
+  aspect-ratio: 1 / 1;
   perspective: 900px;
+  min-width: 0;
 }
 
 .tile button {
@@ -274,32 +280,29 @@ select:focus {
   border-radius: 16px;
 }
 
-/* The card */
+/* =========================
+   FLIP SYSTEM (STABLE)
+========================= */
+
 .card {
   position: absolute;
   inset: 0;
   border-radius: 16px;
-
   transform-style: preserve-3d;
   -webkit-transform-style: preserve-3d;
-
   transform: rotateY(0deg);
   transition: transform 220ms ease;
-
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
 }
 
-/* Flip */
 .tile.flipped .card {
   transform: rotateY(180deg);
 }
 
-/* Faces */
 .face {
   position: absolute;
   inset: 0;
   border-radius: 16px;
-
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
 }
@@ -307,12 +310,11 @@ select:focus {
 .face.back {
   display: grid;
   place-items: center;
-
   background:
     radial-gradient(
       140% 140% at 30% 20%,
-      rgba(255,255,255,0.12),
-      rgba(0,0,0,0.18)
+      rgba(255, 255, 255, 0.12),
+      rgba(0, 0, 0, 0.18)
     );
 }
 
@@ -325,43 +327,80 @@ select:focus {
 .face.front {
   transform: rotateY(180deg);
   background: rgba(255, 255, 255, 0.16);
-  border: 1px solid rgba(255,255,255,0.12);
-
+  border: 1px solid rgba(255, 255, 255, 0.12);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 8%;
   border-radius: 16px;
-
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   overflow: hidden;
 }
 
+.face.front img {
+  width: 62%;
+  height: 62%;
+  max-width: 92%;
+  max-height: 92%;
+  object-fit: contain;
+  filter:
+    brightness(1.35)
+    contrast(1.15)
+    saturate(1.05)
+    drop-shadow(0 4px 8px rgba(0, 0, 0, 0.35));
+}
+
 .tile.matched .card {
   box-shadow:
-    0 0 0 2px rgba(255,177,74,0.35),
-    0 0 18px rgba(255,177,74,0.35),
-    0 18px 32px rgba(0,0,0,0.28);
+    0 0 0 2px rgba(255, 177, 74, 0.35),
+    0 0 18px rgba(255, 177, 74, 0.35),
+    0 18px 32px rgba(0, 0, 0, 0.28);
 }
-/* Shake */
+
 .tile.shake .card {
   animation: shake 260ms ease;
 }
 
 @keyframes shake {
-  0%   { transform: rotateY(180deg) translateX(0); }
-  25%  { transform: rotateY(180deg) translateX(-4px); }
-  50%  { transform: rotateY(180deg) translateX(4px); }
-  75%  { transform: rotateY(180deg) translateX(-3px); }
-  100% { transform: rotateY(180deg) translateX(0); }
+  0% {
+    transform: rotateY(180deg) translateX(0);
+  }
+  25% {
+    transform: rotateY(180deg) translateX(-4px);
+  }
+  50% {
+    transform: rotateY(180deg) translateX(4px);
+  }
+  75% {
+    transform: rotateY(180deg) translateX(-3px);
+  }
+  100% {
+    transform: rotateY(180deg) translateX(0);
+  }
+}
+
+/* Final flipped card look */
+.tile.flipped .face.front {
+  background:
+    radial-gradient(
+      120% 120% at 30% 20%,
+      rgba(255, 255, 255, 0.35),
+      rgba(255, 255, 255, 0.12)
+    );
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow:
+    inset 0 1px 6px rgba(255, 255, 255, 0.25),
+    0 6px 18px rgba(0, 0, 0, 0.35);
 }
 
 /* =========================
    MODAL
 ========================= */
 
-.modal.hidden { display: none !important; }
+.modal.hidden {
+  display: none !important;
+}
 
 .modal {
   position: fixed;
@@ -399,26 +438,21 @@ select:focus {
 }
 
 /* =========================
-   MOBILE
+   RESPONSIVE
 ========================= */
+
+@media (max-width: 900px) {
+  .matchPanel {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 700px) {
   .matchWrap {
     padding: 10px 10px 12px;
     min-height: 100dvh;
   }
 
-  .board{
-  width: 100%;
-}
-
-
-  .matchGamePanel {
-  overflow: clip;      /* modern browsers */
-  min-height: 0;
-  padding: 12px;
-}
-
-  /* Top bar stacks */
   .matchTopbar {
     flex-direction: column;
     align-items: stretch;
@@ -426,7 +460,6 @@ select:focus {
     padding: 12px;
   }
 
-  /* Controls become a tidy grid */
   .matchHud {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -446,66 +479,82 @@ select:focus {
     padding: 10px 12px;
   }
 
-  /* Gameplay then Leaderboard (vertical flow) */
   .matchPanel {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 16px !important;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
   }
 
-  /* Give leaderboard separation */
+  .matchGamePanel,
   .matchLeaderboardPanel {
-    border-top: 1px solid rgba(255, 255, 255, 0.10);
+    padding: 12px;
+  }
+
+  .matchLeaderboardPanel {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
     padding-top: 14px;
   }
 
-  /* Per-mode board sizing on mobile */
-  .board[data-rows="4"][data-cols="4"] { --tileMin: 48px; --tileMax: 72px; --gap: 6px; }
-  .board[data-rows="4"][data-cols="6"] { --tileMin: 36px; --tileMax: 56px; --gap: 5px; }
-  .board[data-rows="6"][data-cols="6"] { --tileMin: 30px; --tileMax: 44px; --gap: 4px; }
+  .board[data-rows='4'][data-cols='4'] {
+    --gap: 6px;
+  }
+
+  .board[data-rows='4'][data-cols='6'] {
+    --gap: 5px;
+  }
+
+  .board[data-rows='6'][data-cols='6'] {
+    --gap: 4px;
+  }
 }
 
-/* Fail-safe gate: show message by default */
-#mobileBlock { 
-  display: block;
-  text-align: center;
-  padding: 40px;
-}
+@media (max-width: 420px) {
+  .matchWrap {
+    padding: 8px 8px 10px;
+  }
 
-#matchApp {
-  display: none;
-}
+  .matchTopbar,
+  .matchGamePanel,
+  .matchLeaderboardPanel {
+    padding: 10px;
+  }
 
-/* Only show the game at 800px+ */
-@media (min-width: 799px) {
-  #matchApp { display: block; }
-  #mobileBlock { display: none; }
-}
+  .matchTitle {
+    font-size: 1rem;
+    letter-spacing: 0.16em;
+  }
 
-/* Final flipped card look */
-.tile.flipped .face.front {
-  background:
-    radial-gradient(
-      120% 120% at 30% 20%,
-      rgba(255,255,255,0.35),
-      rgba(255,255,255,0.12)
-    );
+  .matchSub {
+    font-size: 0.82rem;
+  }
 
-  border: 1px solid rgba(255,255,255,0.25);
+  .matchStats {
+    gap: 6px;
+  }
 
-  box-shadow:
-    inset 0 1px 6px rgba(255,255,255,0.25),
-    0 6px 18px rgba(0,0,0,0.35);
-}
+  .matchPill {
+    padding: 6px 8px;
+    font-size: 0.82rem;
+  }
 
-.face.front img {
-  width: clamp(46px, 62%, 92%);
-  height: clamp(46px, 62%, 92%);
-  object-fit: contain;
+  .board[data-rows='4'][data-cols='4'] {
+    --gap: 5px;
+  }
 
-  filter:
-    brightness(1.35)
-    contrast(1.15)
-    saturate(1.05)
-    drop-shadow(0 4px 8px rgba(0,0,0,0.35));
+  .board[data-rows='4'][data-cols='6'] {
+    --gap: 4px;
+  }
+
+  .board[data-rows='6'][data-cols='6'] {
+    --gap: 3px;
+  }
+
+  .face.front {
+    padding: 6%;
+  }
+
+  .face.front img {
+    width: 58%;
+    height: 58%;
+  }
 }
