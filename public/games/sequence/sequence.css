@@ -256,6 +256,16 @@ body::before {
   padding: 6px 0 2px;
 }
 
+.footer a {
+  color: inherit;
+  text-decoration: underline;
+  opacity: 0.9;
+}
+
+.footer a:hover {
+  opacity: 1;
+}
+
 /* MODAL */
 .modal.hidden {
   display: none !important;
