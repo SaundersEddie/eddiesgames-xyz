@@ -17,19 +17,10 @@ export function getEtDateKey(date = new Date()) {
 export async function loadTop3(mode, etDate = getEtDateKey()) {
   try {
     const res = await fetch(
-      `${API_BASE}/leaderboard?mode=${encodeURIComponent(mode)}&etDate=${encodeURIComponent(etDate)}`,
+      `${API_BASE}/leaderboard?mode=${mode}&etDate=${etDate}`
     );
-
-    if (!res.ok) return [];
-
     const data = await res.json();
-    if (!data?.ok || !Array.isArray(data.entries)) return [];
-
-    return data.entries.map((e) => ({
-      timeMs: e.time_ms,
-      moves: e.moves,
-      completedAt: e.completed_at,
-    }));
+    return data.entries || [];
   } catch {
     return [];
   }
@@ -43,26 +34,21 @@ export async function submitScore({
 }) {
   const etDate = getEtDateKey(new Date(completedAt));
 
-  try {
-    const res = await fetch(`${API_BASE}/submit`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        etDate,
-        mode,
-        timeMs,
-        moves,
-        completedAt,
-      }),
-    });
+  await fetch(`${API_BASE}/submit`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      etDate,
+      mode,
+      timeMs,
+      moves,
+      completedAt,
+    }),
+  });
 
-    if (!res.ok) return { etDate, top3: [] };
+  const entries = await loadTop3(mode, etDate);
 
-    const top3 = await loadTop3(mode, etDate);
-    return { etDate, top3 };
-  } catch {
-    return { etDate, top3: [] };
-  }
+  return { etDate, top3: entries };
 }
 
 export function formatTimeMs(ms) {
