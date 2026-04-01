@@ -4,6 +4,7 @@ export const updates = [
     title: 'New Game: Shift',
     body: [
       'Shift some numbers around to make more numbers, how high can you get?',
+      'Updated Copyright to link to eddiesaunders.com',
     ],
   },
   {

@@ -126,3 +126,13 @@ a {
 .intro p {
   margin: 0 0 8px 0;
 }
+
+.footer-left a {
+  color: inherit;
+  text-decoration: underline;
+  opacity: 0.9;
+}
+
+.footer-left a:hover {
+  opacity: 1;
+}
