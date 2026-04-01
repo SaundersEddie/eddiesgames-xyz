@@ -26,13 +26,12 @@ const SFX = {
 };
 
 const FRONT_PAGE_URL = 'https://eddiesgames.xyz';
-
 const SWIPE_THRESHOLD = 24;
 
 let rng = Math.random;
 let state = null;
 
-const swipeState = {
+const swipe = {
   active: false,
   pointerId: null,
   startX: 0,
@@ -51,18 +50,13 @@ function init() {
   startNewGame();
 
   window.addEventListener('keydown', handleKey);
-
-  bindBoardTouchControls();
+  bindTouchControls();
 
   restartBtn?.addEventListener('click', startNewGame);
-
-  modeSelect?.addEventListener('change', () => {
-    startNewGame();
-  });
+  modeSelect?.addEventListener('change', startNewGame);
 
   howToBtn?.addEventListener('click', openHowTo);
   closeHowToBtn?.addEventListener('click', closeHowTo);
-
   howToModal?.addEventListener('click', (e) => {
     if (e.target === howToModal) closeHowTo();
   });
@@ -89,43 +83,33 @@ function init() {
   });
 }
 
-function bindBoardTouchControls() {
+function bindTouchControls() {
   if (!boardEl) return;
 
   if ('PointerEvent' in window) {
-    boardEl.addEventListener('pointerdown', onBoardPointerDown, {
-      passive: false,
-    });
-    boardEl.addEventListener('pointermove', onBoardPointerMove, {
-      passive: false,
-    });
-    boardEl.addEventListener('pointerup', onBoardPointerEnd, {
-      passive: true,
-    });
-    boardEl.addEventListener('pointercancel', onBoardPointerEnd, {
-      passive: true,
-    });
-    return;
+    boardEl.addEventListener('pointerdown', onPointerDown, { passive: false });
+    boardEl.addEventListener('pointermove', onPointerMove, { passive: false });
+    boardEl.addEventListener('pointerup', onPointerEnd, { passive: true });
+    boardEl.addEventListener('pointercancel', onPointerEnd, { passive: true });
+  } else {
+    boardEl.addEventListener('touchstart', onTouchStart, { passive: false });
+    boardEl.addEventListener('touchmove', onTouchMove, { passive: false });
+    boardEl.addEventListener('touchend', onTouchEnd, { passive: true });
+    boardEl.addEventListener('touchcancel', onTouchEnd, { passive: true });
   }
-
-  // fallback
-  boardEl.addEventListener('touchstart', onBoardTouchStart, { passive: false });
-  boardEl.addEventListener('touchmove', onBoardTouchMove, { passive: false });
-  boardEl.addEventListener('touchend', onBoardTouchEnd, { passive: true });
-  boardEl.addEventListener('touchcancel', onBoardTouchEnd, { passive: true });
 }
 
-function onBoardPointerDown(e) {
+function onPointerDown(e) {
   if (!isTouchLikePointer(e)) return;
-  if (!canAcceptSwipeInput()) return;
+  if (!canAcceptTouchInput()) return;
 
   e.preventDefault();
 
-  swipeState.active = true;
-  swipeState.pointerId = e.pointerId;
-  swipeState.startX = e.clientX;
-  swipeState.startY = e.clientY;
-  swipeState.handled = false;
+  swipe.active = true;
+  swipe.pointerId = e.pointerId;
+  swipe.startX = e.clientX;
+  swipe.startY = e.clientY;
+  swipe.handled = false;
 
   if (typeof boardEl.setPointerCapture === 'function') {
     try {
@@ -134,92 +118,81 @@ function onBoardPointerDown(e) {
   }
 }
 
-function onBoardPointerMove(e) {
-  if (!swipeState.active) return;
-  if (swipeState.pointerId !== e.pointerId) return;
-  if (swipeState.handled) return;
-  if (!canAcceptSwipeInput()) return;
+function onPointerMove(e) {
+  if (!swipe.active) return;
+  if (swipe.pointerId !== e.pointerId) return;
+  if (swipe.handled) return;
+  if (!canAcceptTouchInput()) return;
 
-  const direction = getSwipeDirection(
-    e.clientX - swipeState.startX,
-    e.clientY - swipeState.startY,
-  );
+  const dx = e.clientX - swipe.startX;
+  const dy = e.clientY - swipe.startY;
+  const direction = getSwipeDirection(dx, dy);
 
   if (!direction) return;
 
   e.preventDefault();
-  swipeState.handled = true;
+  swipe.handled = true;
   attemptMove(direction);
 }
 
-function onBoardPointerEnd(e) {
-  if (swipeState.pointerId !== e.pointerId) return;
-  resetSwipeState();
+function onPointerEnd(e) {
+  if (swipe.pointerId !== e.pointerId) return;
+  resetSwipe();
 }
 
-function onBoardTouchStart(e) {
-  if (!canAcceptSwipeInput()) return;
+function onTouchStart(e) {
+  if (!canAcceptTouchInput()) return;
   if (!e.touches.length) return;
 
   e.preventDefault();
 
   const touch = e.touches[0];
-
-  swipeState.active = true;
-  swipeState.pointerId = 'touch';
-  swipeState.startX = touch.clientX;
-  swipeState.startY = touch.clientY;
-  swipeState.handled = false;
+  swipe.active = true;
+  swipe.pointerId = 'touch';
+  swipe.startX = touch.clientX;
+  swipe.startY = touch.clientY;
+  swipe.handled = false;
 }
 
-function onBoardTouchMove(e) {
-  if (!swipeState.active) return;
-  if (swipeState.handled) return;
-  if (!canAcceptSwipeInput()) return;
+function onTouchMove(e) {
+  if (!swipe.active) return;
+  if (swipe.handled) return;
+  if (!canAcceptTouchInput()) return;
   if (!e.touches.length) return;
 
   const touch = e.touches[0];
-  const direction = getSwipeDirection(
-    touch.clientX - swipeState.startX,
-    touch.clientY - swipeState.startY,
-  );
+  const dx = touch.clientX - swipe.startX;
+  const dy = touch.clientY - swipe.startY;
+  const direction = getSwipeDirection(dx, dy);
 
   if (!direction) return;
 
   e.preventDefault();
-  swipeState.handled = true;
+  swipe.handled = true;
   attemptMove(direction);
 }
 
-function onBoardTouchEnd() {
-  resetSwipeState();
+function onTouchEnd() {
+  resetSwipe();
 }
 
-function resetSwipeState() {
-  swipeState.active = false;
-  swipeState.pointerId = null;
-  swipeState.startX = 0;
-  swipeState.startY = 0;
-  swipeState.handled = false;
+function resetSwipe() {
+  swipe.active = false;
+  swipe.pointerId = null;
+  swipe.startX = 0;
+  swipe.startY = 0;
+  swipe.handled = false;
 }
 
 function isTouchLikePointer(e) {
   return e.pointerType === 'touch' || e.pointerType === 'pen';
 }
 
-function canAcceptSwipeInput() {
+function canAcceptTouchInput() {
   if (!state || state.gameOver) return false;
-  if (isHowToOpen()) return false;
-  if (isGameOverOpen()) return false;
+  if (!howToModal.classList.contains('hidden')) return false;
+  if (!modal.classList.contains('hidden')) return false;
   return true;
-}
-
-function isHowToOpen() {
-  return howToModal && !howToModal.classList.contains('hidden');
-}
-
-function isGameOverOpen() {
-  return modal && !modal.classList.contains('hidden');
 }
 
 function getSwipeDirection(dx, dy) {
@@ -260,7 +233,7 @@ function getEtDateKey() {
 function startNewGame() {
   closeGameOver();
   closeHowTo();
-  resetSwipeState();
+  resetSwipe();
 
   const mode = modeSelect?.value || 'random';
 
@@ -492,7 +465,6 @@ function isGameOver() {
       const value = state.grid[r][c];
 
       if (value === 0) return false;
-
       if (c < 3 && value === state.grid[r][c + 1]) return false;
       if (r < 3 && value === state.grid[r + 1][c]) return false;
     }
