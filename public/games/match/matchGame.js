@@ -174,7 +174,7 @@ function init() {
   closeModalBtn.addEventListener('click', hideModal);
 
   startNewGame();
-  renderLeaderboards();
+  void renderLeaderboards();
 }
 
 function startNewGame() {
@@ -403,7 +403,7 @@ function tickTimer() {
   state.timerRaf = requestAnimationFrame(tickTimer);
 }
 
-function finishGame() {
+async function finishGame() {
   if (!state) return;
 
   state.endAt = performance.now();
@@ -412,7 +412,7 @@ function finishGame() {
 
   const elapsed = state.endAt - state.firstFlipAt;
 
-  const result = submitScore({
+  const result = await submitScore({
     mode: state.mode,
     timeMs: Math.floor(elapsed),
     moves: state.moves,
@@ -433,15 +433,21 @@ function finishGame() {
 
   showModal(shareText);
 
-  renderLeaderboards(result.etDate);
+  await renderLeaderboards(result.etDate);
 }
 
-function renderLeaderboards(etDate = getEtDateKey()) {
+async function renderLeaderboards(etDate = getEtDateKey()) {
   lbDateEl.textContent = `ET Date: ${etDate}`;
 
-  renderModeList(lbEasyEl, loadTop3('easy', etDate));
-  renderModeList(lbMediumEl, loadTop3('medium', etDate));
-  renderModeList(lbHardEl, loadTop3('hard', etDate));
+  const [easy, medium, hard] = await Promise.all([
+    loadTop3('easy', etDate),
+    loadTop3('medium', etDate),
+    loadTop3('hard', etDate),
+  ]);
+
+  renderModeList(lbEasyEl, easy);
+  renderModeList(lbMediumEl, medium);
+  renderModeList(lbHardEl, hard);
 }
 
 function renderModeList(ol, entries) {
