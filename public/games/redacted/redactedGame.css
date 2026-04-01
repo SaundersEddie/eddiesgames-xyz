@@ -430,8 +430,20 @@ body::before {
   .panel {
     grid-template-columns: 1fr;
   }
+
   .grid {
     gap: 9px;
+  }
+
+  .intelPanel {
+    display: block;
+  }
+
+  .history {
+    flex: 0 0 auto;
+    min-height: 120px;
+    max-height: none;
+    overflow: visible;
   }
 }
 
@@ -594,4 +606,21 @@ body::before {
 
 .grid.pulse {
   animation: gridPulse 0.2s ease;
+}
+
+@media (max-width: 520px) {
+  body {
+    background:
+      radial-gradient(
+        700px 260px at 50% -12%,
+        rgba(255, 177, 74, 0.06),
+        transparent 58%
+      ),
+      radial-gradient(
+        520px 220px at 80% 10%,
+        rgba(255, 255, 255, 0.03),
+        transparent 60%
+      ),
+      linear-gradient(180deg, #06070a, var(--bg));
+  }
 }

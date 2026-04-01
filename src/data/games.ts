@@ -5,7 +5,7 @@ export const games = [
     subtitle: 'Uncover the hidden word',
     about:
       'A logic-driven word hunt on a 5×5 grid. Trace real words, gather intel, and uncover the hidden case in eight turns or fewer.',
-    path: '/games/redacted/index.html',
+    path: '/games/redacted/redactedIndex.html',
   },
   {
     slug: 'match',

@@ -5,6 +5,7 @@ export const updates = [
     body: [
       'Shift some numbers around to make more numbers, how high can you get?',
       'Updated Copyright to link to eddiesaunders.com',
+      'Updated Redacted to correct some formatting issues on mobile devices',
     ],
   },
   {
