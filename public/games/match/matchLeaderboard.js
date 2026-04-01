@@ -14,13 +14,33 @@ export function getEtDateKey(date = new Date()) {
   return fmt.format(date);
 }
 
+// export async function loadTop3(mode, etDate = getEtDateKey()) {
+//   try {
+//     const res = await fetch(
+//       `${API_BASE}/leaderboard?mode=${mode}&etDate=${etDate}`
+//     );
+//     const data = await res.json();
+//     return data.entries || [];
+//   } catch {
+//     return [];
+//   }
+// }
 export async function loadTop3(mode, etDate = getEtDateKey()) {
   try {
     const res = await fetch(
-      `${API_BASE}/leaderboard?mode=${mode}&etDate=${etDate}`
+      `${API_BASE}/leaderboard?mode=${encodeURIComponent(mode)}&etDate=${encodeURIComponent(etDate)}`,
     );
+
+    if (!res.ok) return [];
+
     const data = await res.json();
-    return data.entries || [];
+    if (!data?.ok || !Array.isArray(data.entries)) return [];
+
+    return data.entries.map((e) => ({
+      timeMs: e.time_ms,
+      moves: e.moves,
+      completedAt: e.completed_at,
+    }));
   } catch {
     return [];
   }
