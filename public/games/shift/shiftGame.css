@@ -1,0 +1,464 @@
+:root {
+  --bg: #0b0d10;
+  --panel: #12161c;
+  --panel2: #0f1318;
+  --text: #e7e7e7;
+  --muted: #9aa6b2;
+  --ember: #ffb14a;
+  --line: rgba(255, 255, 255, 0.08);
+  --shadow: 0 18px 50px rgba(0, 0, 0, 0.55);
+  --r: 18px;
+
+  --gap: 10px;
+  --boardMax: 420px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  color: var(--text);
+  font-family:
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    Segoe UI,
+    Roboto,
+    Arial;
+  background:
+    radial-gradient(
+      1100px 650px at 50% -18%,
+      rgba(255, 177, 74, 0.12),
+      transparent 60%
+    ),
+    radial-gradient(
+      900px 520px at 80% 12%,
+      rgba(255, 255, 255, 0.06),
+      transparent 60%
+    ),
+    linear-gradient(180deg, #06070a, var(--bg));
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      1000px 550px at 50% 18%,
+      rgba(0, 0, 0, 0),
+      rgba(0, 0, 0, 0.6)
+    ),
+    radial-gradient(
+      780px 420px at 28% 10%,
+      rgba(255, 255, 255, 0.05),
+      transparent 65%
+    );
+  opacity: 0.85;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.small {
+  font-size: 0.92rem;
+}
+
+.label {
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.mono {
+  font-variant-numeric: tabular-nums;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
+    monospace;
+}
+
+/* =========================
+   WRAP + TOP BAR
+========================= */
+
+.shiftWrap {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 14px 14px 18px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.shiftTopbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  background: rgba(10, 12, 15, 0.72);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(10px);
+}
+
+.shiftTitle {
+  font-weight: 900;
+  letter-spacing: 0.22em;
+  font-size: 1.1rem;
+}
+
+.shiftSub {
+  color: var(--muted);
+  font-size: 0.92rem;
+  margin-top: 4px;
+}
+
+.shiftHud {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.shiftMode {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+select {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 10px 12px;
+  outline: none;
+}
+
+select:focus {
+  border-color: rgba(255, 177, 74, 0.45);
+}
+
+/* =========================
+   BUTTONS
+========================= */
+
+.btn {
+  color: #fff;
+  background: rgba(255, 177, 74, 0.2);
+  border: 2px solid rgba(255, 177, 74, 0.75);
+  border-radius: 14px;
+  padding: 10px 14px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn:hover {
+  border-color: rgba(255, 177, 74, 0.9);
+  background: rgba(255, 177, 74, 0.26);
+  box-shadow: 0 0 16px rgba(255, 177, 74, 0.25);
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn.ghost {
+  background: rgba(255, 255, 255, 0.06);
+  border: 2px solid rgba(255, 255, 255, 0.22);
+}
+
+/* =========================
+   MAIN PANELS
+========================= */
+
+.shiftPanel {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1.3fr 0.9fr;
+  gap: 12px;
+}
+
+.shiftGamePanel,
+.shiftLeaderboardPanel {
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.05),
+    rgba(255, 255, 255, 0.03)
+  );
+  box-shadow: var(--shadow);
+}
+
+.shiftGamePanel {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.shiftLeaderboardPanel {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.shiftGameHeader {
+  display: flex;
+  justify-content: center;
+}
+
+.shiftStats {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.shiftPill {
+  padding: 8px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.04);
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.leaderboardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.lbList {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.footer {
+  text-align: center;
+  font-size: 0.86rem;
+  padding: 6px 0 2px;
+}
+
+/* =========================
+   BOARD
+========================= */
+
+.board {
+  width: min(92vw, var(--boardMax));
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--gap);
+}
+
+.tile {
+  aspect-ratio: 1 / 1;
+}
+
+.tileInner {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  font-size: clamp(18px, 4vw, 28px);
+  font-weight: 900;
+  color: var(--text);
+}
+
+/* =========================
+   MODAL
+========================= */
+
+.hidden {
+  display: none !important;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  z-index: 50;
+}
+
+.modalCard {
+  width: min(520px, 96vw);
+  border-radius: 22px;
+  border: 1px solid var(--line);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.06),
+    rgba(255, 255, 255, 0.03)
+  );
+  box-shadow: var(--shadow);
+  padding: 16px;
+}
+
+.modalTitle {
+  font-weight: 1000;
+  letter-spacing: 0.12em;
+  margin-bottom: 8px;
+}
+
+.modalActions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 900px) {
+  .shiftPanel {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .shiftWrap {
+    padding: 10px 10px 12px;
+    gap: 10px;
+  }
+
+  .shiftTopbar {
+    padding: 10px 12px;
+    gap: 10px;
+  }
+
+  .shiftTitle {
+    font-size: 1rem;
+    letter-spacing: 0.18em;
+  }
+
+  .shiftSub {
+    font-size: 0.84rem;
+    margin-top: 2px;
+  }
+
+  .shiftHud {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .shiftMode {
+    grid-column: 1 / -1;
+    justify-content: space-between;
+  }
+
+  #howToBtn,
+  #restartBtn {
+    width: 100%;
+  }
+
+  .shiftGamePanel,
+  .shiftLeaderboardPanel {
+    padding: 12px;
+  }
+
+  .shiftStats {
+    gap: 8px;
+  }
+
+  .shiftPill {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .board {
+    width: min(94vw, 360px);
+    gap: 8px;
+  }
+}
+
+.shiftHint {
+  width: min(92vw, var(--boardMax));
+  margin: 10px auto 0;
+  text-align: center;
+  font-size: 0.92rem;
+  line-height: 1.4;
+}
+
+.tileInner {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: clamp(18px, 4vw, 28px);
+  font-weight: 900;
+  color: var(--text);
+}
+
+.tileInner.filled {
+  background: rgba(255, 177, 74, 0.16);
+  border-color: rgba(255, 177, 74, 0.35);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.22);
+}
+
+.tileInner[data-value='2'] {
+  background: rgba(255, 255, 255, 0.1);
+}
+.tileInner[data-value='4'] {
+  background: rgba(255, 177, 74, 0.18);
+}
+.tileInner[data-value='8'] {
+  background: rgba(255, 177, 74, 0.26);
+}
+.tileInner[data-value='16'] {
+  background: rgba(255, 177, 74, 0.34);
+}
+.tileInner[data-value='32'] {
+  background: rgba(255, 177, 74, 0.42);
+}
+.tileInner[data-value='64'] {
+  background: rgba(255, 177, 74, 0.5);
+}
+.tileInner[data-value='128'] {
+  background: rgba(255, 177, 74, 0.58);
+}
+.tileInner[data-value='256'] {
+  background: rgba(255, 177, 74, 0.66);
+}
+.tileInner[data-value='512'] {
+  background: rgba(255, 177, 74, 0.74);
+}
+.tileInner[data-value='1024'],
+.tileInner[data-value='2048'] {
+  background: rgba(255, 177, 74, 0.88);
+  color: #111;
+}

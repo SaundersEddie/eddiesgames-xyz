@@ -30,5 +30,13 @@ export const games = [
     about:
       'Watch the pattern, then repeat it perfectly. Each round gets longer—one mistake and the run is over.',
     path: '/games/sequence/sequence.html',
-  }
+  },
+  {
+    slug: 'shift',
+    title: 'SHIFT',
+    subtitle: 'Slide • Merge • Survive',
+    about:
+      'Slide tiles, merge numbers, and push your score higher with every move. Simple rules, addictive runs, and no room for mistakes.',
+    path: '/games/shift/shiftIndex.html',
+  },
 ];

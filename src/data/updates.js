@@ -1,14 +1,25 @@
 export const updates = [
-    {
+  {
+    date: '2026-04-01',
+    title: 'New Game: Shift',
+    body: [
+      'Shift some numbers around to make more numbers, how high can you get?',
+    ],
+  },
+  {
     date: '2026-03-31',
     title: 'New Game: Sequence',
-    body: ['A take on the Simon Says game, Sequence is a simple pattern memory game. Watch the pattern, and repeat it back. The pattern gets longer each time, how long can you last?'],
+    body: [
+      'A take on the Simon Says game, Sequence is a simple pattern memory game. Watch the pattern, and repeat it back. The pattern gets longer each time, how long can you last?',
+    ],
   },
   {
     date: '2026-03-04',
     title: 'Match: Corrected issue with flipped card colour',
-    body: ['Match flipped cards were too dark and hard to read, this has been resolved',
-    'Resolved issue with grid not always rendering'],
+    body: [
+      'Match flipped cards were too dark and hard to read, this has been resolved',
+      'Resolved issue with grid not always rendering',
+    ],
   },
   {
     date: '2026-03-01',
@@ -37,7 +48,7 @@ export const updates = [
       'Front page CSS has been updated for improved tablet views',
       'Redacted word list has been cleaned up and excess unrequired words removed',
       'made some changes to Redacted to make it a little more mobile friendly, but in all fairness mobile is not the best format',
-      "Added in score save to Redacted, added in a restriction of at least 800 pixels for Move",
+      'Added in score save to Redacted, added in a restriction of at least 800 pixels for Move',
     ],
   },
   {

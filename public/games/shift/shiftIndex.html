@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>SHIFT</title>
+    <link rel="stylesheet" href="shiftGame.css" />
+  </head>
+
+  <body>
+    <div class="shiftWrap">
+      <header class="shiftTopbar">
+        <div class="brand">
+          <div class="shiftTitle">SHIFT</div>
+          <div class="shiftSub">Slide • Merge • Survive</div>
+        </div>
+
+        <div class="shiftHud">
+          <label class="shiftMode">
+            <span class="muted">Mode</span>
+            <select id="modeSelect" aria-label="Mode">
+              <option value="daily">Daily</option>
+              <option value="random">Random</option>
+            </select>
+          </label>
+
+          <button id="howToBtn" class="btn ghost" title="How to play">
+            How to Play
+          </button>
+
+          <button id="restartBtn" class="btn" title="Restart">Restart</button>
+        </div>
+      </header>
+
+      <main class="shiftPanel">
+        <section class="shiftGamePanel">
+          <div class="shiftGameHeader">
+            <div class="shiftStats">
+              <div class="shiftPill">
+                <span class="muted">Score</span>
+                <b id="score" class="mono">0</b>
+              </div>
+
+              <div class="shiftPill">
+                <span class="muted">Best Tile</span>
+                <b id="bestTile" class="mono">0</b>
+              </div>
+
+              <div class="shiftPill">
+                <span class="muted">Moves</span>
+                <b id="moves" class="mono">0</b>
+              </div>
+            </div>
+          </div>
+
+          <div id="board" class="board" aria-label="Game board"></div>
+        </section>
+
+        <aside class="shiftLeaderboardPanel">
+          <div class="leaderboardHeader">
+            <div>
+              <div class="label">Daily Top 5</div>
+              <div class="muted small" id="lbDate"></div>
+            </div>
+          </div>
+
+          <ol id="lbList" class="lbList"></ol>
+        </aside>
+      </main>
+
+      <div class="shiftHint muted">
+        Use arrow keys or WASD to slide all tiles. Matching numbers merge into
+        bigger values.
+      </div>
+
+      <footer class="footer muted">Production Build</footer>
+    </div>
+
+    <!-- GAME OVER MODAL -->
+    <div
+      id="modal"
+      class="modal hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modalTitle"
+    >
+      <div class="modalCard">
+        <div id="modalTitle" class="modalTitle">Game Over</div>
+        <div class="modalBody muted">
+          <p>
+            Score: <span id="finalScore" class="mono">0</span><br />
+            Best Tile: <span id="finalBestTile" class="mono">0</span><br />
+            Moves: <span id="finalMoves" class="mono">0</span>
+          </p>
+          <p class="small muted">
+            Daily leaderboard resets at midnight (America/New_York).
+          </p>
+        </div>
+        <div class="modalActions">
+          <button id="copyBtn" class="btn ghost">Copy Score</button>
+          <button id="playAgainBtn" class="btn ghost">Play Again</button>
+          <button id="closeModalBtn" class="btn">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- HOW TO PLAY MODAL -->
+    <div
+      id="howToModal"
+      class="modal hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="howToTitle"
+    >
+      <div class="modalCard">
+        <div id="howToTitle" class="modalTitle">How to Play</div>
+        <div class="modalBody muted">
+          <p><b>Goal:</b> Slide tiles and merge matching numbers.</p>
+          <p>
+            Use arrow keys, WASD, or swipe on mobile to move every tile on the
+            board at once.
+          </p>
+          <p>
+            When two matching numbers collide, they merge into a higher value.
+          </p>
+          <p>
+            Keep merging, build bigger numbers, and push your score as high as
+            possible before the board locks up.
+          </p>
+          <p class="small muted">
+            Daily mode uses the same seeded run for everyone. Random mode gives
+            you a fresh run every time.
+          </p>
+        </div>
+        <div class="modalActions">
+          <button id="closeHowToBtn" class="btn">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="shiftGame.js"></script>
+  </body>
+</html>
