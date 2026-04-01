@@ -1,6 +1,10 @@
-/* games/redacted/game.css
-   Cleaned + deduped + fixed media query structure
-   Goal: same look, less scroll on small screens, guesses remain visible
+/* games/redacted/redactedGame.css
+   REDACTED styles
+   Current goals:
+   - preserve working desktop layout
+   - keep tablet intel panel readable
+   - keep mobile background gradient from banding
+   - keep guess history visible on smaller screens
 */
 
 :root {
@@ -26,6 +30,10 @@ html,
 body {
   height: 100%;
 }
+
+/* =========================
+   PAGE / BACKGROUND
+========================= */
 
 body {
   margin: 0;
@@ -70,7 +78,10 @@ body::before {
   opacity: 0.85;
 }
 
-/* App wrapper */
+/* =========================
+   APP WRAPPER / TOP BAR
+========================= */
+
 .wrap {
   max-width: 1120px;
   margin: 0 auto;
@@ -81,7 +92,6 @@ body::before {
   gap: 12px;
 }
 
-/* Top bar */
 .topbar {
   display: flex;
   justify-content: space-between;
@@ -125,7 +135,10 @@ body::before {
   align-items: center;
 }
 
-/* Main panel grid (desktop/tablet) */
+/* =========================
+   PANELS
+========================= */
+
 .panel {
   flex: 1;
   min-height: 0;
@@ -158,20 +171,35 @@ body::before {
   gap: 12px;
 }
 
-/* Grid header */
-.gridHeader {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  align-items: center;
-  margin-bottom: 12px;
-}
+/* =========================
+   TYPOGRAPHY / HELPERS
+========================= */
 
 .label {
   color: var(--muted);
   font-size: 0.86rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.small {
+  font-size: 0.86rem;
+}
+
+/* =========================
+   GRID HEADER / CURRENT WORD
+========================= */
+
+.gridHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 12px;
 }
 
 .currentWord {
@@ -189,7 +217,10 @@ body::before {
   justify-content: flex-end;
 }
 
-/* Buttons (single source of truth) */
+/* =========================
+   BUTTONS
+========================= */
+
 .btn {
   color: #fff;
   background: rgba(255, 177, 74, 0.2);
@@ -222,7 +253,10 @@ body::before {
   background: rgba(255, 255, 255, 0.08);
 }
 
-/* Letter grid */
+/* =========================
+   LETTER GRID
+========================= */
+
 .grid {
   display: grid;
   grid-template-columns: repeat(5, var(--tile));
@@ -260,7 +294,10 @@ body::before {
     0 0 20px rgba(255, 177, 74, 0.25);
 }
 
-/* Hints + toast */
+/* =========================
+   HINTS / TOAST
+========================= */
+
 .hintRow {
   display: flex;
   gap: 10px;
@@ -270,20 +307,16 @@ body::before {
   flex-wrap: wrap;
 }
 
-.muted {
-  color: var(--muted);
-}
-.small {
-  font-size: 0.86rem;
-}
-
 .toast {
   min-height: 1.2em;
   color: rgba(255, 177, 74, 0.95);
   font-weight: 700;
 }
 
-/* Intel */
+/* =========================
+   INTEL / STATS / HISTORY
+========================= */
+
 .intelHeader,
 .historyHeader {
   display: flex;
@@ -318,7 +351,6 @@ body::before {
   margin-top: 6px;
 }
 
-/* Guess history */
 .history {
   flex: 1;
   min-height: 0;
@@ -346,6 +378,7 @@ body::before {
   font-weight: 900;
   letter-spacing: 0.08em;
 }
+
 .rowMeta {
   display: flex;
   gap: 10px;
@@ -360,14 +393,44 @@ body::before {
   background: rgba(0, 0, 0, 0.18);
 }
 
-/* Footer inside game */
+/* =========================
+   TOP 5 LIST
+========================= */
+
+#top5 {
+  list-style: none;
+  margin: 0;
+  padding-left: 0;
+}
+
+#top5 li {
+  padding: 6px 0;
+}
+
+/* =========================
+   FOOTER
+========================= */
+
 .footer {
   text-align: center;
   font-size: 0.86rem;
   padding: 6px 0 2px;
 }
 
-/* Modal */
+.footer a {
+  color: inherit;
+  text-decoration: underline;
+  opacity: 0.9;
+}
+
+.footer a:hover {
+  opacity: 1;
+}
+
+/* =========================
+   MODAL
+========================= */
+
 .modal[hidden] {
   display: none !important;
 }
@@ -421,11 +484,10 @@ body::before {
   opacity: 0.8;
 }
 
-/* -------------------------
-   RESPONSIVE BREAKPOINTS
--------------------------- */
+/* =========================
+   RESPONSIVE: TABLET / SINGLE COLUMN
+========================= */
 
-/* Single column layout */
 @media (max-width: 900px) {
   .panel {
     grid-template-columns: 1fr;
@@ -447,8 +509,26 @@ body::before {
   }
 }
 
-/* Mobile layout tightening + HUD grid buttons */
+/* =========================
+   RESPONSIVE: MOBILE
+========================= */
+
 @media (max-width: 520px) {
+  body {
+    background:
+      radial-gradient(
+        700px 260px at 50% -12%,
+        rgba(255, 177, 74, 0.06),
+        transparent 58%
+      ),
+      radial-gradient(
+        520px 220px at 80% 10%,
+        rgba(255, 255, 255, 0.03),
+        transparent 60%
+      ),
+      linear-gradient(180deg, #06070a, var(--bg));
+  }
+
   .wrap {
     padding: 10px 10px 12px;
     gap: 10px;
@@ -463,6 +543,7 @@ body::before {
     font-size: 1rem;
     letter-spacing: 0.18em;
   }
+
   .sub {
     font-size: 0.84rem;
     margin-top: 2px;
@@ -497,6 +578,7 @@ body::before {
   .gridHeader {
     margin-bottom: 10px;
   }
+
   .currentWord {
     font-size: 1.1rem;
     min-height: 1.2em;
@@ -505,6 +587,7 @@ body::before {
   .hintRow {
     margin-top: 8px;
   }
+
   .hint {
     font-size: 0.85rem;
   }
@@ -513,10 +596,10 @@ body::before {
     padding: 9px 12px;
   }
 
-  /* Ensure guesses are visible on small screens */
   .historyHeader {
     display: flex;
   }
+
   .history {
     min-height: 96px;
     max-height: 140px;
@@ -524,7 +607,10 @@ body::before {
   }
 }
 
-/* Short heights (ads reduce usable space): shrink tile + cap history */
+/* =========================
+   RESPONSIVE: SHORT HEIGHTS
+========================= */
+
 @media (max-height: 820px) {
   .history {
     max-height: 240px;
@@ -535,17 +621,21 @@ body::before {
   :root {
     --tile: clamp(42px, 8.2vw, 58px);
   }
+
   .topbar {
     padding: 10px 12px;
   }
+
   .gridPanel,
   .intelPanel {
     padding: 12px;
   }
+
   .grid {
     gap: 8px;
     padding: 8px 0 4px;
   }
+
   .history {
     max-height: 160px;
   }
@@ -561,12 +651,15 @@ body::before {
   :root {
     --tile: clamp(38px, 8vw, 54px);
   }
+
   .history {
     max-height: 120px;
   }
+
   .currentWord {
     font-size: 1.1rem;
   }
+
   .btn {
     padding: 9px 12px;
   }
@@ -576,10 +669,12 @@ body::before {
   :root {
     --tile: clamp(40px, 8.2vw, 56px);
   }
+
   .grid {
     gap: 8px;
     padding: 8px 0 4px;
   }
+
   .history {
     min-height: 80px;
     max-height: 110px;
@@ -591,6 +686,10 @@ body::before {
     --tile: clamp(38px, 8vw, 52px);
   }
 }
+
+/* =========================
+   ANIMATION
+========================= */
 
 @keyframes gridPulse {
   0% {
@@ -606,21 +705,4 @@ body::before {
 
 .grid.pulse {
   animation: gridPulse 0.2s ease;
-}
-
-@media (max-width: 520px) {
-  body {
-    background:
-      radial-gradient(
-        700px 260px at 50% -12%,
-        rgba(255, 177, 74, 0.06),
-        transparent 58%
-      ),
-      radial-gradient(
-        520px 220px at 80% 10%,
-        rgba(255, 255, 255, 0.03),
-        transparent 60%
-      ),
-      linear-gradient(180deg, #06070a, var(--bg));
-  }
 }
