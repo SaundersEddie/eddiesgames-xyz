@@ -1,3 +1,10 @@
+// import {
+  // getEtDateKey,
+  // loadTop5,
+  // submitScore,
+  // formatTimeMs,
+// } from './reacLeaderboard.js';
+
 const clamp01 = (x) => Math.max(0, Math.min(1, x));
 
 // ---------- SFX ----------
