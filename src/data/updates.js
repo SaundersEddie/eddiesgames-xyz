@@ -7,6 +7,7 @@ export const updates = [
       'Updated Copyright to link to eddiesaunders.com',
       'Updated Redacted to correct some formatting issues on mobile devices',
       'Removed screen size limitations, and started to fix Match game',
+      'Implmeneted V1 of Mobile input for testing',
     ],
   },
   {
