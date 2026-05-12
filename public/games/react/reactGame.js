@@ -1,9 +1,4 @@
-// import {
-  // getEtDateKey,
-  // loadTop5,
-  // submitScore,
-  // formatTimeMs,
-// } from './reacLeaderboard.js';
+import { loadTop5, submitScore } from './reactLeaderboard.js';
 
 const clamp01 = (x) => Math.max(0, Math.min(1, x));
 
@@ -159,37 +154,31 @@ function attachTimingBarGame(options) {
   let state = resetGame();
   let lastT = performance.now();
 
-  // ----- Top 5 scores (local) -----
+  // ----- Daily Top 5 scores -----
   const topScoresEl = document.getElementById('topScores');
-  const SCORE_KEY = 'react_top5_points'; // later: daily ET key + DB
 
-  function loadScores() {
-    try {
-      const arr = JSON.parse(localStorage.getItem(SCORE_KEY) || '[]');
-      return Array.isArray(arr) ? arr : [];
-    } catch {
-      return [];
-    }
-  }
-
-  function saveScores(arr) {
-    localStorage.setItem(SCORE_KEY, JSON.stringify(arr));
-  }
-
-  function renderScores() {
+  async function renderScores() {
     if (!topScoresEl) return;
-    const arr = loadScores();
-    topScoresEl.innerHTML = arr.length
-      ? arr.map((s) => `<li>${s} pts</li>`).join('')
+
+    const { entries } = await loadTop5();
+
+    topScoresEl.innerHTML = entries.length
+      ? entries.map((entry) => `<li>${entry.points} pts</li>`).join('')
       : `<li class="muted">No scores yet</li>`;
   }
 
-  function recordScore(finalScore) {
-    const arr = loadScores();
-    arr.push(finalScore);
-    arr.sort((a, b) => b - a);
-    saveScores(arr.slice(0, 5));
-    renderScores();
+  async function recordScore(finalScore) {
+    try {
+      const { entries } = await submitScore({ points: finalScore });
+
+      if (!topScoresEl) return;
+
+      topScoresEl.innerHTML = entries.length
+        ? entries.map((entry) => `<li>${entry.points} pts</li>`).join('')
+        : `<li class="muted">No scores yet</li>`;
+    } catch (err) {
+      console.error('Could not submit Reaction score:', err);
+    }
   }
 
   renderScores();

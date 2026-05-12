@@ -1,9 +1,5 @@
 const API_BASE = '/api/react';
 
-function pad2(n) {
-  return String(n).padStart(2, '0');
-}
-
 export function getEtDateKey(date = new Date()) {
   const fmt = new Intl.DateTimeFormat('en-CA', {
     timeZone: 'America/New_York',
@@ -11,56 +7,50 @@ export function getEtDateKey(date = new Date()) {
     month: '2-digit',
     day: '2-digit',
   });
+
   return fmt.format(date);
 }
 
-export async function loadTop5(mode, etDate = getEtDateKey()) {
+export async function loadTop5(etDate = getEtDateKey()) {
   try {
     const res = await fetch(
-      `${API_BASE}/leaderboard?mode=${encodeURIComponent(mode)}&etDate=${encodeURIComponent(etDate)}`,
+      `${API_BASE}/leaderboard?etDate=${encodeURIComponent(etDate)}`,
+      { cache: 'no-store' },
     );
 
-    if (!res.ok) return [];
+    if (!res.ok) return { etDate, entries: [] };
 
     const data = await res.json();
-    if (!data?.ok || !Array.isArray(data.entries)) return [];
 
-    return data.entries.map((e) => ({
-      timeMs: e.time_ms,
-      moves: e.moves,
-      completedAt: e.completed_at,
-    }));
+    if (!data?.ok || !Array.isArray(data.entries)) {
+      return { etDate, entries: [] };
+    }
+
+    return {
+      etDate: data.etDate || etDate,
+      entries: data.entries.map((entry) => ({
+        points: Number(entry.points) || 0,
+        completedAt: entry.completedAt,
+      })),
+    };
   } catch {
-    return [];
+    return { etDate, entries: [] };
   }
 }
 
-export async function submitScore({
-  points,
-  completedAt = Date.now(),
-}) {
-  const etDate = getEtDateKey(new Date(completedAt));
-
-  await fetch(`${API_BASE}/submit`, {
+export async function submitScore({ points }) {
+  const res = await fetch(`${API_BASE}/submit`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      etDate,
-      points,
-      completedAt,
-    }),
+    body: JSON.stringify({ points }),
   });
 
-  const entries = await loadTop5(mode, etDate);
+  if (!res.ok) {
+    throw new Error(`Reaction score submit failed: ${res.status}`);
+  }
 
-  return { etDate, top5: entries };
-}
+  const data = await res.json();
+  const etDate = data?.entry?.etDate || getEtDateKey();
 
-export function formatTimeMs(ms) {
-  const clamped = Math.max(0, Math.floor(ms));
-  const minutes = Math.floor(clamped / 60000);
-  const rem = clamped % 60000;
-  const seconds = Math.floor(rem / 1000);
-  const millis = rem % 1000;
-  return `${pad2(minutes)}:${pad2(seconds)}.${String(millis).padStart(3, '0')}`;
+  return loadTop5(etDate);
 }

@@ -1,9 +1,9 @@
-CREATE TABLE IF NOT EXISTS match_scores (
+CREATE TABLE IF NOT EXISTS react_scores (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   et_date TEXT NOT NULL,
   points INTEGER NOT NULL,
-  completed_at INTEGER NOT NULL
+  completed_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX IF NOT EXISTS idx_match_scores_date_mode
-ON match_scores (et_date, points);
+CREATE INDEX IF NOT EXISTS idx_react_scores_daily
+ON react_scores (et_date, points DESC, completed_at ASC);
