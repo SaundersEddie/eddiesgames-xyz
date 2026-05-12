@@ -423,3 +423,142 @@ body::before {
     width: 100%;
   }
 }
+
+/* =========================
+   LEADERBOARD PANEL
+========================= */
+
+.leaderboardPanel {
+  width: 260px;
+  padding: 14px;
+  border-radius: var(--r);
+  border: 1px solid var(--line);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.05),
+    rgba(255, 255, 255, 0.03)
+  );
+  box-shadow: var(--shadow);
+  /* align-self: flex-start; */
+  /* margin-top: 0; */
+}
+
+.lbTitle {
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  margin-bottom: 10px;
+}
+
+.scores {
+  margin: 0;
+  padding-left: 22px;
+}
+
+.scores li {
+  margin-bottom: 8px;
+}
+
+.lbNote {
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+/* =========================
+   MOBILE LAYOUT FIX
+========================= */
+
+@media (max-width: 700px) {
+  html,
+  body {
+    overflow-x: hidden;
+  }
+
+.panel {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+  .gamePanel,
+  .leaderboardPanel {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .gamePanel {
+    overflow: hidden;
+  }
+
+  .boardWrap {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .padGrid {
+    width: min(100%, 360px);
+    height: min(100vw - 44px, 360px);
+    margin: 0 auto;
+  }
+}
+
+/* =========================
+   FINAL SEQUENCE LAYOUT FIX
+   Keep this at the very bottom
+========================= */
+
+/* Desktop / tablet: game left, leaderboard right, aligned at the top */
+.panel {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 14px;
+  width: 100%;
+}
+
+.gamePanel {
+  flex: 0 0 auto;
+}
+
+.leaderboardPanel {
+  flex: 0 0 260px;
+  width: 260px;
+  align-self: flex-start;
+  margin-top: 0;
+}
+
+/* Mobile: stack game first, leaderboard underneath */
+@media (max-width: 700px) {
+  .panel {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    align-items: stretch !important;
+    gap: 14px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .gamePanel,
+  .leaderboardPanel {
+    flex: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .leaderboardPanel {
+    align-self: stretch !important;
+    margin-top: 0 !important;
+  }
+
+  .padGrid {
+    width: min(100%, 360px) !important;
+    height: min(100vw - 44px, 360px) !important;
+    margin: 0 auto !important;
+  }
+}
