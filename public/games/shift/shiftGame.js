@@ -1,3 +1,5 @@
+import { loadTop5, submitScore } from './shiftLeaderboard.js';
+
 const boardEl = document.getElementById('board');
 const scoreEl = document.getElementById('score');
 const bestTileEl = document.getElementById('bestTile');
@@ -17,6 +19,10 @@ const closeModalBtn = document.getElementById('closeModalBtn');
 const finalScoreEl = document.getElementById('finalScore');
 const finalBestTileEl = document.getElementById('finalBestTile');
 const finalMovesEl = document.getElementById('finalMoves');
+
+const lbDateEl = document.getElementById('lbDate');
+const lbListEl = document.getElementById('lbList');
+
 
 const SFX = {
   move: new Audio('/games/shift/sounds/move.ogg'),
@@ -46,14 +52,67 @@ SFX.gameover.volume = 0.35;
 
 init();
 
+async function renderLeaderboard() {
+  if (!lbListEl) return;
+
+  const { etDate, entries } = await loadTop5();
+
+  if (lbDateEl) {
+    lbDateEl.textContent = `ET Date: ${etDate}`;
+  }
+
+  lbListEl.innerHTML = entries.length
+    ? entries
+        .map(
+          (entry) =>
+            `<li><span class="mono">${entry.score}</span> pts • ${entry.bestTile} tile • ${entry.moves} moves</li>`,
+        )
+        .join('')
+    : `<li class="muted">No scores yet</li>`;
+}
+
+async function recordDailyScore() {
+  if (!state || state.mode !== 'daily') return;
+
+  try {
+    const { etDate, entries } = await submitScore({
+      score: state.score,
+      bestTile: state.bestTile,
+      moves: state.moves,
+    });
+
+    if (lbDateEl) {
+      lbDateEl.textContent = `ET Date: ${etDate}`;
+    }
+
+    if (!lbListEl) return;
+
+    lbListEl.innerHTML = entries.length
+      ? entries
+          .map(
+            (entry) =>
+              `<li><span class="mono">${entry.score}</span> pts • ${entry.bestTile} tile • ${entry.moves} moves</li>`,
+          )
+          .join('')
+      : `<li class="muted">No scores yet</li>`;
+  } catch (err) {
+    console.error('Could not submit Shift score:', err);
+  }
+}
+
 function init() {
   startNewGame();
+  renderLeaderboard();
 
   window.addEventListener('keydown', handleKey);
   bindTouchControls();
 
   restartBtn?.addEventListener('click', startNewGame);
-  modeSelect?.addEventListener('change', startNewGame);
+  modeSelect?.addEventListener('change', () => {
+    startNewGame();
+    renderLeaderboard();
+  });
+
 
   howToBtn?.addEventListener('click', openHowTo);
   closeHowToBtn?.addEventListener('click', closeHowTo);
@@ -334,6 +393,7 @@ function attemptMove(direction) {
   if (isGameOver()) {
     state.gameOver = true;
     render();
+    recordDailyScore();
     openGameOver();
     return;
   }
