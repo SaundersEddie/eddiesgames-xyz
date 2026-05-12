@@ -1,3 +1,5 @@
+import { loadTop5, submitScore } from './sequenceLeaderboard.js';
+
 (() => {
   // ---------- DOM ----------
   const scoreEl = document.getElementById('score');
@@ -37,6 +39,43 @@
   // ---------- Storage ----------
   const BEST_KEY = 'sequence:best-score';
   const FRONT_PAGE_URL = 'https://eddiesgames.xyz';
+
+  const topScoresEl = document.getElementById('topScores');
+
+  async function renderScores() {
+    if (!topScoresEl) return;
+
+    const { entries } = await loadTop5();
+
+    topScoresEl.innerHTML = entries.length
+      ? entries
+          .map((entry) => {
+            const label = entry.score === 1 ? 'Chain' : 'Chains';
+            return `<li>${entry.score} ${label}</li>`;
+          })
+          .join('')
+      : `<li class="muted">No scores yet</li>`;
+  }
+
+  async function recordDailyScore(finalScore) {
+    try {
+      const { entries } = await submitScore({ score: finalScore });
+
+      if (!topScoresEl) return;
+
+      topScoresEl.innerHTML = entries.length
+        ? entries
+            .map((entry) => {
+              const label = entry.score === 1 ? 'Chain' : 'Chains';
+              return `<li>${entry.score} ${label}</li>`;
+            })
+            .join('')
+        : `<li class="muted">No scores yet</li>`;
+    } catch (err) {
+      console.error('Could not submit Sequence score:', err);
+    }
+  }
+
 
   function loadBestScore() {
     try {
@@ -212,6 +251,7 @@ ${FRONT_PAGE_URL}`;
   function endGame() {
     gameState = 'gameover';
     updateBestIfNeeded();
+    recordDailyScore(score);
     setStatus(`Game Over • Score: ${score}`);
 
     playSfx(SFX.fail);
@@ -290,4 +330,5 @@ ${FRONT_PAGE_URL}`;
   setBest(bestScore);
   setScore(0);
   setStatus('Press Start');
+  renderScores();
 })();

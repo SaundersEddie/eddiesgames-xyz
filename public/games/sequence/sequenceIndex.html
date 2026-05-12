@@ -38,26 +38,10 @@
         <section class="gamePanel">
           <div class="boardWrap">
             <div class="padGrid" aria-label="Sequence pad grid">
-              <button
-                class="pad pad-1"
-                data-pad="0"
-                aria-label="Pad 1"
-              ></button>
-              <button
-                class="pad pad-2"
-                data-pad="1"
-                aria-label="Pad 2"
-              ></button>
-              <button
-                class="pad pad-3"
-                data-pad="2"
-                aria-label="Pad 3"
-              ></button>
-              <button
-                class="pad pad-4"
-                data-pad="3"
-                aria-label="Pad 4"
-              ></button>
+              <button class="pad pad-1" data-pad="0" aria-label="Pad 1"></button>
+              <button class="pad pad-2" data-pad="1" aria-label="Pad 2"></button>
+              <button class="pad pad-3" data-pad="2" aria-label="Pad 3"></button>
+              <button class="pad pad-4" data-pad="3" aria-label="Pad 4"></button>
             </div>
           </div>
 
@@ -65,6 +49,12 @@
             <span id="statusText">Press Start</span>
           </div>
         </section>
+
+        <aside class="leaderboardPanel">
+          <div class="lbTitle">Daily Top 5</div>
+          <ol class="scores mono" id="topScores"></ol>
+          <div class="lbNote">Resets daily (ET). Longest chain wins.</div>
+        </aside>
       </main>
 
       <footer class="footer muted">
@@ -132,6 +122,6 @@
       </div>
     </div>
 
-    <script src="sequenceGame.js"></script>
+    <script type="module" src="sequenceGame.js"></script>
   </body>
 </html>
