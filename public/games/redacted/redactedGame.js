@@ -470,25 +470,37 @@ https://eddiesgames.xyz`;
 
   async function loadTop5Redacted() {
     try {
-      const res = await fetch('/api/leaderboard?game=redacted', {
+      const res = await fetch('/api/redacted/leaderboard', {
         cache: 'no-store',
       });
-      const scores = await res.json(); // [1,2,3...]
+
+      if (!res.ok) throw new Error(`Leaderboard failed: ${res.status}`);
+
+      const data = await res.json();
 
       const list = document.getElementById('top5');
       if (!list) return;
 
       const dateEl = document.getElementById('top5Date');
       if (dateEl) {
-        dateEl.textContent = new Date().toLocaleDateString('en-US', {
+        dateEl.textContent = data.etDate || new Date().toLocaleDateString('en-CA', {
           timeZone: 'America/New_York',
         });
       }
 
-      list.innerHTML = scores.length
-        ? scores.map((s) => `<li>${s} guesses</li>`).join('')
+      const entries = Array.isArray(data.entries) ? data.entries : [];
+
+      list.innerHTML = entries.length
+        // ? entries.map((entry) => `<li>${entry.guesses} guesses</li>`).join('')
+        ? entries.map((entry) => {
+          const label = entry.guesses === 1 ? 'Guess' : 'Guesses';
+          return `<li>${entry.guesses} ${label}</li>`;
+        })
+        .join('')
         : `<li class="muted">No scores yet</li>`;
-    } catch (_) {}
+    } catch (err) {
+      console.error('Could not load Redacted leaderboard:', err);
+    }
   }
 
   function submitCurrent() {
@@ -511,14 +523,19 @@ https://eddiesgames.xyz`;
       locked = true;
       playSfx(SFX.win);
 
-      if (isDaily) {
-        fetch('/api/score', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ game: 'redacted', score: guesses.length }),
+   if (isDaily) {
+    fetch('/api/redacted/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ guesses: guesses.length }),
+      })
+      .then((res) => {
+        if (!res.ok) throw new Error(`Score submit failed: ${res.status}`);
+          return loadTop5Redacted();
         })
-          .then(() => loadTop5Redacted())
-          .catch(() => {});
+      .catch((err) => {
+        console.error('Could not submit Redacted score:', err);
+        });
       }
 
       // submitScore({
@@ -623,36 +640,36 @@ https://eddiesgames.xyz`;
     });
   }
 
-  function submitScore({ game, score, isDaily }) {
-    // Optional: only record daily games so the board isn't polluted by random seeds
-    if (!isDaily) return;
+  // function submitScore({ game, score, isDaily }) {
+  //   // Optional: only record daily games so the board isn't polluted by random seeds
+  //   if (!isDaily) return;
 
-    fetch('/api/score', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ game, score }),
-    }).catch(() => {});
-  }
+  //   fetch('/api/score', {
+  //     method: 'POST',
+  //     headers: { 'Content-Type': 'application/json' },
+  //     body: JSON.stringify({ game, score }),
+  //   }).catch(() => {});
+  // }
 
-  async function loadTop5({ game }) {
-    try {
-      const res = await fetch(
-        `/api/leaderboard?game=${encodeURIComponent(game)}`,
-        {
-          cache: 'no-store',
-        },
-      );
-      const scores = await res.json(); // [1,2,3...]
+  // async function loadTop5({ game }) {
+  //   try {
+  //     const res = await fetch(
+  //       `/api/leaderboard?game=${encodeURIComponent(game)}`,
+  //       {
+  //         cache: 'no-store',
+  //       },
+  //     );
+  //     const scores = await res.json(); // [1,2,3...]
 
-      // Your HTML needs an element with id="top5"
-      const el = document.getElementById('top5');
-      if (!el) return;
+  //     // Your HTML needs an element with id="top5"
+  //     const el = document.getElementById('top5');
+  //     if (!el) return;
 
-      el.innerHTML = scores.length
-        ? scores.map((s) => `<li>${s}</li>`).join('')
-        : `<li>No scores yet</li>`;
-    } catch (_) {}
-  }
+  //     el.innerHTML = scores.length
+  //       ? scores.map((s) => `<li>${s}</li>`).join('')
+  //       : `<li>No scores yet</li>`;
+  //   } catch (_) {}
+  // }
 
   // ---------- Boot ----------
   (async () => {
