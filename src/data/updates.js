@@ -1,4 +1,11 @@
 export const updates = [
+   {
+    date: '2026-05-12',
+    title: 'All Existing Games',
+    body: [
+      'Added saved high scores to all exiting games',
+    ],
+  },
   {
     date: '2026-04-01',
     title: 'New Game: Shift',
