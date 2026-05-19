@@ -39,4 +39,12 @@ export const games = [
       'Slide tiles, merge numbers, and push your score higher with every move. Simple rules, addictive runs, and no room for mistakes.',
     path: '/games/shift/shiftIndex.html',
   },
+  {
+    slug: 'sudoku',
+    title: 'SUDOKU',
+    subtitle: 'Fill the grid',
+    about:
+      'Fill the 9×9 grid with numbers 1-9 without repeating in rows, columns, or boxes. Choose your difficulty and challenge your logic skills.',
+    path: '/games/sudoku/sudokuIndex.html',
+  }
 ];

@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>SUDOKU</title>
+    <link rel="stylesheet" href="sudokuGame.css?v=1" />
+  </head>
+
+  <body>
+    <div class="wrap">
+      <header class="topbar">
+        <div class="brand">
+          <div class="title">SUDOKU</div>
+          <div class="sub">Daily puzzle • One board for everyone</div>
+        </div>
+
+        <div class="hud">
+          <div class="pill">
+            <span class="muted">Mode</span>
+            <b id="currentMode">Daily</b>
+          </div>
+
+          <div class="pill">
+            <span class="muted">Difficulty</span>
+            <b id="dailyDifficulty">—</b>
+          </div>
+
+          <div class="pill">
+            <span class="muted">Time</span>
+            <b id="time">00:00</b>
+          </div>
+
+          <button class="btn ghost" type="button" id="btnHowToPlay">
+            How to Play
+          </button>
+
+          <button class="btn" type="button" id="btnNewGame">
+            New Game
+          </button>
+        </div>
+      </header>
+
+      <main class="panel">
+        <section class="gamePanel">
+          <div class="controlBar">
+            <div class="controlGroup">
+              <span class="label">Play</span>
+              <div class="modeButtons">
+                <button class="btn" type="button" id="btnDaily">Daily</button>
+                <button class="btn ghost" type="button" id="btnEasy">Easy</button>
+                <button class="btn ghost" type="button" id="btnMedium">Medium</button>
+                <button class="btn ghost" type="button" id="btnHard">Hard</button>
+              </div>
+            </div>
+
+            <div class="controlGroup">
+              <span class="label">Actions</span>
+              <div class="actions">
+                <button class="btn ghost" type="button" id="btnNotes">Notes</button>
+                <button class="btn ghost" type="button" id="btnClear">Clear Cell</button>
+                <button class="btn ghost" type="button" id="btnDevDaily">Dev Daily</button>
+                <button class="btn" type="button" id="btnCheck">Check</button>
+              </div>
+            </div>
+
+            <div class="controlGroup">
+              <span class="label">Board</span>
+              <div class="currentState" id="currentState">Daily Challenge</div>
+            </div>
+          </div>
+
+          <div class="boardWrap">
+            <div id="sudokuBoard" class="board" aria-label="Sudoku board"></div>
+          </div>
+
+          <div class="keypadWrap">
+            <div class="label">Input</div>
+            <div id="sudokuKeypad" class="keypad" aria-label="Number pad"></div>
+          </div>
+        </section>
+
+        <aside class="sidePanel">
+          <div class="sideHeader">
+            <div>
+              <div class="label">Daily Top 3</div>
+              <div class="muted small" id="etDateLabel">ET date: —</div>
+            </div>
+          </div>
+
+          <div class="leaderboardBlock">
+            <div class="leaderboardTitle">Today’s Board</div>
+            <ol class="leaderboardList" id="leaderboardList">
+              <li><span>—</span><span>#1</span></li>
+              <li><span>—</span><span>#2</span></li>
+              <li><span>—</span><span>#3</span></li>
+            </ol>
+          </div>
+
+          <div class="leaderboardBlock">
+            <div class="leaderboardTitle">Notes</div>
+            <div class="muted small">
+              Daily puzzle will be the same for everyone. Free Play scores are
+              not stored.
+            </div>
+          </div>
+        </aside>
+      </main>
+
+      <footer class="footer muted">Production Build</footer>
+    </div>
+
+    <script type="module" src="sudokuGame.js?v=1"></script>
+  </body>
+</html>

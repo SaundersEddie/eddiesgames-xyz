@@ -468,3 +468,174 @@ body::before {
   gap: 10px;
   flex-wrap: wrap;
 }
+
+.cell.correct {
+  background: rgba(98, 255, 155, 0.16);
+}
+
+.cell.wrong {
+  background: rgba(255, 92, 92, 0.2);
+  box-shadow: inset 0 0 0 2px rgba(255, 92, 92, 0.38);
+}
+
+/* desktop Sudoku compact layout */
+@media (min-width: 981px) {
+  :root {
+    --board-size: min(44vw, 58vh, 430px);
+  }
+
+  .wrap {
+    max-width: 1280px;
+    padding-top: 12px;
+    gap: 10px;
+  }
+
+  .topbar {
+    padding: 10px 14px;
+    align-items: center;
+  }
+
+  .panel {
+    grid-template-columns: minmax(720px, 1.45fr) minmax(320px, 0.75fr);
+    gap: 12px;
+  }
+
+  .gamePanel {
+    display: grid;
+    grid-template-columns: minmax(430px, 1fr) 270px;
+    grid-template-areas:
+      "board controls"
+      "board keypad";
+    align-items: start;
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .controlBar {
+    grid-area: controls;
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .boardWrap {
+    grid-area: board;
+    align-self: center;
+    justify-content: center;
+  }
+
+  .keypadWrap {
+    grid-area: keypad;
+  }
+
+  .keypad {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .key {
+    min-height: 48px;
+  }
+
+  .modeButtons,
+  .actions {
+    gap: 8px;
+  }
+
+  .modeButtons .btn,
+  .actions .btn {
+    padding: 9px 12px;
+  }
+
+  .sidePanel {
+    padding: 12px;
+  }
+
+  .leaderboardBlock {
+    padding: 12px;
+  }
+
+  .footer {
+    padding: 2px 0 0;
+  }
+}
+
+.cell.correct {
+  color: #ffffff;
+  background: rgba(98, 255, 155, 0.16);
+  box-shadow: inset 0 0 0 2px rgba(98, 255, 155, 0.32);
+}
+
+.cell.wrong {
+  color: #ffffff;
+  background: rgba(255, 92, 92, 0.2);
+  box-shadow: inset 0 0 0 2px rgba(255, 92, 92, 0.38);
+}
+
+.cell.related {
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.cell.same-number {
+  background: rgba(255, 177, 74, 0.18);
+  box-shadow: inset 0 0 0 1px rgba(255, 177, 74, 0.28);
+}
+
+.cell.selected {
+  background: rgba(255, 177, 74, 0.28);
+  box-shadow: inset 0 0 0 2px rgba(255, 177, 74, 0.55);
+}
+
+.cell.correct.selected {
+  background: rgba(98, 255, 155, 0.24);
+  box-shadow: inset 0 0 0 2px rgba(98, 255, 155, 0.48);
+}
+
+.cell.wrong.selected {
+  background: rgba(255, 92, 92, 0.28);
+  box-shadow: inset 0 0 0 2px rgba(255, 92, 92, 0.5);
+}
+
+.notesGrid {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  align-items: center;
+  justify-items: center;
+  font-size: clamp(0.45rem, 0.8vw, 0.7rem);
+  font-weight: 700;
+  color: var(--muted);
+  line-height: 1;
+  pointer-events: none;
+}
+
+.cell:has(.notesGrid) {
+  padding: 3px;
+}
+
+.cell.locked {
+  cursor: default;
+}
+
+.cell.locked:hover {
+  background: inherit;
+}
+
+#btnNotes:not(.ghost) {
+  background: rgba(255, 177, 74, 0.28);
+  border-color: rgba(255, 177, 74, 0.9);
+  box-shadow: 0 0 14px rgba(255, 177, 74, 0.22);
+}
+
+.key.used-up,
+.key:disabled {
+  opacity: 0.32;
+  cursor: not-allowed;
+  filter: grayscale(1);
+}
+
+.key.used-up:hover,
+.key:disabled:hover {
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.05);
+}
