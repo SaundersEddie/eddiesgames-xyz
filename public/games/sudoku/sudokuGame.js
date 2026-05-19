@@ -43,7 +43,6 @@ let cells = [];
 let timerId = null;
 let startedAt = null;
 let timerRunning = false;
-let devDailyRun = 0;
 let notesMode = false;
 let isSolved = false;
 let currentVisibleCount = 0;
@@ -188,6 +187,19 @@ function stopTimer() {
   timerRunning = false;
 }
 
+function getElapsedMs() {
+  if (!startedAt) return 0;
+  return Date.now() - startedAt;
+}
+
+function formatLeaderboardTime(ms) {
+  const totalSeconds = Math.floor(ms / 1000);
+  const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
+  const seconds = String(totalSeconds % 60).padStart(2, '0');
+
+  return `${minutes}:${seconds}`;
+}
+
 function setActiveButton(mode) {
   const buttons = [
     [btnDaily, 'daily'],
@@ -219,7 +231,7 @@ function updateLabels(mode, visibleCount, isDevDaily = false) {
   if (currentStateEl) {
     if (mode === 'daily') {
       currentStateEl.textContent = isDevDaily
-        ? `Dev Daily ${devDailyRun} • ${visibleCount} clues`
+        ? `Dev Daily • ${visibleCount} clues`
         : `Daily Challenge • ${visibleCount} clues`;
     } else {
       currentStateEl.textContent = `${level.label} • ${visibleCount} clues`;
@@ -349,179 +361,23 @@ function updateHighlights() {
   });
 }
 
-function setSelectedCellValue(value) {
-    if (isSolved) return;
-  if (selectedIndex === null) return;
-
-  const cell = cells[selectedIndex];
-
-  if (cell.classList.contains('given')) return;
-
-  startTimerIfNeeded();
-
-  if (notesMode) {
-    toggleNote(selectedIndex, value);
-    return;
-  }
-
-  cellNotes.delete(getCellNoteKey(selectedIndex));
-
-  cell.innerHTML = '';
-  cell.textContent = value;
-  cell.classList.remove('wrong', 'correct');
-
-  if (value === currentSolution[selectedIndex]) {
-    cell.classList.add('correct');
-  } else {
-    cell.classList.add('wrong');
-  }
-
-  updateHighlights();
-  updateUsedNumbers();
-  checkSolvedSilently();
-}
-
-function clearSelectedCell() {
-    if (isSolved) return;
-  if (selectedIndex === null) return;
-
-  const cell = cells[selectedIndex];
-
-  if (cell.classList.contains('given')) return;
-
-  cellNotes.delete(getCellNoteKey(selectedIndex));
-  cell.innerHTML = '';
-  cell.textContent = '';
-  cell.classList.remove('wrong', 'correct');
-
-  updateHighlights();
-  updateUsedNumbers();
-}
-
-function checkBoard() {
-  let complete = true;
-  let mistakes = 0;
-
-  cells.forEach((cell, index) => {
-    if (cell.classList.contains('given')) return;
-
-    const value = cell.textContent.trim();
-
-    cell.classList.remove('wrong', 'correct');
-
-    if (!value) {
-      complete = false;
-      return;
-    }
-
-    if (value === currentSolution[index]) {
-      cell.classList.add('correct');
-    } else {
-      cell.classList.add('wrong');
-      mistakes += 1;
-    }
-  });
-
-  if (!currentStateEl) return;
-
-    if (complete && mistakes === 0) {
-    isSolved = true;
-    cells.forEach((cell) => {
-        cell.classList.add('locked');
-    });
-    currentStateEl.textContent = `Solved in ${timeEl.textContent}`;
-    stopTimer();
-    submitDailyScore();
-
-    } else if (mistakes > 0) {
-        currentStateEl.textContent = `${mistakes} mistake${mistakes === 1 ? '' : 's'} found`;
-    } else {
-        currentStateEl.textContent = 'Looks good so far';
-    }
-}
-
-function checkSolvedSilently() {
-    const filled = cells.every((cell) => {
-        return cell.textContent.trim() !== '';
-    });
-
-    if (!filled) return;
-
-    const solved = cells.every((cell, index) => {
-        return cell.textContent.trim() === currentSolution[index];
-    });
-
-    if (!solved) return;
-
-    isSolved = true;
-
-    cells.forEach((cell) => {
-        cell.classList.add('locked');
-    });
-
-    if (currentStateEl) {
-        currentStateEl.textContent = `Solved in ${timeEl.textContent}`;
-    }
-
-    stopTimer();
-    submitDailyScore();
-}
-
-function startGame(mode, options = {}) {
-    currentMode = mode;
-    selectedIndex = null;
-    cellNotes.clear();
-    notesMode = false;
-    btnNotes?.classList.add('ghost');
-    isSolved = false;
-
-    currentIsDevDaily = options.devDaily === true;
-    scoreSubmitted = false;
-
-    const easternDate = getEasternDateString();
-
-    const seed =
-        mode === 'daily'
-        ? currentIsDevDaily
-            ? `sudoku-dev-daily-${easternDate}-${devDailyRun}`
-            : `sudoku-daily-${easternDate}`
-        : `sudoku-${mode}-${Date.now()}-${Math.random()}`;
-
-    currentPuzzleSeed = seed;
-
-    const random = createSeededRandom(seed);
-    const visibleCount = getVisibleCountForMode(mode, random);
-    currentVisibleCount = visibleCount;
-
-    currentSolution = generateSolution(random);
-    currentPuzzle = createPuzzle(currentSolution, visibleCount, random);
-
-    setActiveButton(mode);
-    updateLabels(mode, visibleCount, options.devDaily === true);
-    buildBoard();
-    resetTimerDisplay();
-    if (mode === 'daily' && !currentIsDevDaily) {
-        loadLeaderboard();
-    }
-}
-
 function getCellNoteKey(index) {
-    return String(index);
+  return String(index);
 }
 
 function renderNotes(cell, notes) {
-    if (!notes || notes.size === 0) {
-        cell.innerHTML = '';
-        return;
+  if (!notes || notes.size === 0) {
+    cell.innerHTML = '';
+    return;
   }
 
   const notesGrid = document.createElement('div');
   notesGrid.className = 'notesGrid';
 
   for (let number = 1; number <= 9; number += 1) {
-        const note = document.createElement('span');
-        note.textContent = notes.has(String(number)) ? String(number) : '';
-        notesGrid.appendChild(note);
+    const note = document.createElement('span');
+    note.textContent = notes.has(String(number)) ? String(number) : '';
+    notesGrid.appendChild(note);
   }
 
   cell.innerHTML = '';
@@ -565,116 +421,73 @@ function toggleNotesMode() {
   }
 }
 
-    function updateUsedNumbers() {
-    if (!keypadEl) return;
+function setSelectedCellValue(value) {
+  if (isSolved) return;
+  if (selectedIndex === null) return;
 
-    const counts = new Map();
+  const cell = cells[selectedIndex];
 
-    for (let number = 1; number <= 9; number += 1) {
-        counts.set(String(number), 0);
+  if (cell.classList.contains('given')) return;
+
+  startTimerIfNeeded();
+
+  if (notesMode) {
+    toggleNote(selectedIndex, value);
+    return;
+  }
+
+  cellNotes.delete(getCellNoteKey(selectedIndex));
+
+  cell.innerHTML = '';
+  cell.textContent = value;
+  cell.classList.remove('wrong', 'correct');
+
+  if (value === currentSolution[selectedIndex]) {
+    cell.classList.add('correct');
+  } else {
+    cell.classList.add('wrong');
+  }
+
+  updateHighlights();
+  updateUsedNumbers();
+  checkSolvedSilently();
+}
+
+function clearSelectedCell() {
+  if (isSolved) return;
+  if (selectedIndex === null) return;
+
+  const cell = cells[selectedIndex];
+
+  if (cell.classList.contains('given')) return;
+
+  cellNotes.delete(getCellNoteKey(selectedIndex));
+  cell.innerHTML = '';
+  cell.textContent = '';
+  cell.classList.remove('wrong', 'correct');
+
+  updateHighlights();
+  updateUsedNumbers();
+}
+
+function updateUsedNumbers() {
+  if (!keypadEl) return;
+
+  const counts = new Map();
+
+  for (let number = 1; number <= 9; number += 1) {
+    counts.set(String(number), 0);
+  }
+
+  cells.forEach((cell) => {
+    if (cell.querySelector('.notesGrid')) return;
+
+    const value = cell.textContent.trim();
+
+    if (counts.has(value)) {
+      counts.set(value, counts.get(value) + 1);
     }
-
-    cells.forEach((cell) => {
-        if (cell.querySelector('.notesGrid')) return;
-
-        const value = cell.textContent.trim();
-
-        if (counts.has(value)) {
-        counts.set(value, counts.get(value) + 1);
-        }
-    });
-
-    function getElapsedMs() {
-    if (!startedAt) return 0;
-    return Date.now() - startedAt;
-    }
-
-    function formatLeaderboardTime(ms) {
-    const totalSeconds = Math.floor(ms / 1000);
-    const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
-    const seconds = String(totalSeconds % 60).padStart(2, '0');
-    return `${minutes}:${seconds}`;
-    }
-
-    async function loadLeaderboard() {
-    const leaderboardListEl = document.querySelector('#leaderboardList');
-    const easternDate = getEasternDateString();
-
-    if (!leaderboardListEl) return;
-
-    try {
-        const response = await fetch(`/api/sudoku/leaderboard?etDate=${easternDate}`);
-        const data = await response.json();
-        const scores = data.scores ?? [];
-
-        if (scores.length === 0) {
-        leaderboardListEl.innerHTML = `
-            <li><span>No scores yet</span><span>#1</span></li>
-            <li><span>—</span><span>#2</span></li>
-            <li><span>—</span><span>#3</span></li>
-        `;
-        return;
-        }
-
-        leaderboardListEl.innerHTML = [0, 1, 2]
-        .map((index) => {
-            const score = scores[index];
-
-            if (!score) {
-            return `<li><span>—</span><span>#${index + 1}</span></li>`;
-            }
-
-            return `
-            <li>
-                <span>${formatLeaderboardTime(score.elapsed_ms)}</span>
-                <span>#${index + 1}</span>
-            </li>
-            `;
-        })
-        .join('');
-    } catch (error) {
-        console.error('Failed to load Sudoku leaderboard:', error);
-
-        leaderboardListEl.innerHTML = `
-        <li><span>Leaderboard unavailable</span><span>#1</span></li>
-        <li><span>—</span><span>#2</span></li>
-        <li><span>—</span><span>#3</span></li>
-        `;
-    }
-    }
-
-    async function submitDailyScore() {
-    if (scoreSubmitted) return;
-    if (currentMode !== 'daily') return;
-    if (currentIsDevDaily) return;
-
-    scoreSubmitted = true;
-
-    try {
-        const response = await fetch('/api/sudoku/submit', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            elapsedMs: Math.round(getElapsedMs()),
-            clueCount: currentVisibleCount,
-            puzzleSeed: currentPuzzleSeed,
-        }),
-        });
-
-        const data = await response.json();
-
-        if (!data.saved) {
-        console.warn('Sudoku score was not saved:', data);
-        return;
-        }
-
-        await loadLeaderboard();
-    } catch (error) {
-        console.error('Failed to submit Sudoku score:', error);
-    }
-    }
+  });
 
   const keys = Array.from(keypadEl.querySelectorAll('.key'));
 
@@ -689,6 +502,156 @@ function toggleNotesMode() {
       isUsedUp ? `${value} used up` : `Enter ${value}`,
     );
   });
+}
+
+function lockSolvedBoard() {
+  isSolved = true;
+
+  cells.forEach((cell) => {
+    cell.classList.add('locked');
+  });
+
+  if (currentStateEl) {
+    currentStateEl.textContent = `Solved in ${timeEl.textContent}`;
+  }
+
+  stopTimer();
+  submitDailyScore();
+}
+
+function checkSolvedSilently() {
+  const filled = cells.every((cell) => {
+    return cell.textContent.trim() !== '';
+  });
+
+  if (!filled) return;
+
+  const solved = cells.every((cell, index) => {
+    return cell.textContent.trim() === currentSolution[index];
+  });
+
+  if (!solved) return;
+
+  lockSolvedBoard();
+}
+
+async function loadLeaderboard() {
+  const leaderboardListEl = document.querySelector('#leaderboardList');
+  const easternDate = getEasternDateString();
+
+  if (!leaderboardListEl) return;
+
+  try {
+    const response = await fetch(`/api/sudoku/leaderboard?etDate=${easternDate}`);
+    const data = await response.json();
+    const scores = data.scores ?? [];
+
+    if (scores.length === 0) {
+      leaderboardListEl.innerHTML = `
+        <li><span>No scores yet</span><span>#1</span></li>
+        <li><span>—</span><span>#2</span></li>
+        <li><span>—</span><span>#3</span></li>
+      `;
+      return;
+    }
+
+    leaderboardListEl.innerHTML = [0, 1, 2]
+      .map((index) => {
+        const score = scores[index];
+
+        if (!score) {
+          return `<li><span>—</span><span>#${index + 1}</span></li>`;
+        }
+
+        return `
+          <li>
+            <span>${formatLeaderboardTime(score.elapsed_ms)}</span>
+            <span>#${index + 1}</span>
+          </li>
+        `;
+      })
+      .join('');
+  } catch (error) {
+    console.error('Failed to load Sudoku leaderboard:', error);
+
+    leaderboardListEl.innerHTML = `
+      <li><span>Leaderboard unavailable</span><span>#1</span></li>
+      <li><span>—</span><span>#2</span></li>
+      <li><span>—</span><span>#3</span></li>
+    `;
+  }
+}
+
+async function submitDailyScore() {
+  if (scoreSubmitted) return;
+  if (currentMode !== 'daily') return;
+  if (currentIsDevDaily) return;
+
+  scoreSubmitted = true;
+
+  try {
+    const response = await fetch('/api/sudoku/submit', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        elapsedMs: Math.round(getElapsedMs()),
+        clueCount: currentVisibleCount,
+        puzzleSeed: currentPuzzleSeed,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!data.saved) {
+      console.warn('Sudoku score was not saved:', data);
+      return;
+    }
+
+    await loadLeaderboard();
+  } catch (error) {
+    console.error('Failed to submit Sudoku score:', error);
+  }
+}
+
+function startGame(mode, options = {}) {
+  currentMode = mode;
+  selectedIndex = null;
+  cellNotes.clear();
+  notesMode = false;
+  btnNotes?.classList.add('ghost');
+  isSolved = false;
+
+  currentIsDevDaily = options.devDaily === true;
+  scoreSubmitted = false;
+
+  const easternDate = getEasternDateString();
+
+  const seed =
+    mode === 'daily'
+      ? currentIsDevDaily
+        ? `sudoku-dev-daily-${easternDate}-${Date.now()}`
+        : `sudoku-daily-${easternDate}`
+      : `sudoku-${mode}-${Date.now()}-${Math.random()}`;
+
+  currentPuzzleSeed = seed;
+
+  const random = createSeededRandom(seed);
+  const visibleCount = getVisibleCountForMode(mode, random);
+  currentVisibleCount = visibleCount;
+
+  currentSolution = generateSolution(random);
+  currentPuzzle = createPuzzle(currentSolution, visibleCount, random);
+
+  setActiveButton(mode);
+  updateLabels(mode, visibleCount, options.devDaily === true);
+  buildBoard();
+  resetTimerDisplay();
+
+  if (mode === 'daily' && !currentIsDevDaily) {
+    loadLeaderboard();
+  }
 }
 
 btnDaily?.addEventListener('click', () => {
@@ -711,13 +674,7 @@ btnNewGame?.addEventListener('click', () => {
   startGame(currentMode);
 });
 
-// btnDevDaily?.addEventListener('click', () => {
-//   devDailyRun += 1;
-//   startGame('daily', { devDaily: true });
-// });
-
 btnClear?.addEventListener('click', clearSelectedCell);
-// btnCheck?.addEventListener('click', checkBoard);
 
 document.addEventListener('keydown', (event) => {
   const key = event.key.toLowerCase();

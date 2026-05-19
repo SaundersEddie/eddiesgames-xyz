@@ -1,8 +1,6 @@
-export const prerender = false;
+import { env } from 'cloudflare:workers';
 
-function getDb(locals) {
-  return locals?.runtime?.env?.eddiesgames_scores;
-}
+export const prerender = false;
 
 function getEasternDateString() {
   return new Intl.DateTimeFormat('en-CA', {
@@ -13,8 +11,8 @@ function getEasternDateString() {
   }).format(new Date());
 }
 
-export async function GET({ request, locals }) {
-  const db = getDb(locals);
+export async function GET({ request }) {
+  const db = env.eddiesgames_scores;
 
   if (!db) {
     return new Response(
