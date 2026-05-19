@@ -13,8 +13,6 @@ const btnMedium = document.querySelector('#btnMedium');
 const btnHard = document.querySelector('#btnHard');
 const btnNewGame = document.querySelector('#btnNewGame');
 const btnClear = document.querySelector('#btnClear');
-const btnCheck = document.querySelector('#btnCheck');
-const btnDevDaily = document.querySelector('#btnDevDaily');
 const btnNotes = document.querySelector('#btnNotes');
 
 const LEVELS = {
@@ -713,13 +711,13 @@ btnNewGame?.addEventListener('click', () => {
   startGame(currentMode);
 });
 
-btnDevDaily?.addEventListener('click', () => {
-  devDailyRun += 1;
-  startGame('daily', { devDaily: true });
-});
+// btnDevDaily?.addEventListener('click', () => {
+//   devDailyRun += 1;
+//   startGame('daily', { devDaily: true });
+// });
 
 btnClear?.addEventListener('click', clearSelectedCell);
-btnCheck?.addEventListener('click', checkBoard);
+// btnCheck?.addEventListener('click', checkBoard);
 
 document.addEventListener('keydown', (event) => {
   const key = event.key.toLowerCase();

@@ -1,7 +1,7 @@
 export const prerender = false;
 
 function getDb(locals) {
-  return locals?.runtime?.env?.DB;
+  return locals?.runtime?.env?.eddiesgames_scores;
 }
 
 function getEasternDateString() {
