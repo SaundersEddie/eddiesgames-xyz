@@ -1,4 +1,5 @@
 import type { APIRoute } from 'astro';
+import { env } from 'cloudflare:workers';
 
 export const prerender = false;
 
@@ -14,14 +15,6 @@ type D1PreparedStatement = {
 
 type D1Db = {
   prepare: (query: string) => D1PreparedStatement;
-};
-
-type RuntimeLocals = {
-  runtime?: {
-    env?: {
-      eddiesgames_scores?: D1Db;
-    };
-  };
 };
 
 function getEtDateKey(date = new Date()): string {
@@ -45,8 +38,8 @@ function json(data: unknown, status = 200) {
   });
 }
 
-export const GET: APIRoute = async ({ url, locals }) => {
-  const db = (locals as RuntimeLocals).runtime?.env?.eddiesgames_scores;
+export const GET: APIRoute = async ({ url }) => {
+  const db = env.eddiesgames_scores as D1Db | undefined;
 
   if (!db) {
     return json({ ok: false, error: 'D1 binding not available' }, 500);

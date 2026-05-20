@@ -3,14 +3,22 @@ import { env } from 'cloudflare:workers';
 
 export const prerender = false;
 
-export const POST: APIRoute = async ({ request }) => {
-  const body = await request.json();
+type MatchSubmitBody = {
+  etDate?: string;
+  mode?: string;
+  timeMs?: number | string;
+  moves?: number | string;
+  completedAt?: number | string;
+};
 
-  const etDate = body?.etDate;
-  const mode = body?.mode;
-  const timeMs = Number(body?.timeMs);
-  const moves = Number(body?.moves);
-  const completedAt = Number(body?.completedAt ?? Date.now());
+export const POST: APIRoute = async ({ request }) => {
+  const body = (await request.json()) as MatchSubmitBody;
+
+  const etDate = body.etDate;
+  const mode = body.mode;
+  const timeMs = Number(body.timeMs);
+  const moves = Number(body.moves);
+  const completedAt = Number(body.completedAt ?? Date.now());
 
   if (
     !etDate ||
@@ -25,12 +33,13 @@ export const POST: APIRoute = async ({ request }) => {
     );
   }
 
-  await env.eddiesgames_scores.prepare(
-    `
+  await env.eddiesgames_scores
+    .prepare(
+      `
     INSERT INTO match_scores (et_date, mode, time_ms, moves, completed_at)
     VALUES (?, ?, ?, ?, ?)
     `,
-  )
+    )
     .bind(etDate, mode, Math.floor(timeMs), Math.floor(moves), completedAt)
     .run();
 

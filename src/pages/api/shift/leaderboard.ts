@@ -1,28 +1,7 @@
 import type { APIRoute } from 'astro';
+import { env } from 'cloudflare:workers';
 
 export const prerender = false;
-
-type D1Result<T> = {
-  results: T[];
-};
-
-type D1PreparedStatement = {
-  bind: (...values: unknown[]) => D1PreparedStatement;
-  run: () => Promise<unknown>;
-  all: <T>() => Promise<D1Result<T>>;
-};
-
-type D1Db = {
-  prepare: (query: string) => D1PreparedStatement;
-};
-
-type RuntimeLocals = {
-  runtime?: {
-    env?: {
-      eddiesgames_scores?: D1Db;
-    };
-  };
-};
 
 function getEtDateKey(date = new Date()): string {
   const fmt = new Intl.DateTimeFormat('en-CA', {
@@ -45,17 +24,11 @@ function json(data: unknown, status = 200) {
   });
 }
 
-export const GET: APIRoute = async ({ url, locals }) => {
-  const db = (locals as RuntimeLocals).runtime?.env?.eddiesgames_scores;
-
-  if (!db) {
-    return json({ ok: false, error: 'D1 binding not available' }, 500);
-  }
-
+export const GET: APIRoute = async ({ url }) => {
   const requestedDate = url.searchParams.get('etDate');
   const etDate = requestedDate || getEtDateKey();
 
-  const result = await db
+  const result = await env.eddiesgames_scores
     .prepare(
       `
       SELECT score, best_tile, moves, completed_at
@@ -63,7 +36,7 @@ export const GET: APIRoute = async ({ url, locals }) => {
       WHERE et_date = ?
       ORDER BY score DESC, best_tile DESC, moves ASC, completed_at ASC
       LIMIT 5
-    `,
+      `,
     )
     .bind(etDate)
     .all<{

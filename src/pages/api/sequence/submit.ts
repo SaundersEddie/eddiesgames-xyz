@@ -1,28 +1,7 @@
 import type { APIRoute } from 'astro';
+import { env } from 'cloudflare:workers';
 
 export const prerender = false;
-
-type D1Result<T> = {
-  results: T[];
-};
-
-type D1PreparedStatement = {
-  bind: (...values: unknown[]) => D1PreparedStatement;
-  run: () => Promise<unknown>;
-  all: <T>() => Promise<D1Result<T>>;
-};
-
-type D1Db = {
-  prepare: (query: string) => D1PreparedStatement;
-};
-
-type RuntimeLocals = {
-  runtime?: {
-    env?: {
-      eddiesgames_scores?: D1Db;
-    };
-  };
-};
 
 function getEtDateKey(date = new Date()): string {
   const fmt = new Intl.DateTimeFormat('en-CA', {
@@ -45,13 +24,7 @@ function json(data: unknown, status = 200) {
   });
 }
 
-export const POST: APIRoute = async ({ request, locals }) => {
-  const db = (locals as RuntimeLocals).runtime?.env?.eddiesgames_scores;
-
-  if (!db) {
-    return json({ ok: false, error: 'D1 binding not available' }, 500);
-  }
-
+export const POST: APIRoute = async ({ request }) => {
   let body: unknown;
 
   try {
@@ -69,12 +42,12 @@ export const POST: APIRoute = async ({ request, locals }) => {
   const completedAt = new Date();
   const etDate = getEtDateKey(completedAt);
 
-  await db
+  await env.eddiesgames_scores
     .prepare(
       `
       INSERT INTO sequence_scores (et_date, score, completed_at)
       VALUES (?, ?, ?)
-    `,
+      `,
     )
     .bind(etDate, score, completedAt.toISOString())
     .run();

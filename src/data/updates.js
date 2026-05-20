@@ -1,17 +1,22 @@
 export const updates = [
-    {
+  {
+    date: '2026-05-20',
+    title: 'All Games',
+    body: [
+      'Upgraded to Astro 6.x this required a rewrite of the database code to new cloudflare worker standards',
+    ],
+  },
+  {
     date: '2026-05-19',
     title: 'Sudoku',
     body: [
       'Added Sudoku to game page, saved scores are already implemented, still correcting mobile formats',
-      ],
-    },
-   {
+    ],
+  },
+  {
     date: '2026-05-12',
     title: 'All Existing Games',
-    body: [
-      'Added saved high scores to all exiting games',
-    ],
+    body: ['Added saved high scores to all exiting games'],
   },
   {
     date: '2026-04-01',
