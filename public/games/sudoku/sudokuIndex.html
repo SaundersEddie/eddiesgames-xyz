@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>SUDOKU</title>
-    <link rel="stylesheet" href="sudokuGame.css?v=1" />
+    <link rel="stylesheet" href="sudokuGame.css?v=4" />
   </head>
 
   <body>
@@ -31,13 +31,16 @@
             <b id="time">00:00</b>
           </div>
 
+          <div class="pill">
+            <span class="muted">Lives</span>
+            <b id="lives">♥♥♥</b>
+          </div>
+
           <button class="btn ghost" type="button" id="btnHowToPlay">
             How to Play
           </button>
 
-          <button class="btn" type="button" id="btnNewGame">
-            New Game
-          </button>
+          <button class="btn" type="button" id="btnNewGame">New Game</button>
         </div>
       </header>
 
@@ -46,19 +49,35 @@
           <div class="controlBar">
             <div class="controlGroup">
               <span class="label">Play</span>
+
               <div class="modeButtons">
                 <button class="btn" type="button" id="btnDaily">Daily</button>
-                <button class="btn ghost" type="button" id="btnEasy">Easy</button>
-                <button class="btn ghost" type="button" id="btnMedium">Medium</button>
-                <button class="btn ghost" type="button" id="btnHard">Hard</button>
+
+                <button class="btn ghost" type="button" id="btnEasy">
+                  Easy
+                </button>
+
+                <button class="btn ghost" type="button" id="btnMedium">
+                  Medium
+                </button>
+
+                <button class="btn ghost" type="button" id="btnHard">
+                  Hard
+                </button>
               </div>
             </div>
 
             <div class="controlGroup">
               <span class="label">Actions</span>
+
               <div class="actions">
-                <button class="btn ghost" type="button" id="btnNotes">Notes</button>
-                <button class="btn ghost" type="button" id="btnClear">Clear Cell</button>
+                <button class="btn ghost" type="button" id="btnNotes">
+                  Notes
+                </button>
+
+                <button class="btn ghost" type="button" id="btnClear">
+                  Clear Cell
+                </button>
               </div>
             </div>
 
@@ -88,6 +107,7 @@
 
           <div class="leaderboardBlock">
             <div class="leaderboardTitle">Today’s Board</div>
+
             <ol class="leaderboardList" id="leaderboardList">
               <li><span>—</span><span>#1</span></li>
               <li><span>—</span><span>#2</span></li>
@@ -97,6 +117,7 @@
 
           <div class="leaderboardBlock">
             <div class="leaderboardTitle">Notes</div>
+
             <div class="muted small">
               Daily puzzle will be the same for everyone. Free Play scores are
               not stored.
@@ -108,6 +129,63 @@
       <footer class="footer muted">Production Build</footer>
     </div>
 
-    <script type="module" src="sudokuGame.js?v=1"></script>
+    <div class="resultOverlay hidden" id="resultOverlay">
+      <div class="resultModal">
+        <button class="btn ghost resultClose" type="button" id="btnResultClose">
+          Close
+        </button>
+
+        <div class="label" id="resultLabel">Puzzle Solved</div>
+        <h2 class="resultTitle" id="resultTitle">SUDOKU Complete</h2>
+
+        <p class="resultText" id="resultSummary">Solved in 00:00</p>
+
+        <div class="resultActions">
+          <button class="btn" type="button" id="btnResultNewGame">
+            New Game
+          </button>
+
+          <button class="btn ghost" type="button" id="btnShare">
+            Share Result
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="infoOverlay hidden" id="howToPlayOverlay">
+      <div class="infoModal">
+        <button class="btn ghost infoClose" type="button" id="btnHowToClose">
+          Close
+        </button>
+
+        <h2 class="infoTitle">How to Play</h2>
+
+        <p>
+          <strong>Goal:</strong> Fill every row, column, and 3×3 box with the
+          numbers 1–9.
+        </p>
+
+        <p>
+          Each number can appear only once in each row, column, and 3×3 box.
+        </p>
+
+        <p>
+          Click a cell, then use the number buttons or keyboard to enter a
+          number. Use Notes mode for pencil marks.
+        </p>
+
+        <p>
+          Wrong final entries cost a life. Run out of lives and the puzzle is
+          over.
+        </p>
+
+        <p>
+          Daily mode uses the same puzzle for everyone. Easy, Medium, and Hard
+          are free-play games and do not save scores.
+        </p>
+      </div>
+    </div>
+
+    <script type="module" src="sudokuGame.js?v=4"></script>
   </body>
 </html>

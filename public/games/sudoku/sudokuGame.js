@@ -6,6 +6,7 @@ const difficultyEl = document.querySelector('#dailyDifficulty');
 const currentModeEl = document.querySelector('#currentMode');
 const currentStateEl = document.querySelector('#currentState');
 const etDateLabelEl = document.querySelector('#etDateLabel');
+const livesEl = document.querySelector('#lives');
 
 const btnDaily = document.querySelector('#btnDaily');
 const btnEasy = document.querySelector('#btnEasy');
@@ -14,6 +15,18 @@ const btnHard = document.querySelector('#btnHard');
 const btnNewGame = document.querySelector('#btnNewGame');
 const btnClear = document.querySelector('#btnClear');
 const btnNotes = document.querySelector('#btnNotes');
+
+const resultOverlay = document.querySelector('#resultOverlay');
+const resultLabel = document.querySelector('#resultLabel');
+const resultTitle = document.querySelector('#resultTitle');
+const resultSummary = document.querySelector('#resultSummary');
+const btnResultClose = document.querySelector('#btnResultClose');
+const btnResultNewGame = document.querySelector('#btnResultNewGame');
+const btnShare = document.querySelector('#btnShare');
+
+const btnHowToPlay = document.querySelector('#btnHowToPlay');
+const howToPlayOverlay = document.querySelector('#howToPlayOverlay');
+const btnHowToClose = document.querySelector('#btnHowToClose');
 
 const LEVELS = {
   daily: {
@@ -35,6 +48,8 @@ const LEVELS = {
   },
 };
 
+const MAX_LIVES = 3;
+
 let currentMode = 'daily';
 let currentPuzzle = '';
 let currentSolution = '';
@@ -49,6 +64,8 @@ let currentVisibleCount = 0;
 let currentPuzzleSeed = '';
 let currentIsDevDaily = false;
 let scoreSubmitted = false;
+let solvedTimeText = '';
+let lives = MAX_LIVES;
 
 const cellNotes = new Map();
 
@@ -156,6 +173,10 @@ function formatTime(ms) {
   return `${minutes}:${seconds}`;
 }
 
+function formatLeaderboardTime(ms) {
+  return formatTime(ms);
+}
+
 function resetTimerDisplay() {
   clearInterval(timerId);
 
@@ -190,14 +211,6 @@ function stopTimer() {
 function getElapsedMs() {
   if (!startedAt) return 0;
   return Date.now() - startedAt;
-}
-
-function formatLeaderboardTime(ms) {
-  const totalSeconds = Math.floor(ms / 1000);
-  const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
-  const seconds = String(totalSeconds % 60).padStart(2, '0');
-
-  return `${minutes}:${seconds}`;
 }
 
 function setActiveButton(mode) {
@@ -241,6 +254,12 @@ function updateLabels(mode, visibleCount, isDevDaily = false) {
   if (etDateLabelEl) {
     etDateLabelEl.textContent = `ET date: ${easternDate}`;
   }
+}
+
+function updateLivesDisplay() {
+  if (!livesEl) return;
+
+  livesEl.textContent = '♥'.repeat(lives) + '♡'.repeat(MAX_LIVES - lives);
 }
 
 function buildBoard() {
@@ -446,11 +465,15 @@ function setSelectedCellValue(value) {
     cell.classList.add('correct');
   } else {
     cell.classList.add('wrong');
+    loseLife();
   }
 
   updateHighlights();
   updateUsedNumbers();
-  checkSolvedSilently();
+
+  if (!isSolved) {
+    checkSolvedSilently();
+  }
 }
 
 function clearSelectedCell() {
@@ -504,7 +527,124 @@ function updateUsedNumbers() {
   });
 }
 
+function hideResultModal() {
+  resultOverlay?.classList.add('hidden');
+}
+
+function showResultModal() {
+  if (!resultOverlay || !resultSummary) return;
+
+  const clueText = `${currentVisibleCount} clue${currentVisibleCount === 1 ? '' : 's'}`;
+  const showShare = currentMode === 'daily' && !currentIsDevDaily;
+
+  if (resultLabel) {
+    resultLabel.textContent = 'Puzzle Solved';
+  }
+
+  if (resultTitle) {
+    resultTitle.textContent = 'SUDOKU Complete';
+  }
+
+  resultSummary.textContent = `Solved in ${solvedTimeText} • ${clueText}`;
+
+  if (btnShare) {
+    btnShare.style.display = showShare ? '' : 'none';
+    btnShare.textContent = 'Share Result';
+  }
+
+  resultOverlay.classList.remove('hidden');
+}
+
+function showGameOverModal() {
+  if (!resultOverlay || !resultSummary) return;
+
+  const clueText = `${currentVisibleCount} clue${currentVisibleCount === 1 ? '' : 's'}`;
+
+  if (resultLabel) {
+    resultLabel.textContent = 'Puzzle Failed';
+  }
+
+  if (resultTitle) {
+    resultTitle.textContent = 'Game Over';
+  }
+
+  resultSummary.textContent = `No lives left • ${clueText}`;
+
+  if (btnShare) {
+    btnShare.style.display = 'none';
+  }
+
+  resultOverlay.classList.remove('hidden');
+}
+
+function getShareText() {
+  const etDate = getEasternDateString();
+  const clueText = `${currentVisibleCount} clue${currentVisibleCount === 1 ? '' : 's'}`;
+  const timeText = solvedTimeText || timeEl?.textContent || '00:00';
+
+  return [
+    `SUDOKU Daily — ${etDate}`,
+    `Solved in ${timeText}`,
+    clueText,
+    'eddiesgames.xyz',
+  ].join('\n');
+}
+
+async function copyShareText() {
+  const text = getShareText();
+
+  try {
+    await navigator.clipboard.writeText(text);
+
+    if (btnShare) {
+      btnShare.textContent = 'Copied!';
+
+      setTimeout(() => {
+        btnShare.textContent = 'Share Result';
+      }, 1400);
+    }
+  } catch (error) {
+    console.error('Failed to copy Sudoku share text:', error);
+
+    if (btnShare) {
+      btnShare.textContent = 'Copy failed';
+
+      setTimeout(() => {
+        btnShare.textContent = 'Share Result';
+      }, 1400);
+    }
+  }
+}
+
 function lockSolvedBoard() {
+  isSolved = true;
+  solvedTimeText = timeEl?.textContent ?? '00:00';
+
+  cells.forEach((cell) => {
+    cell.classList.add('locked');
+  });
+
+  if (currentStateEl) {
+    currentStateEl.textContent = `Solved in ${solvedTimeText}`;
+  }
+
+  stopTimer();
+  submitDailyScore();
+  showResultModal();
+}
+
+function loseLife() {
+  if (isSolved) return;
+
+  lives = Math.max(0, lives - 1);
+  updateLivesDisplay();
+
+  if (lives === 0) {
+    lockFailedBoard();
+  }
+}
+
+function lockFailedBoard() {
   isSolved = true;
 
   cells.forEach((cell) => {
@@ -512,11 +652,11 @@ function lockSolvedBoard() {
   });
 
   if (currentStateEl) {
-    currentStateEl.textContent = `Solved in ${timeEl.textContent}`;
+    currentStateEl.textContent = 'Game Over';
   }
 
   stopTimer();
-  submitDailyScore();
+  showGameOverModal();
 }
 
 function checkSolvedSilently() {
@@ -542,7 +682,9 @@ async function loadLeaderboard() {
   if (!leaderboardListEl) return;
 
   try {
-    const response = await fetch(`/api/sudoku/leaderboard?etDate=${easternDate}`);
+    const response = await fetch(
+      `/api/sudoku/leaderboard?etDate=${easternDate}`,
+    );
     const data = await response.json();
     const scores = data.scores ?? [];
 
@@ -622,9 +764,19 @@ function startGame(mode, options = {}) {
   notesMode = false;
   btnNotes?.classList.add('ghost');
   isSolved = false;
-
+  lives = MAX_LIVES;
   currentIsDevDaily = options.devDaily === true;
   scoreSubmitted = false;
+  solvedTimeText = '';
+
+  updateLivesDisplay();
+  hideResultModal();
+
+  if (btnShare) {
+    btnShare.removeAttribute('disabled');
+    btnShare.style.display = '';
+    btnShare.textContent = 'Share Result';
+  }
 
   const easternDate = getEasternDateString();
 
@@ -654,6 +806,23 @@ function startGame(mode, options = {}) {
   }
 }
 
+function showHowToPlay() {
+  howToPlayOverlay?.classList.remove('hidden');
+}
+
+function hideHowToPlay() {
+  howToPlayOverlay?.classList.add('hidden');
+}
+
+btnHowToPlay?.addEventListener('click', showHowToPlay);
+btnHowToClose?.addEventListener('click', hideHowToPlay);
+
+howToPlayOverlay?.addEventListener('click', (event) => {
+  if (event.target === howToPlayOverlay) {
+    hideHowToPlay();
+  }
+});
+
 btnDaily?.addEventListener('click', () => {
   startGame('daily');
 });
@@ -676,8 +845,27 @@ btnNewGame?.addEventListener('click', () => {
 
 btnClear?.addEventListener('click', clearSelectedCell);
 
+btnResultClose?.addEventListener('click', hideResultModal);
+
+btnResultNewGame?.addEventListener('click', () => {
+  hideResultModal();
+  startGame(currentMode);
+});
+
+btnShare?.addEventListener('click', copyShareText);
+
 document.addEventListener('keydown', (event) => {
   const key = event.key.toLowerCase();
+
+  if (
+    key === 'escape' &&
+    howToPlayOverlay &&
+    !howToPlayOverlay.classList.contains('hidden')
+  ) {
+    event.preventDefault();
+    hideHowToPlay();
+    return;
+  }
 
   if (key === 'arrowup') {
     event.preventDefault();

@@ -3,7 +3,9 @@ export const updates = [
     date: '2026-05-20',
     title: 'All Games',
     body: [
-      'Upgraded to Astro 6.x this required a rewrite of the database code to new cloudflare worker standards',
+      'Upgraded to Astro 6',
+      'Added Share feature to Sudoku',
+      'Added How to Play modal to Sudoku',
     ],
   },
   {
