@@ -1,4 +1,11 @@
 export const updates = [
+    {
+    date: '2026-05-19',
+    title: 'Sudoku',
+    body: [
+      'Added Sudoku to game page, saved scores are already implemented, still correcting mobile formats',
+      ],
+    },
    {
     date: '2026-05-12',
     title: 'All Existing Games',

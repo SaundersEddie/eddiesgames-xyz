@@ -639,3 +639,95 @@ body::before {
   border-color: rgba(255, 255, 255, 0.12);
   background: rgba(255, 255, 255, 0.05);
 }
+
+/* mobile Sudoku cleanup */
+@media (max-width: 700px) {
+  html,
+  body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    display: none;
+  }
+
+  body {
+    background:
+      radial-gradient(
+        700px 420px at 50% -10%,
+        rgba(255, 177, 74, 0.1),
+        transparent 60%
+      ),
+      linear-gradient(180deg, #06070a, var(--bg));
+  }
+
+  .wrap {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    padding: 10px 10px 14px;
+  }
+
+  .topbar,
+  .panel,
+  .gamePanel,
+  .sidePanel,
+  .controlBar,
+  .keypadWrap,
+  .leaderboardBlock {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .panel {
+    grid-template-columns: 1fr;
+  }
+
+  .gamePanel {
+    overflow: hidden;
+    padding: 10px;
+  }
+
+  .boardWrap {
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+    justify-content: center;
+  }
+
+  :root {
+    --board-size: min(calc(100vw - 64px), 430px);
+  }
+
+  .board {
+    width: var(--board-size);
+    height: var(--board-size);
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  .modeButtons {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .modeButtons .btn,
+  .actions .btn {
+    width: 100%;
+  }
+
+  .keypad {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .cell {
+    font-size: clamp(1rem, 6vw, 1.35rem);
+  }
+}
