@@ -31,17 +31,17 @@ export const GET: APIRoute = async ({ url }) => {
   const result = await env.eddiesgames_scores
     .prepare(
       `
-      SELECT guesses, completed_at
+      SELECT guesses, COUNT(*) AS total
       FROM redacted_scores
       WHERE et_date = ?
-      ORDER BY guesses ASC, completed_at ASC
-      LIMIT 5
+      GROUP BY guesses
+      ORDER BY guesses ASC
       `,
     )
     .bind(etDate)
     .all<{
       guesses: number;
-      completed_at: string;
+      total: number;
     }>();
 
   return json({
@@ -49,7 +49,7 @@ export const GET: APIRoute = async ({ url }) => {
     etDate,
     entries: result.results.map((row) => ({
       guesses: row.guesses,
-      completedAt: row.completed_at,
+      total: row.total,
     })),
   });
 };

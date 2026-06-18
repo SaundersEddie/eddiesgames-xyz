@@ -490,14 +490,29 @@ https://eddiesgames.xyz`;
 
       const entries = Array.isArray(data.entries) ? data.entries : [];
 
-      list.innerHTML = entries.length
-        // ? entries.map((entry) => `<li>${entry.guesses} guesses</li>`).join('')
-        ? entries.map((entry) => {
-          const label = entry.guesses === 1 ? 'Guess' : 'Guesses';
-          return `<li>${entry.guesses} ${label}</li>`;
+     const grouped = new Map();
+
+for (const entry of entries) {
+  const guesses = Number(entry.guesses);
+  if (!Number.isFinite(guesses)) continue;
+
+  grouped.set(guesses, (grouped.get(guesses) || 0) + (Number(entry.total) || 1));
+}
+
+const groupedEntries = Array.from(grouped.entries())
+  .map(([guesses, total]) => ({ guesses, total }))
+  .sort((a, b) => a.guesses - b.guesses);
+
+  list.innerHTML = groupedEntries.length
+    ? groupedEntries
+        .map((entry) => {
+          const playerWord = entry.total === 1 ? 'player' : 'players';
+          const guessWord = entry.guesses === 1 ? 'guess' : 'guesses';
+
+          return `<li>${entry.total} ${playerWord} solved in ${entry.guesses} ${guessWord}</li>`;
         })
         .join('')
-        : `<li class="muted">No scores yet</li>`;
+    : `<li class="muted">No solves yet</li>`;
     } catch (err) {
       console.error('Could not load Redacted leaderboard:', err);
     }
@@ -537,12 +552,6 @@ https://eddiesgames.xyz`;
         console.error('Could not submit Redacted score:', err);
         });
       }
-
-      // submitScore({
-      //   game: 'redacted',
-      //   score: guesses.length, // guesses used (lower is better)
-      //   isDaily,
-      // });
 
       const shareText = buildShareText({
         won: true,
