@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>LETTERLOCK</title>
+    <link rel="stylesheet" href="letterlockGame.css" />
+  </head>
+
+  <body>
+    <div class="lockWrap">
+      <header class="lockTopbar">
+        <div class="brand">
+          <div class="lockTitle">LETTERLOCK</div>
+          <div class="lockSub">Build words • Open locks • Crack the vault</div>
+        </div>
+
+        <div class="lockHud">
+          <div class="lockPill">
+            <span class="muted">Mode</span>
+            <b id="modeLabel">Daily Lock</b>
+          </div>
+          <button id="howToBtn" class="btn ghost" title="How to play">How to Play</button>
+          <button id="dailyBtn" class="btn ghost" title="Play today's lock">Daily</button>
+          <button id="freeBtn" class="btn" title="Start a random lock">Free Play</button>
+        </div>
+      </header>
+
+      <main class="lockPanel">
+        <section class="lockGamePanel">
+          <div class="lockGameHeader">
+            <div>
+              <div class="label">Current Word</div>
+              <div id="currentWord" class="currentWord">—</div>
+            </div>
+            <div class="actions">
+              <button id="clearBtn" class="btn ghost">Clear</button>
+              <button id="submitBtn" class="btn">Submit</button>
+            </div>
+          </div>
+
+          <div id="letters" class="letters" aria-label="Letter bank"></div>
+
+          <div class="hintRow">
+            <div class="hint muted">Use each tile once per word. Words need 3+ letters.</div>
+            <div id="toast" class="toast" aria-live="polite"></div>
+          </div>
+        </section>
+
+        <aside class="lockIntelPanel">
+          <div class="intelHeader">
+            <div>
+              <div class="label">Vault Status</div>
+              <div class="muted small" id="seedLabel"></div>
+            </div>
+          </div>
+
+          <div class="intelStats">
+            <div class="stat">
+              <div class="statLabel">Score</div>
+              <div class="statValue" id="score">0</div>
+            </div>
+            <div class="stat">
+              <div class="statLabel">Attempts</div>
+              <div class="statValue" id="attempts">0</div>
+            </div>
+            <div class="stat">
+              <div class="statLabel">Bad Left</div>
+              <div class="statValue" id="badLeft">10</div>
+            </div>
+            <div class="stat">
+              <div class="statLabel">Locks</div>
+              <div class="statValue"><span id="locksOpen">0</span>/<span id="locksTotal">6</span></div>
+            </div>
+          </div>
+
+          <div class="locksBlock">
+            <div class="label">Locks</div>
+            <div id="locks" class="locks" aria-label="Locks"></div>
+          </div>
+
+          <div class="foundBlock">
+            <div class="historyHeader">
+              <div class="label">Found Words</div>
+              <div class="muted small"><span id="foundCount">0</span></div>
+            </div>
+            <div id="found" class="found" aria-label="Found words"></div>
+          </div>
+
+          <div class="dailyResultsBlock">
+            <div class="historyHeader">
+              <div class="label">Daily Results</div>
+              <div class="muted small">local POC</div>
+            </div>
+            <div id="dailyResults" class="dailyResults" aria-label="Daily results"></div>
+          </div>
+        </aside>
+      </main>
+
+      <footer class="footer muted">Production Build</footer>
+    </div>
+
+    <div id="modal" class="modal" hidden>
+      <div class="modalCard">
+        <div id="modalTitle" class="modalTitle">Vault Opened</div>
+        <div id="modalBody" class="modalBody muted"></div>
+        <div class="modalActions">
+          <button id="playDailyBtn" class="btn ghost">Play Daily</button>
+          <button id="playFreeBtn" class="btn">Free Play</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="howToModal" class="modal" hidden>
+      <div class="modalCard">
+        <div class="modalTitle">How to Play</div>
+        <div class="modalBody muted">
+          <p><b>Goal:</b> Open all six locks by building valid words from the letter bank.</p>
+          <p>Click letters to build a word. Each letter tile can be used once per word.</p>
+          <p>Submit real words of <b>3+ letters</b>. Good words score points and may open one or more locks.</p>
+          <p>You get <b>10 bad guesses</b>. Invalid words, too-short words, and blocked words cost one bad guess.</p>
+          <p><b>Daily</b> gives everyone the same date-seeded puzzle. <b>Free Play</b> rolls a random one.</p>
+          <p><b>Daily Results:</b> solved daily games are grouped by attempts, not ranked by names or time.</p>
+        </div>
+        <div class="modalActions">
+          <button id="howToCloseBtn" class="btn">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="letterlockGame.js"></script>
+  </body>
+</html>

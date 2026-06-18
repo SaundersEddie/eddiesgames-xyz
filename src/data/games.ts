@@ -1,5 +1,13 @@
 export const games = [
   {
+    slug: 'letterlock',
+    title: 'LETTERLOCK',
+    subtitle: 'Crack the word vault',
+    about:
+      'Build valid words from an eight-letter bank, open six locks, and crack the daily vault before your bad guesses run out.',
+    path: '/games/letterlock/letterlockIndex.html',
+  },
+  {
     slug: 'redacted',
     title: 'REDACTED',
     subtitle: 'Uncover the hidden word',

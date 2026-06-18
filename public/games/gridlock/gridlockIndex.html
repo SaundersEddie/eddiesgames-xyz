@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>GRIDLOCK</title>
+    <link rel="stylesheet" href="gridlockGame.css" />
+  </head>
+
+  <body>
+    <div class="gridlockWrap">
+      <header class="gridlockTopbar">
+        <div class="brand">
+          <div class="gridlockTitle">GRIDLOCK</div>
+          <div class="gridlockSub">
+            Click a block, then click a glowing space to slide it
+          </div>
+        </div>
+
+        <div class="gridlockHud">
+          <label class="gridlockMode">
+            <span class="muted">Mode</span>
+            <select id="modeSelect" aria-label="Mode">
+              <option value="easy">Easy</option>
+              <option value="medium">Medium</option>
+              <option value="hard">Hard</option>
+            </select>
+          </label>
+
+          <button id="howToBtn" class="btn ghost" type="button">
+            How to Play
+          </button>
+          <button id="newPuzzleBtn" class="btn ghost" type="button">
+            New Puzzle
+          </button>
+          <button id="restartBtn" class="btn" type="button">Restart</button>
+        </div>
+      </header>
+
+      <main class="gridlockPanel">
+        <section class="gridlockGamePanel">
+          <div class="gridlockStats">
+            <div class="gridlockPill">
+              <span class="muted">Time</span>
+              <b id="time" class="mono">00:00.000</b>
+            </div>
+            <div class="gridlockPill">
+              <span class="muted">Moves</span>
+              <b id="moves" class="mono">0</b>
+            </div>
+            <div class="gridlockPill">
+              <span class="muted">Puzzle</span>
+              <b id="puzzleLabel" class="mono">—</b>
+            </div>
+          </div>
+
+          <div class="playHint">
+            Free the orange X through the right-side exit.
+          </div>
+
+          <div class="boardShell">
+            <div id="board" class="board" aria-label="Gridlock board"></div>
+          </div>
+
+          <div id="toast" class="toast" aria-live="polite"></div>
+        </section>
+
+        <aside class="gridlockLeaderboardPanel">
+          <div class="leaderboardHeader">
+            <div>
+              <div class="label">Daily Top 3</div>
+              <div class="muted small" id="lbDate"></div>
+            </div>
+          </div>
+
+          <div class="lbBlock">
+            <div class="lbTitle">Easy</div>
+            <ol id="lbEasy" class="lbList"></ol>
+          </div>
+
+          <div class="lbBlock">
+            <div class="lbTitle">Medium</div>
+            <ol id="lbMedium" class="lbList"></ol>
+          </div>
+
+          <div class="lbBlock">
+            <div class="lbTitle">Hard</div>
+            <ol id="lbHard" class="lbList"></ol>
+          </div>
+        </aside>
+      </main>
+
+      <footer class="footer muted">Production Build</footer>
+    </div>
+
+    <div id="modal" class="modal hidden" role="dialog" aria-modal="true">
+      <div class="modalCard">
+        <div class="modalTitle">Escaped</div>
+        <div class="modalBody muted">
+          <p>
+            Time: <span id="finalTime" class="mono"></span>
+            &nbsp;•&nbsp;
+            Moves: <span id="finalMoves" class="mono"></span>
+          </p>
+          <p class="small muted">Daily leaderboard resets at midnight ET.</p>
+
+          <div class="shareRow">
+            <button id="copyShareBtn" class="btn ghost" type="button">
+              Share Result
+            </button>
+            <span id="copyShareHint" class="shareHint" aria-live="polite"></span>
+          </div>
+        </div>
+
+        <div class="modalActions">
+          <button id="playAgainBtn" class="btn ghost" type="button">
+            Play Again
+          </button>
+          <button id="closeModalBtn" class="btn" type="button">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="howToModal" class="modal hidden" role="dialog" aria-modal="true">
+      <div class="modalCard">
+        <div class="modalTitle">How to Play</div>
+        <div class="modalBody muted">
+          <p>
+            <b>Goal:</b> Slide the orange <b>X</b> block out through the EXIT on
+            the right.
+          </p>
+          <p><b>Step 1:</b> Click any block.</p>
+          <p><b>Step 2:</b> Glowing spaces show where that block can move.</p>
+          <p><b>Step 3:</b> Click a glowing space to slide the block there.</p>
+          <p>
+            Horizontal blocks only move left/right. Vertical blocks only move
+            up/down.
+          </p>
+          <p>Your score is based on <b>fewest moves</b>, then fastest time.</p>
+        </div>
+
+        <div class="modalActions">
+          <button id="closeHowToBtn" class="btn" type="button">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="gridlockGame.js"></script>
+  </body>
+</html>
+
