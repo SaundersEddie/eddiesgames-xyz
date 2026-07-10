@@ -1,5 +1,13 @@
 export const games = [
   {
+    slug: 'pegs',
+    title: 'PEGS',
+    subtitle: 'Jump • Remove • Leave one',
+    about:
+      'Jump pegs over one another, remove the peg you crossed, and keep going until no legal moves remain. Can you leave just one?',
+    path: '/games/pegs/pegsIndex.html',
+  },
+  {
     slug: 'letterlock',
     title: 'LETTERLOCK',
     subtitle: 'Crack the word vault',
@@ -54,5 +62,5 @@ export const games = [
     about:
       'Fill the 9×9 grid with numbers 1-9 without repeating in rows, columns, or boxes. Choose your difficulty and challenge your logic skills.',
     path: '/games/sudoku/sudokuIndex.html',
-  }
+  },
 ];

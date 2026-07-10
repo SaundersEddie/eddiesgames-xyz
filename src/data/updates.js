@@ -1,4 +1,11 @@
 export const updates = [
+    {
+    date: '2026-07-10',
+    title: 'Peg Solitaire',
+    body: [
+      'Added new initial game of Pegs Solitaire',
+    ],
+  },
   {
     date: '2026-05-20',
     title: 'All Games',

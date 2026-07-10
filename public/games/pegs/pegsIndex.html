@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>PEGS</title>
+    <link rel="stylesheet" href="pegsGame.css?v=1" />
+  </head>
+
+  <body>
+    <div class="wrap">
+      <header class="topbar">
+        <div class="brand">
+          <div class="title">PEGS</div>
+          <div class="sub">Jump • Remove • Leave one</div>
+        </div>
+
+        <div class="hud">
+          <div class="pill">
+            <span class="muted">Mode</span>
+            <b id="currentMode">Daily</b>
+          </div>
+
+          <div class="pill">
+            <span class="muted">Shape</span>
+            <b id="currentShape">Classic Triangle</b>
+          </div>
+
+          <div class="pill">
+            <span class="muted">Pegs</span>
+            <b id="pegCount">14</b>
+          </div>
+
+          <div class="pill">
+            <span class="muted">Moves</span>
+            <b id="moveCount">0</b>
+          </div>
+
+          <div class="pill">
+            <span class="muted">Time</span>
+            <b id="time">00:00</b>
+          </div>
+
+          <button class="btn ghost" type="button" id="btnHowToPlay">
+            How to Play
+          </button>
+        </div>
+      </header>
+
+      <main class="panel">
+        <section class="gamePanel">
+          <div class="controlBar">
+            <div class="controlGroup">
+              <span class="label">Play</span>
+              <div class="modeButtons">
+                <button class="btn" type="button" id="btnDaily">Daily</button>
+                <button class="btn ghost" type="button" id="btnRandom">Random</button>
+              </div>
+            </div>
+
+            <div class="controlGroup">
+              <span class="label">Actions</span>
+              <div class="actions">
+                <button class="btn ghost" type="button" id="btnUndo" disabled>
+                  Undo
+                </button>
+                <button class="btn ghost" type="button" id="btnRestart">
+                  Restart
+                </button>
+              </div>
+            </div>
+
+            <div class="controlGroup boardStatusGroup">
+              <span class="label">Board</span>
+              <div class="currentState" id="currentState">Daily Challenge</div>
+            </div>
+          </div>
+
+          <div class="boardWrap">
+            <div
+              id="pegsBoard"
+              class="board"
+              role="grid"
+              aria-label="Peg solitaire board"
+            ></div>
+          </div>
+
+          <div class="gameHint" id="gameHint">
+            Select a peg, then select an empty hole two spaces away.
+          </div>
+        </section>
+
+        <aside class="sidePanel">
+          <div class="sideHeader">
+            <div>
+              <div class="label">Daily Top 3</div>
+              <div class="muted small" id="etDateLabel">ET date: —</div>
+            </div>
+          </div>
+
+          <div class="leaderboardBlock">
+            <div class="leaderboardTitle">Today’s Triangle</div>
+            <ol class="leaderboardList" id="leaderboardList">
+              <li><span>—</span><span>#1</span></li>
+              <li><span>—</span><span>#2</span></li>
+              <li><span>—</span><span>#3</span></li>
+            </ol>
+          </div>
+
+          <div class="leaderboardBlock">
+            <div class="leaderboardTitle">Scoring</div>
+            <div class="muted small scoreNotes">
+              <p>Fewer pegs ranks higher.</p>
+              <p>Ties use fewer moves, then faster time.</p>
+              <p>Undo restores the board but never removes a move.</p>
+              <p>Random games are not stored.</p>
+            </div>
+          </div>
+        </aside>
+      </main>
+
+      <footer class="footer muted">Production Build</footer>
+    </div>
+
+    <div class="resultOverlay hidden" id="resultOverlay">
+      <div class="resultModal">
+        <button class="btn ghost resultClose" type="button" id="btnResultClose">
+          Close
+        </button>
+
+        <div class="label" id="resultLabel">No More Moves</div>
+        <h2 class="resultTitle" id="resultTitle">Run Complete</h2>
+        <p class="resultText" id="resultSummary"></p>
+
+        <div class="resultActions">
+          <button class="btn" type="button" id="btnResultNewGame">
+            New Game
+          </button>
+          <button class="btn ghost" type="button" id="btnShare">
+            Copy Score
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="infoOverlay hidden" id="howToPlayOverlay">
+      <div class="infoModal">
+        <button class="btn ghost infoClose" type="button" id="btnHowToClose">
+          Close
+        </button>
+
+        <h2 class="infoTitle">How to Play</h2>
+
+        <p>
+          <strong>Goal:</strong> Remove as many pegs as possible. A perfect game
+          leaves one peg.
+        </p>
+
+        <p>
+          Select a peg, then select an empty hole exactly two spaces away. The
+          peg must jump over one neighboring peg.
+        </p>
+
+        <p>
+          The jumped peg is removed. Diagonal and horizontal jumps are allowed
+          wherever the board shape supports them.
+        </p>
+
+        <p>
+          Undo restores the previous board position, but it does not reduce your
+          move count or rewind the timer.
+        </p>
+
+        <p>
+          Daily mode uses the same starting hole for everyone. Random mode is
+          free play and does not save scores.
+        </p>
+      </div>
+    </div>
+
+    <script type="module" src="pegsGame.js?v=1"></script>
+  </body>
+</html>
