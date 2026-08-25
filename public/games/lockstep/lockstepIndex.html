@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Lockstep</title>
+
+    <link rel="stylesheet" href="lockstepGame.css" />
+  </head>
+
+  <body>
+    <div class="lockstepWrap">
+      <header class="lockstepTopbar">
+        <div class="brand">
+          <div class="lockstepTitle">LOCKSTEP</div>
+          <div class="lockstepSub">Place • Deduce • Unlock</div>
+        </div>
+
+        <div class="lockstepHud">
+        <div class="pill">
+            <span class="muted" id="levelLabel">Level</span>
+            <b id="levelNumber">1</b>
+        </div>
+
+        <button id="howToBtn" class="btn ghost" type="button">
+            How to Play
+        </button>
+
+        <button id="resetBtn" class="btn" type="button">
+            Reset
+        </button>
+        </div>
+      </header>
+
+      <main class="lockstepPanel">
+        <section class="lockstepGamePanel">
+          <div class="rules">
+            <span>One per row</span>
+            <span>One per column</span>
+            <span>One per region</span>
+            <span>Tokens cannot touch</span>
+          </div>
+
+          <div class="boardArea">
+            <div
+              id="board"
+              class="board"
+              aria-label="Lockstep puzzle board"
+            ></div>
+          </div>
+
+          <div id="status" class="status" aria-live="polite">
+            Click a square: ● → × → empty
+          </div>
+        </section>
+
+        <aside class="leaderboardPanel">
+          <div class="leaderboardHeader">
+            <div>
+              <div class="label">Daily Top 3</div>
+              <div class="muted small">Today</div>
+            </div>
+          </div>
+
+          <ol class="leaderboardList">
+            <li>
+              <span>1.</span>
+              <strong>—</strong>
+            </li>
+            <li>
+              <span>2.</span>
+              <strong>—</strong>
+            </li>
+            <li>
+              <span>3.</span>
+              <strong>—</strong>
+            </li>
+          </ol>
+        </aside>
+      </main>
+    </div>
+
+    <div
+        id="howToModal"
+        class="modal hidden"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="howToTitle"
+        >
+        <div class="modalCard">
+            <div id="howToTitle" class="modalTitle">How to Play</div>
+
+            <div class="modalBody muted">
+            <p><b>Goal:</b> Place one token in every row, column, and colored region.</p>
+
+            <p>
+                Tokens cannot touch each other, including diagonally.
+            </p>
+
+            <p>
+                Click a square to cycle:
+                <b>token → X → empty</b>.
+            </p>
+
+            <p>
+                Use X marks to track squares where a token cannot go.
+            </p>
+
+            <p>
+                Complete the board with all rules satisfied to
+                <b>UNLOCK</b> the level.
+            </p>
+            </div>
+
+            <div class="modalActions">
+            <button id="closeHowToBtn" class="btn" type="button">
+                Close
+            </button>
+            </div>
+        </div>
+        </div>
+
+    <script type="module" src="lockstepGame.js"></script>
+  </body>
+</html>

@@ -63,4 +63,12 @@ export const games = [
       'Fill the 9×9 grid with numbers 1-9 without repeating in rows, columns, or boxes. Choose your difficulty and challenge your logic skills.',
     path: '/games/sudoku/sudokuIndex.html',
   },
+  // {
+  //   slug: 'lockstep',
+  //   title: 'LOCKSTEP',
+  //   subtitle: 'Place • Deduce • Unlock',
+  //   about:
+  //     'Place one token in every row, column, and region without letting tokens touch. Use logic to unlock the board.',
+  //   path: '/games/lockstep/lockstepIndex.html',
+  // },
 ];
