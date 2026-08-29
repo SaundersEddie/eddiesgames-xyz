@@ -1,30 +1,82 @@
 ---
-const { position } = Astro.props;
+const { position = "bottom" } = Astro.props;
 
-// Only bottom is supported. Keep placeholders OFF by default.
+// Development/testing only.
+// Change to true if you want to visually check ad spacing.
 const SHOW_AD_PLACEHOLDERS = true;
+
+// Real ads remain disabled until AdSense approval/configuration.
+const ADS_ENABLED = false;
 ---
 
-{position === "bottom" && SHOW_AD_PLACEHOLDERS && (
-  <div class="ad ad-bottom">
-    <div class="ad-inner"></div>
+{position === "bottom" && (
+  <div class="ad ad-bottom" aria-label="Advertisement">
+    {ADS_ENABLED ? (
+      <div class="ad-inner">
+        <!--
+          Google AdSense unit goes here after approval.
+
+          Example structure ONLY:
+
+          <ins
+            class="adsbygoogle"
+            style="display:block"
+            data-ad-client="ca-pub-XXXXXXXXXXXX"
+            data-ad-slot="XXXXXXXXXX"
+            data-ad-format="auto"
+            data-full-width-responsive="true">
+          </ins>
+        -->
+      </div>
+    ) : SHOW_AD_PLACEHOLDERS ? (
+      <div class="ad-inner ad-placeholder">
+        <span>Advertisement</span>
+      </div>
+    ) : null}
   </div>
 )}
 
 <style>
-.ad {
-  display: flex;
-  justify-content: center;
-  padding: 12px 0;
-}
+  .ad {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
 
-/* Ad container (empty by default) */
-.ad-inner {
-  width: 100%;
-  max-width: 728px;
-  height: 90px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px dashed var(--line);
-  border-radius: 12px;
-}
+  .ad-bottom {
+    padding: 12px 20px;
+  }
+
+  .ad-inner {
+    width: 100%;
+    max-width: 728px;
+    min-height: 90px;
+  }
+
+  .ad-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px dashed var(--line);
+    border-radius: 12px;
+
+    color: var(--muted);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 760px) {
+    .ad-bottom {
+      padding-left: 12px;
+      padding-right: 12px;
+    }
+
+    .ad-inner {
+      max-width: 100%;
+      min-height: 50px;
+    }
+  }
 </style>

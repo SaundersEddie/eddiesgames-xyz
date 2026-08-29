@@ -63,6 +63,13 @@ export const games = [
       'Fill the 9×9 grid with numbers 1-9 without repeating in rows, columns, or boxes. Choose your difficulty and challenge your logic skills.',
     path: '/games/sudoku/sudokuIndex.html',
   },
+  {
+    slug: 'godot-test',
+    title: 'GODOT TEST',
+    subtitle: 'Web export test',
+    about: 'Temporary Godot web integration test.',
+    path: '/games/godot-test/index.html',
+  },
   // {
   //   slug: 'lockstep',
   //   title: 'LOCKSTEP',
