@@ -64,18 +64,10 @@ export const games = [
     path: '/games/sudoku/sudokuIndex.html',
   },
   {
-    slug: 'godot-test',
-    title: 'GODOT TEST',
-    subtitle: 'Web export test',
-    about: 'Temporary Godot web integration test.',
-    path: '/games/godot-test/index.html',
-  },
-  // {
-  //   slug: 'lockstep',
-  //   title: 'LOCKSTEP',
-  //   subtitle: 'Place • Deduce • Unlock',
-  //   about:
-  //     'Place one token in every row, column, and region without letting tokens touch. Use logic to unlock the board.',
-  //   path: '/games/lockstep/lockstepIndex.html',
-  // },
+  slug: 'phaser-test',
+  title: 'PHASER TEST',
+  subtitle: 'Framework test',
+  about: 'Temporary Phaser integration test.',
+  path: '/games/phaser-test/index.html',
+},
 ];
