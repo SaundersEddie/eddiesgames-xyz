@@ -63,11 +63,11 @@ export const games = [
       'Fill the 9×9 grid with numbers 1-9 without repeating in rows, columns, or boxes. Choose your difficulty and challenge your logic skills.',
     path: '/games/sudoku/sudokuIndex.html',
   },
-//   {
-//   slug: 'phaser-test',
-//   title: 'PHASER TEST',
-//   subtitle: 'Framework test',
-//   about: 'Temporary Phaser integration test.',
-//   path: '/games/phaser-test/index.html',
-// },
+  // {
+  // slug: 'dungeon-dash',
+  // title: 'DUNGEON DASH',
+  // subtitle: 'Dungeon Dash Game',
+  // about: 'Temporary Phaser integration test.',
+  // path: '/games/dungeon-dash/dungeonDashIndex.html',
+  // },
 ];

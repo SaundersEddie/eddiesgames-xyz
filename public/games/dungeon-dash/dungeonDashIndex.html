@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dungeon Dash</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      background: #111;
+      color: #fff;
+      font-family: Arial, sans-serif;
+    }
+
+    .game-layout {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 18px;
+      padding: 12px;
+    }
+
+    #game {
+      flex: 0 0 auto;
+    }
+
+    .leaderboard {
+      width: 220px;
+      background: #1b1b1b;
+      border: 1px solid #555;
+      border-radius: 8px;
+      padding: 16px;
+      box-sizing: border-box;
+    }
+
+    .leaderboard h2 {
+      margin: 0 0 6px;
+      font-size: 22px;
+    }
+
+    .leaderboard-date {
+      color: #aaa;
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+
+    #leaderboard-list {
+      margin: 0;
+      padding-left: 28px;
+    }
+
+    #leaderboard-list li {
+      margin-bottom: 12px;
+      line-height: 1.35;
+    }
+
+    .score-time {
+      font-weight: bold;
+    }
+
+    .score-detail {
+      color: #aaa;
+      font-size: 13px;
+    }
+
+    @media (max-width: 1220px) {
+      .game-layout {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .leaderboard {
+        width: 960px;
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="game-layout">
+
+    <div id="game"></div>
+
+    <aside class="leaderboard">
+      <h2>Daily Top 5</h2>
+
+      <div
+        id="leaderboard-date"
+        class="leaderboard-date"
+      ></div>
+
+      <ol id="leaderboard-list">
+        <li>Loading...</li>
+      </ol>
+    </aside>
+
+  </div>
+
+  <script src="dungeonDashGame.js"></script>
+
+</body>
+</html>
