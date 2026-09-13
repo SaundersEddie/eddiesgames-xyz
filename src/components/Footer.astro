@@ -19,6 +19,16 @@
       <a href="/terms">Terms</a>
       <span class="divider">•</span>
       <a href="/cookies">Cookies</a>
+      <button
+        type="button"
+        id="privacy-choices"
+        class="footer-link"
+        hidden
+      >
+        Privacy choices
+      </button>
+
+      <span class="divider privacy-divider" hidden>•</span>
       <span class="divider">•</span>
       <a href="/disclaimer">Disclaimer</a>
       <span class="divider">•</span>
@@ -26,6 +36,42 @@
     </div>
   </div>
 </footer>
+
+<script is:inline>
+  window.googlefc = window.googlefc || {};
+  window.googlefc.callbackQueue = window.googlefc.callbackQueue || [];
+
+  const privacyChoices = document.getElementById("privacy-choices");
+  const privacyDivider = document.querySelector(".privacy-divider");
+
+  if (privacyChoices) {
+    privacyChoices.addEventListener("click", () => {
+      window.googlefc.callbackQueue.push({
+        CONSENT_API_READY: () => {
+          window.googlefc.showRevocationMessage();
+        },
+      });
+    });
+
+    window.googlefc.callbackQueue.push({
+      CONSENT_API_READY: () => {
+        if (typeof window.__tcfapi !== "function") return;
+
+        window.__tcfapi("addEventListener", 0, (tcData, success) => {
+          const showChoices = Boolean(
+            success && tcData && tcData.gdprApplies
+          );
+
+          privacyChoices.hidden = !showChoices;
+
+          if (privacyDivider) {
+            privacyDivider.hidden = !showChoices;
+          }
+        });
+      },
+    });
+  }
+</script>
 
 <style>
   .footer {
@@ -55,6 +101,29 @@
     color: var(--ember);
   }
 
+  .footer-link {
+    padding: 6px 4px;
+    border: 0;
+    background: transparent;
+    color: var(--muted);
+    font: inherit;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+  .footer-link:hover,
+  .footer-link:active {
+    color: var(--ember);
+    text-shadow: 0 0 6px rgba(255, 177, 74, 0.4);
+  }
+
+  @media (max-width: 600px) {
+    .footer-link {
+      padding: 8px 6px;
+      white-space: nowrap;
+    }
+  }
   .divider {
     margin: 0 8px;
     opacity: 0.5;
@@ -69,7 +138,8 @@
   }
 
   /* Improve link feel */
-  .footer-right a {
+  .footer-right a,
+  .footer-right, .footer-link {
     padding: 6px 4px;
     font-size: 0.95rem;
     font-weight: 500;

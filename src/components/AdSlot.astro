@@ -3,13 +3,13 @@ const { position = "bottom" } = Astro.props;
 
 // Development/testing only.
 // Change to true if you want to visually check ad spacing.
-const SHOW_AD_PLACEHOLDERS = true;
+const SHOW_AD_PLACEHOLDERS = false;
 
 // Real ads remain disabled until AdSense approval/configuration.
 const ADS_ENABLED = false;
 ---
 
-{position === "bottom" && (
+{position === "bottom" && (ADS_ENABLED || SHOW_AD_PLACEHOLDERS) && (
   <div class="ad ad-bottom" aria-label="Advertisement">
     {ADS_ENABLED ? (
       <div class="ad-inner">

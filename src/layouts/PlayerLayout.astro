@@ -2,23 +2,40 @@
 import Header from "../components/Header.astro";
 import AdSlot from "../components/AdSlot.astro";
 import Footer from "../components/Footer.astro";
+import SiteHead from "../components/SiteHead.astro";
 import "../styles/global.css";
 
-const { gamePath } = Astro.props;
+const {
+  gamePath,
+  gameTitle,
+  subtitle,
+  description,
+} = Astro.props;
+
+const pageTitle = `${gameTitle} | Eddies Games`;
 ---
 
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Play</title>
+    <SiteHead title={pageTitle} description={description} />
   </head>
+
   <body>
     <Header />
 
     <main class="stage stage--player">
+      <header class="game-intro">
+        <h1>{gameTitle}</h1>
+        {subtitle && <p class="game-subtitle">{subtitle}</p>}
+        {description && <p class="game-description">{description}</p>}
+      </header>
+
       <div class="game-frame">
-        <iframe src={gamePath} frameborder="0" allowfullscreen />
+        <iframe
+          src={gamePath}
+          title={`Play ${gameTitle}`}
+          allowfullscreen
+        ></iframe>
       </div>
     </main>
 
@@ -28,18 +45,39 @@ const { gamePath } = Astro.props;
 </html>
 
 <style>
-.game-frame {
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  overflow: hidden;
-  height: 75vh;
-}
+  .game-intro {
+    margin-bottom: 16px;
+  }
 
-iframe {
-  width: 100%;
-  height: 100%;
-  border: none;
-  display: block;
-}
+  .game-intro h1 {
+    margin: 0;
+  }
+
+  .game-subtitle {
+    margin: 6px 0 0;
+    color: var(--ember);
+    font-weight: 600;
+  }
+
+  .game-description {
+    max-width: 900px;
+    margin: 8px 0 0;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .game-frame {
+    height: 75vh;
+    overflow: hidden;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+  }
+
+  iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
 </style>

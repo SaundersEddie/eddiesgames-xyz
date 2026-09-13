@@ -1,33 +1,162 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 ---
-  <BaseLayout>
-      <h1>Cookie Policy</h1>
-        Effective date: February 24, 2026<br><br>
-        <br>
-        This Cookie Policy explains how EddiesGames uses cookies and similar technologies.<br>
-        <br>
-        What are cookies?<br>
-        Cookies are small text files stored on your device. Similar technologies include local storage, pixels, and device identifiers.<br>
-        <br>
-        Types of cookies we may use<br>
-        <br>
-        Essential cookies:<br>
-        Used for basic site functionality and security.<br>
-        <br>
-        Analytics cookies:<br>
-        Help us understand how visitors use the site (e.g., which games are most played) so we can improve.<br>
-        <br>
-        Advertising cookies (if ads are enabled):<br>
-        Used by advertising partners to deliver, measure, and personalize ads.<br>
-        <br>
-        Managing cookies<br>
-        You can control cookies through your browser settings. Disabling cookies may impact some site functionality.<br>
-        <br>
-        If we run ads, you may also be able to manage ad personalization through the ad provider’s settings.<br>
-        <br>
-        Updates:<br>
-        We may update this policy as the site evolves.<br>
-        <br>
-        Contact: <a href="mailto:eddie@eddiesgames.xyz">eddie@eddiesgames.xyz</a>
-  </BaseLayout>
+
+<BaseLayout>
+  <article class="legal-page">
+    <h1>Cookie Policy</h1>
+
+    <p><strong>Effective date:</strong> September 13, 2026</p>
+
+    <p>
+      This Cookie Policy explains how Eddies Games uses cookies, browser
+      storage, and similar technologies when you visit eddiesgames.xyz or
+      play its browser games.
+    </p>
+
+    <h2>What are cookies and similar technologies?</h2>
+
+    <p>
+      Cookies are small text files stored by your browser. Similar
+      technologies include local storage, pixels, tags, and identifiers that
+      allow a website or service provider to remember information or
+      understand how a service is being used.
+    </p>
+
+    <h2>Browser storage used by our games</h2>
+
+    <p>
+      Some games may use local browser storage to remember information such
+      as:
+    </p>
+
+    <ul>
+      <li>Game progress</li>
+      <li>Daily-game completion status</li>
+      <li>Local high scores</li>
+      <li>Difficulty or gameplay preferences</li>
+      <li>Sound and display preferences</li>
+    </ul>
+
+    <p>
+      This information generally remains on your device and can be removed by
+      clearing site data for eddiesgames.xyz in your browser. Clearing it may
+      reset saved progress or preferences.
+    </p>
+
+    <h2>Consent-management storage</h2>
+
+    <p>
+      Google’s certified Consent Management Platform may store your privacy
+      choices so that the site can remember whether you consented, declined,
+      or selected individual options. This prevents the same message from
+      appearing on every page visit.
+    </p>
+
+    <h2>Advertising cookies</h2>
+
+    <p>
+      Eddies Games uses Google AdSense to display and measure advertising.
+      Google and other advertising vendors may use cookies or similar
+      technologies to:
+    </p>
+
+    <ul>
+      <li>Deliver and display advertisements</li>
+      <li>Limit how often an advertisement is shown</li>
+      <li>Measure advertising performance</li>
+      <li>Detect fraud and invalid traffic</li>
+      <li>Show personalized advertising where permitted and consented to</li>
+      <li>Show non-personalized or limited advertising where appropriate</li>
+    </ul>
+
+    <p>
+      Third-party vendors, including Google, may use cookies to serve ads
+      based on a visitor’s previous visits to this website or other websites.
+    </p>
+
+    <h2>Your consent choices</h2>
+
+    <p>
+      Visitors in applicable regions are shown a privacy message that
+      provides options to consent, decline consent, or manage individual
+      purposes and advertising partners.
+    </p>
+
+    <p>
+      You may also manage personalized advertising through
+      <a
+        href="https://adssettings.google.com/"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Google Ads Settings
+      </a>
+      or opt out of some participating third-party vendors through
+      <a
+        href="https://optout.aboutads.info/"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        YourAdChoices
+      </a>.
+    </p>
+
+    <h2>Browser controls</h2>
+
+    <p>
+      Most browsers allow you to view, block, or delete cookies and local
+      site data. Blocking or deleting storage may affect saved progress,
+      preferences, leaderboards, consent choices, or other game features.
+    </p>
+
+    <h2>Changes to this policy</h2>
+
+    <p>
+      We may update this Cookie Policy when our games, advertising services,
+      or storage practices change. The revised effective date will appear at
+      the top of this page.
+    </p>
+
+    <h2>Contact</h2>
+
+    <p>
+      For questions about this policy, email
+      <a href="mailto:eddie@eddiesgames.xyz">
+        eddie@eddiesgames.xyz
+      </a>.
+    </p>
+  </article>
+</BaseLayout>
+
+<style>
+  .legal-page {
+    max-width: 800px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  .legal-page h1 {
+    margin-top: 0;
+  }
+
+  .legal-page h2 {
+    margin-top: 2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .legal-page p,
+  .legal-page li {
+    color: var(--muted);
+  }
+
+  .legal-page a {
+    color: var(--ember);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .legal-page ul {
+    padding-left: 1.4rem;
+  }
+</style>
