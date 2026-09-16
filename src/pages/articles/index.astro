@@ -1,0 +1,113 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const articles = [
+  {
+    title: "Why Eddies Games Exists",
+    description:
+      "Small games, finished projects, and learning by actually building things.",
+    date: "September 16, 2026",
+    href: "/articles/why-eddies-games-exists",
+  },
+];
+---
+
+<BaseLayout
+  title="Behind the Games | Eddies Games"
+  description="Development notes, design decisions, experiments, and stories behind the games on Eddies Games."
+>
+  <section class="articles">
+    <header class="articles-header">
+      <h1>Behind the Games</h1>
+
+      <p>
+        The ideas, design decisions, mistakes, experiments, and occasional
+        moments where something actually worked.
+      </p>
+    </header>
+
+    <div class="article-grid">
+      {
+        articles.map((article) => (
+          <a href={article.href} class="article-card">
+            <span class="article-date">{article.date}</span>
+
+            <h2>{article.title}</h2>
+
+            <p>{article.description}</p>
+
+            <span class="read-more">Read article →</span>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .articles {
+    max-width: 900px;
+  }
+
+  .articles-header {
+    margin-bottom: 32px;
+  }
+
+  .articles-header h1 {
+    margin-bottom: 10px;
+  }
+
+  .articles-header p {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.6;
+    max-width: 700px;
+  }
+
+  .article-grid {
+    display: grid;
+    gap: 20px;
+  }
+
+  .article-card {
+    display: block;
+    padding: 24px;
+
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+
+    transition:
+      transform 0.2s ease,
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  .article-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--ember);
+    box-shadow: 0 0 20px rgba(255, 177, 74, 0.15);
+  }
+
+  .article-date {
+    color: var(--muted);
+    font-size: 0.8rem;
+  }
+
+  .article-card h2 {
+    margin: 8px 0 10px;
+  }
+
+  .article-card p {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .read-more {
+    display: inline-block;
+    margin-top: 18px;
+    color: var(--ember);
+    font-weight: 600;
+  }
+</style>

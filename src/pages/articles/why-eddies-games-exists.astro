@@ -1,0 +1,256 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Why Eddies Games Exists | Eddies Games"
+  description="Why Eddies Games focuses on small browser games, finished projects, and learning by actually building things."
+>
+  <article class="article">
+    <header class="article-header">
+      <p class="eyebrow">Behind the Games</p>
+
+      <h1>Why Eddies Games Exists</h1>
+
+      <p class="dek">
+        Small games, finished projects, and learning by actually building things.
+      </p>
+
+      <p class="meta">September 16, 2026</p>
+    </header>
+
+    <div class="article-body">
+      <p>
+        Eddies Games exists for a pretty simple reason: I like making games, and
+        I like finishing them.
+      </p>
+
+      <p>That second part matters more than it sounds.</p>
+
+      <p>
+        It is very easy to come up with a huge game idea. Open-world this,
+        multiplayer that, fifty systems talking to another fifty systems, and
+        before long you have designed something that would keep a studio busy
+        for three years.
+      </p>
+
+      <p>That is not what I wanted this site to become.</p>
+
+      <h2>Small Games Can Still Be Good Games</h2>
+
+      <p>
+        The goal here is not to build the biggest games possible. It is to build
+        games that are fun, easy to understand, quick to load, and actually get
+        finished.
+      </p>
+
+      <p>
+        Some are puzzle games. Some are arcade-style games. Some are daily
+        challenges. Some are simply ideas that sounded interesting enough to
+        turn into something playable.
+      </p>
+
+      <p>
+        The important part is that they move from idea, to prototype, to
+        finished game.
+      </p>
+
+      <h2>Building Is How I Learn</h2>
+
+      <p>
+        I have always learned more by making something than by endlessly reading
+        about how something is supposed to be made.
+      </p>
+
+      <p>
+        A game gives you plenty of opportunities to find out what you do not
+        know.
+      </p>
+
+      <p>
+        Controls feel wrong. A puzzle rule makes perfect sense in your head but
+        confuses everyone else. A layout looks great on a desktop and then turns
+        into modern art on a phone. A mechanic technically works but simply does
+        not feel good.
+      </p>
+
+      <p>Then you fix it.</p>
+
+      <p>
+        Or occasionally stare at it for a while and wonder why it ever seemed
+        like a good idea in the first place.
+      </p>
+
+      <h2>Finishing Matters</h2>
+
+      <p>
+        Every completed game teaches me something I can carry into the next one.
+        That is one of the main ideas behind Eddies Games.
+      </p>
+
+      <p>
+        Instead of waiting until I somehow know everything required to make the
+        perfect game, I would rather build one, finish it, learn from it, and
+        make the next one better.
+      </p>
+
+      <p>
+        That also means the games on this site may evolve. I might improve the
+        interface, adjust difficulty, change how feedback works, or revisit a
+        mechanic after seeing it used in the real world.
+      </p>
+
+      <p>
+        A finished game does not have to mean a game that can never change.
+      </p>
+
+      <h2>Why Browser Games?</h2>
+
+      <p>Browser games fit this approach particularly well.</p>
+
+      <p>
+        There is no installer, no account requirement, and no twenty-minute
+        download before someone can find out whether they actually like the
+        game.
+      </p>
+
+      <p>You open the page and play.</p>
+
+      <p>
+        That also makes the site a useful place for experimenting with ideas.
+        Some games may remain small browser games forever. Others may eventually
+        lead to larger projects or versions on other platforms.
+      </p>
+
+      <h2>Behind the Games</h2>
+
+      <p>
+        This section of the site exists because the finished game is only part
+        of the story.
+      </p>
+
+      <p>
+        There are usually plenty of decisions, mistakes, rewrites, and strange
+        little problems hiding behind something that looks simple when you play
+        it.
+      </p>
+
+      <p>
+        So these articles will cover where game ideas came from, why certain
+        mechanics work the way they do, what changed during development, what
+        failed, and what I learned while building them.
+      </p>
+
+      <p>
+        Not tutorials pretending everything worked perfectly the first time.
+      </p>
+
+      <p>Because it usually did not.</p>
+
+      <h2>So What Is Eddies Games?</h2>
+
+      <p>It is a collection of games I wanted to make.</p>
+
+      <p>
+        It is also a running record of learning by building, experimenting, and
+        finishing things.
+      </p>
+
+      <p>
+        Some ideas will work better than others. Some will probably get rebuilt.
+        A few may turn out to have been terrible ideas from the start.
+      </p>
+
+      <p>That is part of the fun.</p>
+
+      <p>Build it. Play it. Learn something. Make the next one.</p>
+    </div>
+
+    <footer class="article-footer">
+      <a href="/articles" class="back">← Behind the Games</a>
+      <a href="/" class="cta">Play the games →</a>
+    </footer>
+  </article>
+</BaseLayout>
+
+<style>
+  .article {
+    max-width: 780px;
+    margin: 0 auto;
+  }
+
+  .article-header {
+    margin-bottom: 36px;
+  }
+
+  .eyebrow {
+    margin: 0 0 8px;
+    color: var(--ember);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .article-header h1 {
+    margin: 0 0 12px;
+    font-size: clamp(2rem, 5vw, 3rem);
+    line-height: 1.1;
+  }
+
+  .dek {
+    margin: 0 0 12px;
+    color: var(--muted);
+    font-size: 1.1rem;
+    line-height: 1.6;
+  }
+
+  .meta {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+
+  .article-body {
+    font-size: 1.05rem;
+    line-height: 1.75;
+  }
+
+  .article-body p {
+    margin: 0 0 20px;
+  }
+
+  .article-body h2 {
+    margin: 42px 0 14px;
+    font-size: 1.5rem;
+  }
+
+  .article-footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+  }
+
+  .cta {
+    color: var(--ember);
+    font-weight: 700;
+  }
+
+  .back {
+    color: var(--muted);
+  }
+
+  .back:hover,
+  .cta:hover {
+    color: var(--text);
+  }
+
+  @media (max-width: 600px) {
+    .article-footer {
+      flex-direction: column;
+    }
+  }
+</style>
