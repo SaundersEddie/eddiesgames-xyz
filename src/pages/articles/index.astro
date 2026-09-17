@@ -1,23 +1,30 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import BaseLayout from '../../layouts/BaseLayout.astro';
 
 const articles = [
   {
-    title: "Why Eddies Games Exists",
+    title: 'Why Eddies Games Exists',
     description:
-      "Small games, finished projects, and learning by actually building things.",
-    date: "September 16, 2026",
-    href: "/articles/why-eddies-games-exists",
+      'Small games, finished projects, and learning by actually building things.',
+    date: 'September 16, 2026',
+    href: '/articles/why-eddies-games-exists',
+  },
+  {
+    title: 'Sudoku: The Game I Built More Than Once',
+    description:
+      'Fun write up of the challenges of writing Sudoku in multiple languages with testing.',
+    date: 'September 17, 2026',
+    href: '/articles/sudoku-the-game-i-had-to-build-more-than-once',
   },
 ];
 ---
 
 <BaseLayout
-  title="Behind the Games | Eddies Games"
-  description="Development notes, design decisions, experiments, and stories behind the games on Eddies Games."
+  title='Behind the Games | Eddies Games'
+  description='Development notes, design decisions, experiments, and stories behind the games on Eddies Games.'
 >
-  <section class="articles">
-    <header class="articles-header">
+  <section class='articles'>
+    <header class='articles-header'>
       <h1>Behind the Games</h1>
 
       <p>
@@ -26,17 +33,17 @@ const articles = [
       </p>
     </header>
 
-    <div class="article-grid">
+    <div class='article-grid'>
       {
         articles.map((article) => (
-          <a href={article.href} class="article-card">
-            <span class="article-date">{article.date}</span>
+          <a href={article.href} class='article-card'>
+            <span class='article-date'>{article.date}</span>
 
             <h2>{article.title}</h2>
 
             <p>{article.description}</p>
 
-            <span class="read-more">Read article →</span>
+            <span class='read-more'>Read article →</span>
           </a>
         ))
       }

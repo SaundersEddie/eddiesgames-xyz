@@ -1,0 +1,350 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const title = 'Sudoku: The Game I Had to Build More Than Once';
+const description =
+  'How a Python proof of concept, a Unity rebuild, and 52 automated tests changed the way I approached a seemingly simple Sudoku game.';
+---
+
+<BaseLayout title={`${title} | Eddie's Games`} description={description}>
+  <article class='article'>
+    <header class='article-header'>
+      <p class='eyebrow'>Behind the Games</p>
+      <h1>{title}</h1>
+      <p class='dek'>
+        Python proved the rules. Unity forced the interface to grow up. Testing
+        showed me the difference between playable and reliable.
+      </p>
+      <p class='meta'>September 17, 2026 · Development Journal</p>
+    </header>
+
+    <div class='article-body'>
+      <p>Sudoku should have been one of the straightforward ones.</p>
+
+      <p>
+        The rules are known, the board is always nine by nine, and the player
+        already understands the objective. Compared with inventing an entirely
+        new game, it seemed like a sensible project: build the grid, load a
+        puzzle, check the answers and call it done.
+      </p>
+
+      <p>That was the theory.</p>
+
+      <p>
+        In practice, Sudoku became one of those projects that kept teaching me
+        something new every time I rebuilt it. The Python version proved that
+        the underlying game could work. Rebuilding it in Unity showed how much
+        more there was to consider once menus, input, screen sizes and player
+        feedback entered the picture. Then automated testing began finding all
+        the little assumptions that playing a few rounds had missed.
+      </p>
+
+      <p>
+        It stopped being one Sudoku project and became a record of how my
+        development process was changing.
+      </p>
+
+      <h2>Proving the Game in Python</h2>
+
+      <p>
+        The first useful version was built in Python. Its job was not to look
+        impressive. It was there to prove the mechanics: create a puzzle, accept
+        input, protect the original clues and decide whether the completed board
+        was correct.
+      </p>
+
+      <p>
+        That version mattered because earlier attempts at making Sudoku had, to
+        use the technical term, flumped out and failed. Sudoku is one of my
+        favourite puzzles, but liking a game does not automatically make it easy
+        to build. A working Python version finally gave me a reliable foundation
+        instead of another half-finished experiment.
+      </p>
+
+      <p>
+        It also reinforced a lesson I have learned repeatedly: get the game
+        working before turning it into a production. A plain but functional
+        version answers the important questions. Is the core idea sound? Can the
+        game state be represented cleanly? Does the validation behave properly?
+        Is it actually enjoyable once it is running?
+      </p>
+
+      <p>
+        Python answered those questions. The next rebuild created a completely
+        different set of them.
+      </p>
+
+      <h2>Rebuilding It in Unity</h2>
+
+      <p>
+        The Unity version uses Unity 6 and C#, with UI Toolkit handling the
+        interface through UXML and USS. It also uses Unity's New Input System,
+        because a Sudoku game should not become unusable the moment somebody
+        reaches for a keyboard instead of a mouse.
+      </p>
+
+      <p>The basic flow is deliberately simple:</p>
+
+      <p class='flow'>
+        Main Menu <span>→</span> Gameplay <span>→</span> Game Over
+      </p>
+
+      <p>
+        The game includes four difficulty settings. Easy starts with 30 visible
+        clues, Medium with 22, Hard with 15 and Godlike with only 5. The
+        generated answer key remains the authority when validating the player's
+        entries.
+      </p>
+
+      <p>
+        That sounds simple when written in one paragraph. It was less simple
+        once the surrounding behaviour arrived.
+      </p>
+
+      <p>
+        Players needed a notes mode. Given cells had to be protected. Completed
+        number buttons needed to become unavailable. Correct and incorrect
+        entries required clear visual feedback. The timer had to pause properly,
+        and pausing needed to hide the board so that the pause button did not
+        become a free thinking-time button. Keyboard input, move counts, light
+        and dark themes, completion detection and screen layout all became part
+        of the game rather than optional decoration.
+      </p>
+
+      <p>
+        This was where Sudoku changed from a solved logic problem into a
+        user-interface problem.
+      </p>
+
+      <p>The rules had not changed at all. Everything around them had.</p>
+
+      <h2>When “It Works” Is Not Enough</h2>
+
+      <p>
+        Playing the game is useful testing, but it is also very easy to play the
+        way the developer expects the game to be played. Players are far more
+        inventive. They click things in the wrong order, enter values you did
+        not anticipate and expose combinations of game state that were
+        apparently waiting behind a bush with a baseball bat.
+      </p>
+
+      <p>
+        The Unity project currently has 52 passing EditMode tests. They cover
+        puzzle generation and validation, clue counts, cell visibility, game
+        state, protection of given cells, number entry, notes and completion
+        logic.
+      </p>
+
+      <p>
+        The number itself is less important than what the tests represent. Each
+        one turns an assumption into something the project can check repeatedly.
+        If a later change breaks note behaviour or allows a given cell to be
+        edited, I should find out immediately rather than after packaging a
+        build.
+      </p>
+
+      <p>
+        Testing also forced some decisions to become explicit. The answer key is
+        authoritative. Difficulty settings must produce the expected clue
+        counts. Given cells are never editable. Completing the puzzle is a
+        specific state transition, not merely a screen that appears when things
+        look approximately right.
+      </p>
+
+      <p>
+        That is the point where the test suite became more than a safety net. It
+        became part of the design.
+      </p>
+
+      <h2>The Interface Still Fights Back</h2>
+
+      <p>
+        Automated tests cannot tell me that a Sudoku board is too large for a
+        laptop screen or that a control feels awkward on a phone. Those problems
+        still require real builds on real screens.
+      </p>
+
+      <p>
+        UI Toolkit is powerful, but USS changes can absolutely go sideways. A
+        small layout experiment can produce an impressively large collection of
+        new problems, which led to a useful development rule:
+      </p>
+
+      <blockquote>
+        <p>Commit first. Experiment second.</p>
+      </blockquote>
+
+      <p>
+        The WebGL build added another practical lesson: test it through a local
+        web server rather than opening <code>index.html</code> directly. A browser
+        build is still a web application, and shortcuts that appear to work locally
+        can hide problems that show up as soon as the game is served properly.
+      </p>
+
+      <p>
+        None of these discoveries are glamorous, but they are the work. The
+        puzzle generator may be the clever part, yet the player will remember
+        the board that did not fit, the button that stopped responding or the
+        pause screen that still showed every number.
+      </p>
+
+      <h2>What the Rebuilds Changed</h2>
+
+      <p>
+        The Python version proved the rules. The Unity version forced me to
+        think about the player. The tests forced me to define what “working”
+        actually meant.
+      </p>
+
+      <p>
+        Sudoku is now a playable prototype with the major systems in place, but
+        it is not being treated as finished simply because a complete game can
+        be played. Layout testing, interface polish, platform testing and
+        release-style packaging still matter.
+      </p>
+
+      <p>
+        Rebuilding the same idea was not wasted effort. Each version answered
+        questions the previous version could not. More importantly, each one
+        changed how I approached the next project.
+      </p>
+
+      <p>
+        That may be the real history of this Sudoku game: not a straight line
+        from idea to finished product, but a series of increasingly better
+        questions.
+      </p>
+    </div>
+
+    <footer class='article-footer'>
+      <a href='/articles/'>← All articles</a>
+      <a href='/'>Play the games →</a>
+    </footer>
+  </article>
+</BaseLayout>
+
+<style>
+  .article {
+    width: min(100%, 820px);
+    margin: 0 auto;
+    padding: 56px 0 72px;
+  }
+
+  .article-header {
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .eyebrow {
+    margin: 0 0 12px;
+    color: var(--ember);
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .article-header h1 {
+    max-width: 760px;
+    margin: 0;
+    font-size: clamp(2.25rem, 6vw, 4.5rem);
+    line-height: 0.98;
+    letter-spacing: -0.045em;
+  }
+
+  .dek {
+    max-width: 700px;
+    margin: 24px 0 0;
+    color: var(--muted);
+    font-size: clamp(1.05rem, 2vw, 1.3rem);
+    line-height: 1.6;
+  }
+
+  .meta {
+    margin: 20px 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  .article-body {
+    padding-top: 22px;
+    font-size: 1.08rem;
+    line-height: 1.8;
+  }
+
+  .article-body p {
+    margin: 1.25em 0;
+  }
+
+  .article-body h2 {
+    margin: 2.4em 0 0.7em;
+    font-size: clamp(1.55rem, 3vw, 2.15rem);
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+  }
+
+  .flow {
+    padding: 18px 20px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--panel);
+    font-weight: 800;
+    text-align: center;
+  }
+
+  .flow span {
+    padding: 0 0.45em;
+    color: var(--ember);
+  }
+
+  blockquote {
+    margin: 2rem 0;
+    padding: 6px 0 6px 22px;
+    border-left: 4px solid var(--ember);
+  }
+
+  blockquote p {
+    margin: 0;
+    font-size: clamp(1.25rem, 3vw, 1.65rem);
+    font-weight: 800;
+    line-height: 1.3;
+  }
+
+  code {
+    padding: 0.12em 0.36em;
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    background: var(--panel);
+    font-size: 0.9em;
+  }
+
+  .article-footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+  }
+
+  .article-footer a {
+    color: var(--ember);
+    font-weight: 800;
+    text-decoration: none;
+  }
+
+  .article-footer a:hover {
+    text-decoration: underline;
+  }
+
+  @media (max-width: 640px) {
+    .article {
+      padding: 36px 0 52px;
+    }
+
+    .article-footer {
+      flex-direction: column;
+      gap: 12px;
+    }
+  }
+</style>
