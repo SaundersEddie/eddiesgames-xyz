@@ -63,11 +63,12 @@ export const games = [
       'Fill the 9×9 grid with numbers 1-9 without repeating in rows, columns, or boxes. Choose your difficulty and challenge your logic skills.',
     path: '/games/sudoku/sudokuIndex.html',
   },
-  // {
-  // slug: 'dungeon-dash',
-  // title: 'DUNGEON DASH',
-  // subtitle: 'Dungeon Dash Game',
-  // about: 'Temporary Phaser integration test.',
-  // path: '/games/dungeon-dash/dungeonDashIndex.html',
-  // },
+  {
+    slug: 'crypt-shift',
+    title: 'CRYPT SHIFT',
+    subtitle: 'Every step wakes the crypt',
+    about:
+      'Collect the runes, avoid the guardians, and escape a shifting daily dungeon.',
+    path: '/games/crypt-shift/cryptShiftIndex.html',
+  },
 ];

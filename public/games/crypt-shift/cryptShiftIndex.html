@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Crypt Shift</title>
+    <link rel="stylesheet" href="cryptShiftGame.css" />
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js"></script>
+  </head>
+  <body>
+    <main class="game-shell">
+      <header class="game-header">
+        <div>
+          <h1>CRYPT SHIFT</h1>
+          <p>Take the three runes. Reach the exit. Every step wakes the crypt.</p>
+        </div>
+        <button id="restart" type="button">Restart room</button>
+      </header>
+      <div id="game" aria-label="Crypt Shift game"></div>
+      <footer>Move with WASD, arrow keys, or tap an adjacent tile.</footer>
+    </main>
+    <script type="module" src="cryptShiftGame.js"></script>
+  </body>
+</html>
