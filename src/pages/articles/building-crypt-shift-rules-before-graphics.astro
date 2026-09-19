@@ -1,0 +1,373 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const title = 'Building Crypt Shift: Rules Before Graphics';
+const description =
+  'How a dormant Phaser experiment became Crypt Shift: a turn-based dungeon game with deterministic daily maps and tested game rules.';
+---
+
+<BaseLayout title={`${title} | Eddie's Games`} description={description}>
+  <article class='article'>
+    <header class='article-header'>
+      <p class='eyebrow'>Behind the Games</p>
+
+      <h1>{title}</h1>
+
+      <p class='dek'>
+        Crypt Shift started with coloured shapes, a small dungeon and one
+        important rule: make the game work before worrying about how pretty the
+        monsters are.
+      </p>
+
+      <p class='meta'>September 19, 2026 · Development Journal</p>
+    </header>
+
+    <div class='article-body'>
+      <p>
+        The next game for Eddies Games needed to be more graphical.
+      </p>
+
+      <p>
+        Most of the existing games are puzzles built around grids, letters,
+        numbers or matching symbols. They work well in a browser, but I wanted
+        the next project to feel more like a traditional game: a visible player,
+        enemies, movement, objectives and an actual dungeon to explore.
+      </p>
+
+      <p>
+        The result is <strong>Crypt Shift</strong>, a small turn-based dungeon
+        game built with Phaser.
+      </p>
+
+      <p>
+        It currently uses simple placeholder shapes instead of finished artwork.
+        That is intentional. Before spending time drawing heroes, guardians,
+        runes and stone walls, I wanted to know whether moving around the crypt
+        was actually enjoyable.
+      </p>
+
+      <h2>Starting With an Existing Experiment</h2>
+
+      <p>
+        Crypt Shift did not begin completely from scratch. The site already had
+        a dormant Phaser experiment called Dungeon Dash. It proved that Phaser
+        could run inside the existing Astro and Cloudflare site without needing
+        a separate application or deployment system.
+      </p>
+
+      <p>
+        Dungeon Dash used real-time movement and enemy chasing. It was useful as
+        a technical experiment, but Crypt Shift needed a more deliberate pace.
+        Instead of constantly moving, the guardians now wait for the player to
+        make a move.
+      </p>
+
+      <blockquote>
+        <p>One player move. One enemy response.</p>
+      </blockquote>
+
+      <p>
+        That change turned the game into something closer to a tactical puzzle.
+        The player can stop, inspect the room and decide where to move next.
+        Nothing happens until a valid move is made.
+      </p>
+
+      <p>
+        Reusing the earlier Phaser work meant the new game could remain part of
+        the existing Eddies Games structure. Crypt Shift lives alongside the
+        other browser games rather than becoming another repository, build
+        system or mysterious folder waiting to cause trouble six months from
+        now.
+      </p>
+
+      <h2>The First Playable Room</h2>
+
+      <p>
+        The initial version uses a twelve-by-ten tile grid. Each tile is
+        fifty-six pixels square, giving enough room for readable characters
+        without making the game enormous on a laptop screen.
+      </p>
+
+      <p>The current rules are straightforward:</p>
+
+      <ul>
+        <li>Collect all three runes.</li>
+        <li>Avoid or outmanoeuvre the crypt guardians.</li>
+        <li>Reach the exit after collecting the runes.</li>
+        <li>Survive with three health points.</li>
+      </ul>
+
+      <p>
+        The player can move with the arrow keys or WASD. On a touch screen, the
+        player can tap an adjacent tile. This gives the game a usable mobile
+        control method without covering half the dungeon with virtual buttons.
+      </p>
+
+      <p>
+        The first canvas was technically responsive but still too large for a
+        MacBook screen. Responsive does not automatically mean sensible. The
+        game container now limits both its width and height, allowing Phaser's
+        canvas to scale down while preserving the shape of the dungeon.
+      </p>
+
+      <p>
+        That small adjustment made the prototype considerably easier to test and
+        also established an important constraint for the final artwork: the
+        graphics must remain readable when the game is scaled down.
+      </p>
+
+      <h2>Rules Outside the Renderer</h2>
+
+      <p>
+        Phaser handles the visible game: drawing the room, accepting input and
+        updating the display. The actual rules live in a separate JavaScript
+        module.
+      </p>
+
+      <p>
+        This separation means the rules do not need a browser canvas to be
+        tested. Movement, collisions, rune collection, enemy behaviour, damage
+        and winning the room can all be checked without launching Phaser.
+      </p>
+
+      <p>
+        It also prevents the rendering code from becoming the authority on what
+        is happening. Phaser displays the game state, but it does not secretly
+        invent a second set of rules while nobody is looking.
+      </p>
+
+      <p>
+        The project currently has thirteen automated tests covering the core
+        game rules and daily map generation. The test suite runs with Vitest as
+        part of the existing site project.
+      </p>
+
+      <h2>A Different Crypt Every Day</h2>
+
+      <p>
+        The first room was fixed, which was useful while developing the basic
+        movement and combat. The next step was a daily dungeon.
+      </p>
+
+      <p>
+        Crypt Shift now generates a map from the current Eastern Time date. The
+        same date always produces the same room, so every player receives the
+        same daily challenge.
+      </p>
+
+      <p>
+        A seeded random-number generator builds the maze, opens some additional
+        passages and then places the exit, runes and guardians. The exit is
+        positioned at the furthest reachable floor tile from the player's
+        starting position.
+      </p>
+
+      <p>
+        Random generation creates one fairly obvious problem: random maps can be
+        complete rubbish.
+      </p>
+
+      <p>
+        A generator can easily place an objective behind an unreachable wall,
+        forget a rune or create a room that technically exists but cannot be
+        completed. That is where automated testing becomes particularly useful.
+      </p>
+
+      <p>
+        The test suite generates one thousand seeded rooms and checks every one
+        of them. Each room must contain a valid player position, an exit, exactly
+        three runes and at least one guardian. Every required objective must also
+        be reachable.
+      </p>
+
+      <p>
+        Testing one thousand maps does not mathematically prove that every map
+        forever will be perfect, but it catches considerably more trouble than
+        manually playing Tuesday's dungeon and declaring the generator done.
+      </p>
+
+      <h2>Why the Graphics Are Still Shapes</h2>
+
+      <p>
+        The current player is a blue circle. Guardians are red diamonds, runes
+        are purple stars and the exit is a green rectangle.
+      </p>
+
+      <p>
+        Nobody is likely to frame a screenshot.
+      </p>
+
+      <p>
+        Those placeholders make development faster because every object is
+        immediately recognisable. More importantly, they allow the size and
+        readability of the game to be tested before artwork begins.
+      </p>
+
+      <p>
+        The planned sprite frames are fifty-six pixels square to match the tile
+        grid. The visible artwork will sit inside those frames with enough space
+        around it to avoid characters colliding visually with walls and
+        neighbouring tiles.
+      </p>
+
+      <p>
+        Once the final visual style is introduced, the rules underneath should
+        not need to change. A guardian can become an animated skeleton, stone
+        creature or suspiciously angry haunted wardrobe without rewriting how
+        it moves.
+      </p>
+
+      <h2>What Comes Next</h2>
+
+      <p>
+        The daily dungeon gives Crypt Shift a replayable mode, but generated
+        rooms are only part of the plan. The next major addition will be a set of
+        handcrafted levels.
+      </p>
+
+      <p>
+        Regular levels can introduce mechanics in a controlled order and create
+        more deliberate puzzles than a generator. They will use the same compact
+        text-based map format as the daily rooms, allowing each level to be
+        validated automatically before it reaches the game.
+      </p>
+
+      <p>
+        After that comes the graphical work: proper dungeon tiles, character
+        sprites, animation, effects and sound. Mobile play will continue to be
+        tested as those assets arrive, because detailed artwork is not much use
+        if it becomes an attractive blur on a phone.
+      </p>
+
+      <p>
+        Crypt Shift is still an early playable build, but the foundation is now
+        doing what it should. The rules are separated from the display, the
+        daily maps are repeatable, generated rooms are tested and the game fits
+        on an actual screen.
+      </p>
+
+      <p>
+        Now it is ready to stop looking like an exceptionally organised
+        collection of coloured geometry.
+      </p>
+    </div>
+
+    <footer class='article-footer'>
+      <a href='/articles/'>← All articles</a>
+      <a href='/play/crypt-shift'>Play Crypt Shift →</a>
+    </footer>
+  </article>
+</BaseLayout>
+
+<style>
+  .article {
+    width: min(100%, 820px);
+    margin: 0 auto;
+    padding: 56px 0 72px;
+  }
+
+  .article-header {
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .eyebrow {
+    margin: 0 0 12px;
+    color: var(--ember);
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .article-header h1 {
+    max-width: 760px;
+    margin: 0;
+    font-size: clamp(2.25rem, 6vw, 4.5rem);
+    line-height: 0.98;
+    letter-spacing: -0.045em;
+  }
+
+  .dek {
+    max-width: 700px;
+    margin: 24px 0 0;
+    color: var(--muted);
+    font-size: clamp(1.05rem, 2vw, 1.3rem);
+    line-height: 1.6;
+  }
+
+  .meta {
+    margin: 20px 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  .article-body {
+    padding-top: 22px;
+    font-size: 1.08rem;
+    line-height: 1.8;
+  }
+
+  .article-body p {
+    margin: 1.25em 0;
+  }
+
+  .article-body h2 {
+    margin: 2.4em 0 0.7em;
+    font-size: clamp(1.55rem, 3vw, 2.15rem);
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+  }
+
+  .article-body ul {
+    margin: 1.5rem 0;
+    padding-left: 1.4rem;
+  }
+
+  .article-body li {
+    margin: 0.5rem 0;
+  }
+
+  blockquote {
+    margin: 2rem 0;
+    padding: 6px 0 6px 22px;
+    border-left: 4px solid var(--ember);
+  }
+
+  blockquote p {
+    margin: 0;
+    font-size: clamp(1.25rem, 3vw, 1.65rem);
+    font-weight: 800;
+    line-height: 1.3;
+  }
+
+  .article-footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+  }
+
+  .article-footer a {
+    color: var(--ember);
+    font-weight: 800;
+    text-decoration: none;
+  }
+
+  .article-footer a:hover {
+    text-decoration: underline;
+  }
+
+  @media (max-width: 640px) {
+    .article {
+      padding: 36px 0 52px;
+    }
+
+    .article-footer {
+      flex-direction: column;
+      gap: 12px;
+    }
+  }
+</style>
