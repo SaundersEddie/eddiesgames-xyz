@@ -7,6 +7,12 @@ import {
   takeTurn,
 } from './cryptShiftRules.js';
 
+import {
+  loadTop5,
+  submitScore,
+} from './cryptShiftLeaderboard.js';
+
+
 const TILE = 56;
 const BOARD_X = 48;
 const BOARD_Y = 112;
@@ -28,13 +34,19 @@ class CryptShiftScene extends Phaser.Scene {
     this.input.on('pointerup', (pointer) => this.handlePointer(pointer));
     document.querySelector('#restart').addEventListener('click', () => this.restartRoom());
     this.restartRoom();
+    void renderLeaderboard(getEasternDateKey());
   }
 
-  restartRoom() {
-    this.state = createGame(parseLevel(generateDailyRoom()));
-    this.message.setText(`Daily ${getEasternDateKey()}`);
-    this.renderState();
-  }
+restartRoom() {
+  this.state = createGame(parseLevel(generateDailyRoom()));
+  this.dailyDate = getEasternDateKey();
+  this.scoreSubmitted = false;
+
+  this.message.setText(`Daily ${this.dailyDate}`);
+  this.renderState();
+
+  void renderLeaderboard(this.dailyDate);
+}
 
   handleKeyboard(event) {
     const directions = {
@@ -64,13 +76,35 @@ class CryptShiftScene extends Phaser.Scene {
   move(direction) {
     const next = takeTurn(this.state, direction);
     this.state = next;
-    if (next.status === 'won') this.message.setText('CRYPT CLEARED');
+    
+    if (next.status === 'won') {
+      this.message.setText('CRYPT CLEARED');
+      void this.submitDailyScore();
+    }
+
     else if (next.status === 'lost') this.message.setText('THE CRYPT CLAIMED YOU');
     else if (next.events.some((event) => event.type === 'player-damaged')) this.message.setText('The guardian strikes');
     else if (next.events.some((event) => event.type === 'rune-collected')) this.message.setText('Rune secured');
     else this.message.setText('Every step shifts the crypt');
     this.renderState();
   }
+
+ async submitDailyScore() {
+  if (this.scoreSubmitted) return;
+
+  this.scoreSubmitted = true;
+
+  try {
+    await submitScore({
+      turns: this.state.turn,
+      health: this.state.health,
+    });
+
+    await renderLeaderboard(this.dailyDate);
+  } catch (error) {
+    console.error('Crypt Shift score submission failed:', error);
+  }
+}
 
   renderState() {
     this.drawBoard();
@@ -132,6 +166,54 @@ class CryptShiftScene extends Phaser.Scene {
     const piece = this.add.rectangle(point.x, point.y, 24, 32, 0x194f35, 0.8).setStrokeStyle(2, 0x45d483);
     this.pieces.add(piece);
   }
+}
+
+async function renderLeaderboard(etDate = getEasternDateKey()) {
+  const dateElement = document.querySelector('#leaderboard-date');
+  const listElement = document.querySelector('#leaderboard-list');
+
+  if (!dateElement || !listElement) return;
+
+  dateElement.textContent = etDate;
+  listElement.replaceChildren(createLeaderboardMessage('Loading...'));
+
+  try {
+    const result = await loadTop5(etDate);
+
+    dateElement.textContent = result.etDate;
+    listElement.replaceChildren();
+
+    if (!result.entries.length) {
+      listElement.appendChild(createLeaderboardMessage('No escapes yet'));
+      return;
+    }
+
+    result.entries.forEach((entry) => {
+      const item = document.createElement('li');
+
+      const turns = document.createElement('span');
+      turns.className = 'score-turns';
+      turns.textContent = `${entry.turns} turns`;
+
+      const health = document.createElement('span');
+      health.className = 'score-health';
+      health.textContent = `${entry.health} HP remaining`;
+
+      item.append(turns, health);
+      listElement.appendChild(item);
+    });
+  } catch (error) {
+    console.error('Crypt Shift leaderboard failed:', error);
+    listElement.replaceChildren(
+      createLeaderboardMessage('Leaderboard unavailable'),
+    );
+  }
+}
+
+function createLeaderboardMessage(message) {
+  const item = document.createElement('li');
+  item.textContent = message;
+  return item;
 }
 
 new Phaser.Game({

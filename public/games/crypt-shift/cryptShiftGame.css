@@ -3,21 +3,39 @@
   font-family: Arial, sans-serif;
   background: #05070a;
   color: #eef5ff;
+
+  --panel: #0d141b;
+  --line: #263744;
+  --muted: #9fb1bf;
+  --accent: #67d6ff;
+  --radius: 12px;
 }
 
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-width: 320px;
+  min-height: 100%;
+  margin: 0;
+}
 
 body {
-  margin: 0;
-  min-width: 320px;
-  min-height: 100vh;
-  background: radial-gradient(circle at 50% 0%, #152231 0%, transparent 45%), #05070a;
+  background:
+    radial-gradient(circle at 50% 0%, #152231 0%, transparent 45%),
+    #05070a;
 }
 
 .game-shell {
-  width: min(100%, 920px);
+  width: min(100%, 1120px);
+  min-height: 100vh;
   margin: 0 auto;
-  padding: clamp(10px, 2vw, 20px);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .game-header {
@@ -25,7 +43,10 @@ body {
   align-items: flex-end;
   justify-content: space-between;
   gap: 16px;
-  margin-bottom: 10px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: rgba(13, 20, 27, 0.9);
 }
 
 h1 {
@@ -37,10 +58,11 @@ h1 {
 
 .game-header p {
   margin: 6px 0 0;
-  color: #9fb1bf;
+  color: var(--muted);
 }
 
 button {
+  flex: 0 0 auto;
   border: 1px solid #3f5f75;
   border-radius: 8px;
   padding: 10px 14px;
@@ -54,19 +76,36 @@ button {
 button:hover,
 button:focus-visible {
   background: #1c3446;
-  outline: 2px solid #67d6ff;
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
+}
+
+/*
+ * Same desktop structure used by Object Match:
+ * gameplay on the left, leaderboard on the right.
+ */
+.play-layout {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(240px, 0.9fr);
+  align-items: start;
+  gap: 12px;
+}
+
+#game,
+.leaderboard {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--panel);
 }
 
 #game {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: min(620px, calc(100vh - 125px));
+  height: min(620px, calc(100vh - 160px));
   overflow: hidden;
-  border: 1px solid #263744;
-  border-radius: 12px;
-  background: #090d12;
 }
 
 #game canvas {
@@ -77,13 +116,96 @@ button:focus-visible {
   max-height: 100% !important;
 }
 
-footer {
-  padding: 10px 2px 0;
+.leaderboard {
+  min-height: 240px;
+  padding: 18px;
+}
+
+.leaderboard h2 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.leaderboard-date {
+  margin: 5px 0 18px;
   color: #778b99;
   font-size: 13px;
 }
 
+#leaderboard-list {
+  margin: 0;
+  padding-left: 28px;
+}
+
+#leaderboard-list li {
+  margin-bottom: 14px;
+  padding-left: 4px;
+}
+
+.score-turns {
+  display: block;
+  color: #eef5ff;
+  font-weight: 800;
+}
+
+.score-health {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.leaderboard-rule {
+  margin: 18px 0 0;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  color: #778b99;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+footer {
+  padding: 0 2px;
+  color: #778b99;
+  font-size: 13px;
+}
+
+/* Match the established games: stack only on actual mobile widths. */
 @media (max-width: 600px) {
-  .game-header p { display: none; }
-  button { padding: 8px 10px; }
+  .game-shell {
+    padding: 10px;
+  }
+
+  .game-header {
+    align-items: center;
+    padding: 12px;
+  }
+
+  .game-header p {
+    display: none;
+  }
+
+  button {
+    padding: 8px 10px;
+  }
+
+  .play-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  #game,
+  .leaderboard {
+    width: 100%;
+  }
+
+  #game {
+    height: min(620px, calc(100vh - 130px));
+  }
+
+  .leaderboard {
+    position: static;
+    transform: none;
+  }
 }

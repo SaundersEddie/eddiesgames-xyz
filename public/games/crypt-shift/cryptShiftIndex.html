@@ -12,11 +12,28 @@
       <header class="game-header">
         <div>
           <h1>CRYPT SHIFT</h1>
-          <p>Take the three runes. Reach the exit. Every step wakes the crypt.</p>
+          <p>Take the runes. Reach the exit. Every step wakes the crypt.</p>
         </div>
         <button id="restart" type="button">Restart room</button>
       </header>
-      <div id="game" aria-label="Crypt Shift game"></div>
+      <div class="play-layout">
+        <div id="game" aria-label="Crypt Shift game"></div>
+
+        <aside class="leaderboard">
+          <h2>Daily Top 5</h2>
+
+          <p id="leaderboard-date" class="leaderboard-date"></p>
+
+          <ol id="leaderboard-list">
+            <li>Loading...</li>
+          </ol>
+
+          <p class="leaderboard-rule">
+            Fewest turns wins.<br />
+            Remaining HP breaks ties.
+          </p>
+        </aside>
+      </div>
       <footer>Move with WASD, arrow keys, or tap an adjacent tile.</footer>
     </main>
     <script type="module" src="cryptShiftGame.js"></script>
