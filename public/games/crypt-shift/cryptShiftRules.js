@@ -21,7 +21,19 @@ export function getEasternDateKey(date = new Date()) {
 }
 
 export function generateDailyRoom(date = new Date()) {
-  return generateRoomFromSeed(getEasternDateKey(date));
+  const dateKey = getEasternDateKey(date);
+
+  for (let attempt = 0; attempt < 50; attempt += 1) {
+    const seed = attempt === 0 ? dateKey : `${dateKey}:${attempt}`;
+
+    const rows = generateRoomFromSeed(seed);
+
+    if (isRoomWinnable(rows)) {
+      return rows;
+    }
+  }
+
+  throw new Error(`Unable to generate a winnable Daily room for ${dateKey}.`);
 }
 
 export function generateRoomFromSeed(seedText) {
@@ -41,9 +53,13 @@ export function generateRoomFromSeed(seedText) {
       { x: current.x + 2, y: current.y },
       { x: current.x, y: current.y + 2 },
       { x: current.x - 2, y: current.y },
-    ].filter((next) =>
-      next.x > 0 && next.y > 0 && next.x < width - 1 && next.y < height - 1 &&
-      !visited.has(positionKey(next))
+    ].filter(
+      (next) =>
+        next.x > 0 &&
+        next.y > 0 &&
+        next.x < width - 1 &&
+        next.y < height - 1 &&
+        !visited.has(positionKey(next)),
     );
 
     if (!candidates.length) {
@@ -72,9 +88,11 @@ export function generateRoomFromSeed(seedText) {
       if (horizontal || vertical) wallCandidates.push({ x, y });
     }
   }
-  shuffle(wallCandidates, random).slice(0, 3).forEach(({ x, y }) => {
-    grid[y][x] = '.';
-  });
+  shuffle(wallCandidates, random)
+    .slice(0, 3)
+    .forEach(({ x, y }) => {
+      grid[y][x] = '.';
+    });
 
   const floors = [];
   for (let y = 1; y < height - 1; y += 1) {
@@ -85,11 +103,14 @@ export function generateRoomFromSeed(seedText) {
 
   const distances = distancesFrom(grid, start);
   const byDistance = [...floors].sort(
-    (a, b) => (distances.get(positionKey(b)) ?? 0) - (distances.get(positionKey(a)) ?? 0),
+    (a, b) =>
+      (distances.get(positionKey(b)) ?? 0) -
+      (distances.get(positionKey(a)) ?? 0),
   );
   const exit = byDistance[0];
-  const available = floors.filter((position) =>
-    !samePosition(position, start) && !samePosition(position, exit)
+  const available = floors.filter(
+    (position) =>
+      !samePosition(position, start) && !samePosition(position, exit),
   );
   shuffle(available, random);
   const runes = available.splice(0, 3);
@@ -97,8 +118,12 @@ export function generateRoomFromSeed(seedText) {
 
   grid[start.y][start.x] = 'P';
   grid[exit.y][exit.x] = 'X';
-  runes.forEach(({ x, y }) => { grid[y][x] = 'R'; });
-  enemies.forEach(({ x, y }) => { grid[y][x] = 'M'; });
+  runes.forEach(({ x, y }) => {
+    grid[y][x] = 'R';
+  });
+  enemies.forEach(({ x, y }) => {
+    grid[y][x] = 'M';
+  });
 
   return grid.map((row) => row.join(''));
 }
@@ -136,7 +161,10 @@ function distancesFrom(grid, start) {
     const current = queue.shift();
     const distance = distances.get(positionKey(current));
     for (const offset of [
-      { x: 0, y: -1 }, { x: 1, y: 0 }, { x: 0, y: 1 }, { x: -1, y: 0 },
+      { x: 0, y: -1 },
+      { x: 1, y: 0 },
+      { x: 0, y: 1 },
+      { x: -1, y: 0 },
     ]) {
       const next = { x: current.x + offset.x, y: current.y + offset.y };
       const key = positionKey(next);
@@ -184,7 +212,8 @@ export function parseLevel(rows) {
       const position = { x, y };
       if (cell === '#') walls.add(positionKey(position));
       else if (cell === 'P') {
-        if (playerStart) throw new Error('Level must contain exactly one player.');
+        if (playerStart)
+          throw new Error('Level must contain exactly one player.');
         playerStart = position;
       } else if (cell === 'M') {
         enemyStarts.push({ id: `enemy-${enemyStarts.length + 1}`, position });
@@ -192,20 +221,35 @@ export function parseLevel(rows) {
       else if (cell === 'X') {
         if (exit) throw new Error('Level must contain exactly one exit.');
         exit = position;
-      } else if (cell !== '.') throw new Error(`Unsupported level character: ${cell}`);
+      } else if (cell !== '.')
+        throw new Error(`Unsupported level character: ${cell}`);
     });
   });
 
   if (!playerStart) throw new Error('Level is missing its player.');
   if (!exit) throw new Error('Level is missing its exit.');
-  if (!runeStarts.length) throw new Error('Level must contain at least one rune.');
+  if (!runeStarts.length)
+    throw new Error('Level must contain at least one rune.');
 
-  return { width, height: rows.length, walls, playerStart, enemyStarts, runeStarts, exit };
+  return {
+    width,
+    height: rows.length,
+    walls,
+    playerStart,
+    enemyStarts,
+    runeStarts,
+    exit,
+  };
 }
 
 export function isWalkable(level, position) {
-  return position.x >= 0 && position.y >= 0 && position.x < level.width &&
-    position.y < level.height && !level.walls.has(positionKey(position));
+  return (
+    position.x >= 0 &&
+    position.y >= 0 &&
+    position.x < level.width &&
+    position.y < level.height &&
+    !level.walls.has(positionKey(position))
+  );
 }
 
 export function reachablePositions(level, start = level.playerStart) {
@@ -251,8 +295,11 @@ export function takeTurn(state, direction) {
   if (state.status !== 'playing') return state;
   const offset = OFFSETS[direction];
   const target = { x: state.player.x + offset.x, y: state.player.y + offset.y };
-  const enemyBlocked = state.enemies.some((enemy) => samePosition(enemy.position, target));
-  if (!isWalkable(state.level, target) || enemyBlocked) return { ...state, events: [] };
+  const enemyBlocked = state.enemies.some((enemy) =>
+    samePosition(enemy.position, target),
+  );
+  if (!isWalkable(state.level, target) || enemyBlocked)
+    return { ...state, events: [] };
 
   const events = [{ type: 'player-moved', from: state.player, to: target }];
   const runes = state.runes.filter((rune) => !samePosition(rune, target));
@@ -260,17 +307,97 @@ export function takeTurn(state, direction) {
   const collectedRunes = state.collectedRunes + collectedNow;
   if (collectedNow) events.push({ type: 'rune-collected', at: target });
 
-  if (samePosition(target, state.level.exit) && collectedRunes === state.level.runeStarts.length) {
-    return { ...state, player: target, runes, collectedRunes, turn: state.turn + 1,
-      status: 'won', events: [...events, { type: 'game-won' }] };
+  if (
+    samePosition(target, state.level.exit) &&
+    collectedRunes === state.level.runeStarts.length
+  ) {
+    return {
+      ...state,
+      player: target,
+      runes,
+      collectedRunes,
+      turn: state.turn + 1,
+      status: 'won',
+      events: [...events, { type: 'game-won' }],
+    };
   }
 
-  const result = advanceEnemies(state.level, state.enemies, target, state.health);
+  const result = advanceEnemies(
+    state.level,
+    state.enemies,
+    target,
+    state.health,
+  );
   events.push(...result.events);
   const status = result.health <= 0 ? 'lost' : 'playing';
   if (status === 'lost') events.push({ type: 'game-lost' });
-  return { ...state, player: target, enemies: result.enemies, runes, collectedRunes,
-    health: result.health, turn: state.turn + 1, status, events };
+  return {
+    ...state,
+    player: target,
+    enemies: result.enemies,
+    runes,
+    collectedRunes,
+    health: result.health,
+    turn: state.turn + 1,
+    status,
+    events,
+  };
+}
+
+export function isRoomWinnable(rows, maxStates = 100000) {
+  const level = parseLevel(rows);
+
+  if (validateLevel(level).length > 0) {
+    return false;
+  }
+
+  return canWinGame(createGame(level), maxStates);
+}
+
+export function canWinGame(initialState, maxStates = 100000) {
+  const queue = [initialState];
+  const visited = new Set([gameStateKey(initialState)]);
+  let queueIndex = 0;
+
+  while (queueIndex < queue.length) {
+    if (visited.size > maxStates) {
+      return false;
+    }
+
+    const state = queue[queueIndex];
+    queueIndex += 1;
+
+    for (const direction of Object.keys(OFFSETS)) {
+      const next = takeTurn(state, direction);
+
+      if (next.status === 'won') {
+        return true;
+      }
+
+      if (next.status === 'lost' || next.turn === state.turn) {
+        continue;
+      }
+
+      const key = gameStateKey(next);
+
+      if (!visited.has(key)) {
+        visited.add(key);
+        queue.push(next);
+      }
+    }
+  }
+
+  return false;
+}
+
+function gameStateKey(state) {
+  const enemies = state.enemies
+    .map((enemy) => `${enemy.id}:${positionKey(enemy.position)}`)
+    .join('|');
+
+  const runes = state.runes.map(positionKey).sort().join('|');
+
+  return [positionKey(state.player), enemies, runes, state.health].join('::');
 }
 
 function advanceEnemies(level, enemies, player, startingHealth) {
@@ -286,13 +413,20 @@ function advanceEnemies(level, enemies, player, startingHealth) {
     }
     const blocked = new Set([
       ...moved.map((item) => positionKey(item.position)),
-      ...enemies.filter((item) => item.id !== enemy.id).map((item) => positionKey(item.position)),
+      ...enemies
+        .filter((item) => item.id !== enemy.id)
+        .map((item) => positionKey(item.position)),
       positionKey(player),
     ]);
     const next = nextPathStep(level, enemy.position, player, blocked);
     moved.push({ ...enemy, position: next });
     if (!samePosition(next, enemy.position)) {
-      events.push({ type: 'enemy-moved', enemyId: enemy.id, from: enemy.position, to: next });
+      events.push({
+        type: 'enemy-moved',
+        enemyId: enemy.id,
+        from: enemy.position,
+        to: next,
+      });
     }
   }
   return { enemies: moved, health, events };
@@ -327,7 +461,8 @@ function nextPathStep(level, start, target, blocked) {
   }
   if (!foundKey) return start;
   let cursor = foundKey;
-  while (previous.get(cursor) && previous.get(cursor) !== startKey) cursor = previous.get(cursor);
+  while (previous.get(cursor) && previous.get(cursor) !== startKey)
+    cursor = previous.get(cursor);
   return positions.get(cursor) ?? start;
 }
 

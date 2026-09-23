@@ -1,7 +1,16 @@
 import { describe, expect, it } from 'vitest';
 import {
-  FIXED_ROOM, createGame, generateRoomFromSeed, getEasternDateKey, parseLevel,
-  positionKey, reachablePositions, takeTurn, validateLevel,
+  FIXED_ROOM,
+  createGame,
+  generateDailyRoom,
+  generateRoomFromSeed,
+  getEasternDateKey,
+  isRoomWinnable,
+  parseLevel,
+  positionKey,
+  reachablePositions,
+  takeTurn,
+  validateLevel,
 } from '../../public/games/crypt-shift/cryptShiftRules.js';
 
 const gameFrom = (rows) => createGame(parseLevel(rows));
@@ -19,7 +28,9 @@ describe('Crypt Shift levels', () => {
 
   it('rejects malformed maps', () => {
     expect(() => parseLevel(['###', '#P#'])).toThrow(/exit/i);
-    expect(() => parseLevel(['####', '#PX#', '###'])).toThrow(/equal in width/i);
+    expect(() => parseLevel(['####', '#PX#', '###'])).toThrow(
+      /equal in width/i,
+    );
   });
 
   it('reports unreachable objectives', () => {
@@ -35,6 +46,24 @@ describe('Crypt Shift daily generation', () => {
     );
   });
 
+  it('detects the impossible September 23 room', () => {
+    const rows = generateRoomFromSeed('2026-09-23');
+
+    expect(validateLevel(parseLevel(rows))).toEqual([]);
+    expect(isRoomWinnable(rows)).toBe(false);
+  });
+
+  it('retries an impossible Daily seed deterministically', () => {
+    const date = new Date('2026-09-23T16:00:00Z');
+
+    const first = generateDailyRoom(date);
+    const second = generateDailyRoom(date);
+
+    expect(first).toEqual(second);
+    expect(first).toEqual(generateRoomFromSeed('2026-09-23:1'));
+    expect(isRoomWinnable(first)).toBe(true);
+  });
+
   it('creates different rooms for consecutive date seeds', () => {
     expect(generateRoomFromSeed('2026-09-19')).not.toEqual(
       generateRoomFromSeed('2026-09-20'),
@@ -42,7 +71,9 @@ describe('Crypt Shift daily generation', () => {
   });
 
   it('uses the Eastern date', () => {
-    expect(getEasternDateKey(new Date('2026-09-19T03:00:00Z'))).toBe('2026-09-18');
+    expect(getEasternDateKey(new Date('2026-09-19T03:00:00Z'))).toBe(
+      '2026-09-18',
+    );
   });
 
   it('generates valid solvable rooms across 1000 seeds', () => {
